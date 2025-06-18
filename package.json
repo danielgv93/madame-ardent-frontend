@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "astro dev",
     "db-manage": "npx prisma studio",
-    "db-seed": "npx prisma db seed",
+    "dev:db-seed": "npx prisma db seed",
+    "dev:db-upgrade": "npx prisma db push --force-reset",
     "db-upgrade": "npx prisma db push",
     "build": "astro build",
     "preview": "astro preview",
@@ -18,10 +19,14 @@
     "@astrojs/node": "^9.2.2",
     "@prisma/client": "^6.9.0",
     "@tailwindcss/vite": "^4.1.8",
+    "@types/jsonwebtoken": "^9.0.10",
     "astro": "^5.9.0",
+    "bcrypt": "^6.0.0",
+    "jsonwebtoken": "^9.0.2",
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
     "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4"
