@@ -1,0 +1,44 @@
+---
+import Text from "../components/Text.astro";
+import UserTypeCard from "../components/UserTypeCard.astro";
+import Col from "../components/Col.astro";
+import Row from "../components/Row.astro";
+---
+
+<section class="relative py-20 px-4">
+    <Col class="max-w-4xl mx-auto text-center">
+        <Col class="mb-8">
+            <h1 class="text-6xl font-bold text-gray-800 mb-4 tracking-tight">
+                Madame <span class="text-primary-500">Ardent</span>
+            </h1>
+            <Text class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Transformando tus novelas en portadas cautivadoras.
+            </Text>
+        </Col>
+        
+        <!-- Floating Cards -->
+        <Col class="relative mt-16">
+            <Row class="max-w-4xl mx-auto">
+                <UserTypeCard 
+                    type="creador-de-portadas"
+                    title="¿ERES DISEÑADOR?"
+                    description="Descubre oportunidades de colaboración y amplía tu portafolio con proyectos de portadas de libros únicos."
+                    gradient="from-purple-500 to-pink-500"
+                    blur="from-purple-400 to-pink-400"
+                />
+
+                <UserTypeCard
+                    type="escritor"
+                    title="¿ERES ESCRITOR?"
+                    description="Obtén la portada perfecta para tu libro. Diseños profesionales que reflejan la esencia de tu obra."
+                    gradient="from-orange-500 to-red-500"
+                    blur="from-orange-400 to-red-400"
+                />
+            </Row>
+        </Col>
+    </Col>
+    
+    <!-- Decorative Elements -->
+    <div class="absolute top-10 left-10 w-20 h-20 bg-purple-200 rounded-full opacity-50 animate-pulse"></div>
+    <div class="absolute bottom-10 right-10 w-16 h-16 bg-pink-200 rounded-full opacity-50 animate-pulse delay-700"></div>
+</section>

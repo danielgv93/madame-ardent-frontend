@@ -1,5 +1,7 @@
 // @ts-check
+// @ts-ignore
 import { defineConfig } from 'astro/config';
+// @ts-ignore
 import tailwindcss from '@tailwindcss/vite';
 import node from '@astrojs/node';
 

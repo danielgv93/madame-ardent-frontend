@@ -1,0 +1,46 @@
+---
+import Heading from "../components/Heading.astro";
+import Text from "../components/Text.astro";
+import FeatureCard from "../components/FeatureCard.astro";
+import Col from "../components/Col.astro";
+import Row from "../components/Row.astro";
+const iconMap = [
+    "M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253",
+    "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
+    "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+]
+---
+
+<section class="py-20 px-4 bg-white/50">
+    <Col class="max-w-6xl mx-auto">
+        <Col class="text-center mb-16">
+            <Heading class="text-4xl mb-4 text-gray-800">Tu libro merece la portada perfecta</Heading>
+            <Text class="text-xl text-gray-600 max-w-3xl mx-auto">
+                Transformamos tu visión en diseños cautivadores que reflejan la esencia de tu obra y conectan con tus lectores desde el primer vistazo.
+            </Text>
+        </Col>
+
+        <Row class="gap-8">
+            <FeatureCard
+                    class="from-blue-500 to-purple-500"
+                    title="Diseños Únicos"
+                    description="Cada portada es diseñada específicamente para tu libro, reflejando su esencia y género."
+                    iconPath={iconMap[0]}
+            />
+
+            <FeatureCard
+                    class="from-green-500 to-teal-500"
+                    title="Proceso Colaborativo"
+                    description="Trabajamos contigo paso a paso para crear la portada perfecta que conecte con tus lectores."
+                    iconPath={iconMap[1]}
+            />
+
+            <FeatureCard
+                    class="from-pink-500 to-rose-500"
+                    title="Calidad Profesional"
+                    description="Diseños de alta calidad que cumplen con los estándares de la industria editorial."
+                    iconPath={iconMap[2]}
+            />
+        </Row>
+    </Col>
+</section>

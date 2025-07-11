@@ -16,13 +16,14 @@
     "seed": "tsx prisma/seed.ts"
   },
   "dependencies": {
-    "@astrojs/node": "^9.2.2",
+    "@astrojs/node": "^9.3.0",
     "@prisma/client": "^6.9.0",
     "@tailwindcss/vite": "^4.1.8",
     "@types/jsonwebtoken": "^9.0.10",
-    "astro": "^5.9.0",
+    "astro": "^5.11.0",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
+    "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.8"
   },
   "devDependencies": {

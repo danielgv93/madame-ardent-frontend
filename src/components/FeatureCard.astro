@@ -1,0 +1,25 @@
+---
+import Heading from "./Heading.astro";
+import Text from "./Text.astro";
+import Col from "./Col.astro";
+import {cn} from "../lib/utils";
+
+interface Props {
+    class: string;
+    title: string;
+    description: string;
+    iconPath: string;
+}
+
+const { title, description, iconPath, class: className }: Props = Astro.props;
+---
+
+<Col class="text-center p-6 rounded-xl bg-white/70 backdrop-blur-sm shadow-lg">
+    <div class={cn('w-16 h-16 mx-auto mb-4 bg-gradient-to-r rounded-full flex items-center justify-center', className)}>
+        <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPath}></path>
+        </svg>
+    </div>
+    <Heading class="text-xl mb-3 text-gray-800">{title}</Heading>
+    <Text class="text-gray-600">{description}</Text>
+</Col>

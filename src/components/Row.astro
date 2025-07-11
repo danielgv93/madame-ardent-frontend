@@ -1,0 +1,11 @@
+---
+export interface Props {
+  class?: string;
+}
+
+const { class: className = "" } = Astro.props;
+---
+
+<div class={`w-full flex flex-row gap-4 justify-center items-center ${className}`}>
+  <slot />
+</div>

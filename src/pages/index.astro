@@ -1,27 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
-
-const res1 = await fetch("http://localhost:4321/api/forms")
-const forms = await res1.json();
+import Hero from "../layouts/Hero.astro";
+import Features from "../layouts/Features.astro";
 ---
 
-<Layout >
-    <div>{forms[0]?.message}</div>
-    <div id="users"></div>
+<Layout>
+    <main class="min-h-screen bg-gradient-to-br from-purple-100 via-pink-50 to-orange-100">
+        <Hero />
+        <Features />
+    </main>
 </Layout>
 
-<script>
-import { authenticatedFetch } from "../lib/client-api";
-
-async function loadUsers() {
-    try {
-        const res = await authenticatedFetch("http://localhost:4321/api/users");
-        const users = await res.json();
-        document.getElementById('users').textContent = users[0]?.name;
-    } catch (error) {
-        console.error('Error loading users:', error);
-    }
-}
-
-loadUsers();
-</script>

@@ -1,0 +1,42 @@
+---
+import Heading from "./Heading.astro";
+import Text from "./Text.astro";
+import Col from "./Col.astro";
+import {cn} from "../lib/utils";
+
+interface Props {
+    type: 'creador-de-portadas' | 'escritor';
+    title: string;
+    description: string;
+    gradient?: string;
+    blur?: string;
+}
+
+const { type, title, description, gradient, blur }: Props = Astro.props;
+
+const iconPaths = {
+    "creador-de-portadas": "M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z",
+    escritor: "M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+};
+
+---
+
+<div class="group relative">
+    <div class={cn('absolute inset-0 bg-gradient-to-r rounded-2xl blur opacity-25 group-hover:opacity-40 transition-all duration-300', blur)}></div>
+    <div class="relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
+        <Col class="text-center">
+            <div class={cn(`w-20 h-20 mx-auto mb-6 bg-gradient-to-r rounded-full flex items-center justify-center`, gradient)}>
+                <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d={iconPaths[type]}></path>
+                </svg>
+            </div>
+            <Heading class="text-2xl mb-4 text-gray-800">{title}</Heading>
+            <Text class="text-gray-600 mb-6">
+                {description}
+            </Text>
+            <a href={`/${type}`} class={cn(`bg-gradient-to-r text-white px-8 py-3 rounded-full font-semibold hover:opacity-90 transition-all duration-300 transform hover:scale-105 cursor-pointer`,gradient)}>
+                Comenzar Ahora
+            </a>
+        </Col>
+    </div>
+</div>
