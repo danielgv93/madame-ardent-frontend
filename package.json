@@ -4,6 +4,7 @@
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
+    "start": "node ./dist/server/entry.mjs",
     "db-manage": "npx prisma studio",
     "dev:db-seed": "npx prisma db seed",
     "dev:db-upgrade": "npx prisma db push --force-reset",
