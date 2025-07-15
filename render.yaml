@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: madame-ardent-frontend
+    runtime: node
+    repo: https://github.com/danielgv93/madame-ardent-frontend
+    branch: dev
+    plan: free
+    envVars:
+      - key: PORT
+        sync: false
+      - key: schema.prisma
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+    region: oregon
+    buildCommand: npm install;prisma generate --schema=/etc/secrets/schema.prisma; npm
+      run build; npm run dev:db-upgrade; npm run dev:db-seed
+    startCommand: npm run start
+    autoDeployTrigger: commit
+version: "1"
