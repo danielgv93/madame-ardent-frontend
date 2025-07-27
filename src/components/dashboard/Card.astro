@@ -1,0 +1,32 @@
+---
+export interface Props {
+    title?: string;
+    description?: string;
+    class?: string;
+}
+
+const { title, description, class: additionalClass = "" } = Astro.props;
+---
+
+<div class={`bg-white shadow rounded-lg ${additionalClass}`}>
+    <div class="px-4 py-5 sm:p-6">
+        {(title || description) && (
+            <div class="sm:flex sm:items-start sm:justify-between mb-4">
+                <div>
+                    {title && (
+                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                            {title}
+                        </h3>
+                    )}
+                    {description && (
+                        <div class="mt-2 max-w-xl text-sm text-gray-500">
+                            <p>{description}</p>
+                        </div>
+                    )}
+                </div>
+                <slot name="actions" />
+            </div>
+        )}
+        <slot />
+    </div>
+</div>

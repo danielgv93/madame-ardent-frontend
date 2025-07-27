@@ -1,0 +1,59 @@
+---
+export interface Props {
+    title: string;
+    value: string | number;
+    icon: string;
+    iconColor?: string;
+    href?: string;
+    linkText?: string;
+    isLoading?: boolean;
+    disabled?: boolean;
+}
+
+const { 
+    title, 
+    value, 
+    icon, 
+    iconColor = "bg-blue-500", 
+    href, 
+    linkText,
+    isLoading = false,
+    disabled = false
+} = Astro.props;
+
+const cardClasses = disabled ? "bg-white overflow-hidden shadow rounded-lg opacity-60" : "bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow";
+---
+
+<div class={cardClasses}>
+    <div class="p-5">
+        <div class="flex items-center">
+            <div class="flex-shrink-0">
+                <div class={`w-8 h-8 ${iconColor} rounded-md flex items-center justify-center`}>
+                    <Fragment set:html={icon} />
+                </div>
+            </div>
+            <div class="ml-5 w-0 flex-1">
+                <dl>
+                    <dt class="text-sm font-medium text-gray-500 truncate">
+                        {title}
+                    </dt>
+                    <dd class="text-lg font-medium text-gray-900">
+                        {isLoading ? "Cargando..." : value}
+                    </dd>
+                </dl>
+            </div>
+        </div>
+        <div class="mt-5">
+            {href && linkText && !disabled ? (
+                <a href={href} class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                    {linkText} →
+                </a>
+            ) : linkText && disabled ? (
+                <span class="text-sm font-medium text-gray-400">
+                    {linkText}
+                </span>
+            ) : null}
+            <slot />
+        </div>
+    </div>
+</div>
