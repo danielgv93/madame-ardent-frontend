@@ -5,7 +5,7 @@ import {authenticateRequest} from "../../lib/auth.ts";
 export const prerender = false;
 
 export const GET: APIRoute = async ({request}) => {
-    const user = authenticateRequest(request);
+    const user = await authenticateRequest(request);
     console.log(request)
     
     if (!user) {
