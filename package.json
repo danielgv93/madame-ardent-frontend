@@ -26,7 +26,8 @@
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
     "tailwind-merge": "^3.3.1",
-    "tailwindcss": "^4.1.8"
+    "tailwindcss": "^4.1.8",
+    "vercel": "^44.6.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
