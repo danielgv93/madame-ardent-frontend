@@ -1,0 +1,102 @@
+---
+import DashboardLayout from '../../layouts/DashboardLayout.astro';
+import Card from '../../components/dashboard/Card.astro';
+import StatsCard from '../../components/dashboard/StatsCard.astro';
+import EmptyState from '../../components/dashboard/EmptyState.astro';
+
+const profileIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+</svg>`;
+
+const formsIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+</svg>`;
+
+const futureIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+</svg>`;
+---
+
+<DashboardLayout title="Dashboard">
+    <div class="space-y-6">
+        <!-- Welcome Section -->
+        <Card title="Bienvenido al Dashboard" description="Gestiona tu perfil y visualiza los formularios de contacto desde este panel de administración.">
+            <Fragment slot="actions">
+                <span id="welcome-user" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+                    Admin
+                </span>
+            </Fragment>
+        </Card>
+
+        <!-- Quick Actions -->
+        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <StatsCard 
+                title="Perfil de Usuario"
+                value="Editar Información"
+                icon={profileIcon}
+                iconColor="bg-indigo-500"
+                href="/dashboard/profile"
+                linkText="Ir a Perfil"
+            />
+
+            <StatsCard 
+                title="Formularios"
+                value="Ver formularios"
+                icon={formsIcon}
+                iconColor="bg-green-500"
+                href="/dashboard/forms"
+                linkText="Ver Formularios"
+                isLoading={false}
+            />
+
+            <StatsCard 
+                title="Próximamente"
+                value="Nuevas Funciones"
+                icon={futureIcon}
+                iconColor="bg-gray-400"
+                linkText="En desarrollo..."
+                disabled={true}
+            />
+        </div>
+
+        <!-- Recent Activity (Placeholder) -->
+        <Card title="Actividad Reciente" class="mb-4">
+            <EmptyState 
+                title="Panel de actividad"
+                description="Aquí aparecerá un resumen de la actividad reciente cuando esté implementado."
+            />
+        </Card>
+    </div>
+
+    <script>
+        import { authenticatedFetch } from '../../lib/client-api.ts';
+        import { getCurrentUser } from '../../lib/auth.ts';
+        
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Mostrar nombre de usuario en el welcome
+            const user = getCurrentUser();
+            const welcomeUserElement = document.getElementById('welcome-user');
+            if (user && welcomeUserElement) {
+                welcomeUserElement.textContent = `Admin: ${user.name || user.email}`;
+            }
+            
+            // Cargar contador de formularios
+            try {
+                const response = await authenticatedFetch('/api/forms');
+                if (response.ok) {
+                    const forms = await response.json();
+                    const formsCountElement = document.getElementById('forms-count');
+                    if (formsCountElement) {
+                        formsCountElement.textContent = forms.length.toString();
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading forms count:', error);
+                const formsCountElement = document.getElementById('forms-count');
+                if (formsCountElement) {
+                    formsCountElement.textContent = 'Error';
+                }
+            }
+        });
+    </script>
+</DashboardLayout>
