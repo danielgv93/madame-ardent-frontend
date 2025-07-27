@@ -3,7 +3,7 @@
 import { defineConfig } from 'astro/config';
 // @ts-ignore
 import tailwindcss from '@tailwindcss/vite';
-import node from '@astrojs/node';
+import vercel from '@astrojs/vercel';
 
 // https://astro.build/config
 export default defineConfig({
@@ -11,9 +11,7 @@ export default defineConfig({
     plugins: [tailwindcss()],
     envPrefix: ['DATABASE_'],
   },
-  adapter: node({
-    mode: 'standalone'
-  }),
+  adapter: vercel(),
   server: {
     host: '0.0.0.0',
     port: process.env.PORT ? parseInt(process.env.PORT) : 4321
