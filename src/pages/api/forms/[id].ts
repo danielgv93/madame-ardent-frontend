@@ -1,16 +1,16 @@
 import type { APIRoute } from "astro";
 import prisma from "../../../lib/prisma.ts";
-import { authenticateRequest } from "../../../lib/auth.ts";
+import { authenticateRequest } from "../../../lib/auth-server.ts";
 
 export const PATCH: APIRoute = async ({ request, params }) => {
     // Authenticate the request
     const user = await authenticateRequest(request);
-    //if (!user) {
-    //    return new Response(JSON.stringify({ error: "No autorizado" }), {
-    //        status: 401,
-    //        headers: { "Content-Type": "application/json" },
-    //    });
-    //}
+    if (!user) {
+        return new Response(JSON.stringify({ error: "No autorizado" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
 
     try {
         const formId = params.id;

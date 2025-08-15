@@ -1,16 +1,16 @@
 import type { APIRoute } from "astro";
 import prisma from "../../../lib/prisma.ts";
-import { authenticateRequest } from "../../../lib/auth.ts";
+import { authenticateRequest } from "../../../lib/auth-server.ts";
 
 export const GET: APIRoute = async ({ request, url }) => {
     // Authenticate the request
     const user = await authenticateRequest(request);
-    //if (!user) {
-    //    return new Response(JSON.stringify({ error: "No autorizado" }), {
-    //        status: 401,
-    //        headers: { "Content-Type": "application/json" },
-    //    });
-    //}
+    if (!user) {
+        return new Response(JSON.stringify({ error: "No autorizado" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+        });
+    }
 
     try {
         // Get query parameters for filtering
@@ -36,20 +36,14 @@ export const GET: APIRoute = async ({ request, url }) => {
             }
         }
 
-        // Note: Since status is not in the database schema, we'll handle it post-query
-        // if needed for future implementation
+        if (status) {
+            where.status = status;
+        }
 
-        // Fetch forms with filtering
         const forms = await prisma.form.findMany({
             where,
             orderBy: { createdAt: 'desc' }
         });
-
-        // Additional status filtering
-        let filteredForms = forms;
-        if (status && status !== '') {
-            filteredForms = forms.filter(form => form.status === status);
-        }
 
         // Generate CSV content
         const csvHeaders = [
@@ -65,7 +59,7 @@ export const GET: APIRoute = async ({ request, url }) => {
             'Fecha de Respuesta'
         ];
 
-        const csvRows = filteredForms.map(form => [
+        const csvRows = forms.map(form => [
             form.id,
             escapeCSV(form.name),
             escapeCSV(form.user),

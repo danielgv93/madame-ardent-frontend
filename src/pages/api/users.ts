@@ -1,6 +1,6 @@
 import type {APIRoute} from "astro";
 import prisma from "../../lib/prisma.ts";
-import {authenticateRequest} from "../../lib/auth.ts";
+import { authenticateRequest } from "../../lib/auth-server.ts";
 
 export const prerender = false;
 

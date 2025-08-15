@@ -115,7 +115,7 @@ const { title } = Astro.props;
 </Layout>
 
 <script>
-    import { isAuthenticated, getCurrentUser, logout, redirectToRestricted } from '../lib/auth.ts';
+    import { isAuthenticated, getCurrentUser, logout, redirectToRestricted } from '../lib/auth-client.ts';
     
     // Verificar autenticación al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
