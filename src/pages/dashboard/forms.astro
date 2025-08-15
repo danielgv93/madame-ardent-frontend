@@ -124,7 +124,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                     <table class="min-w-full">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('name')">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none sort-header" data-column="name">
                                     <div class="flex items-center justify-between">
                                         <span>Remitente</span>
                                         <div class="flex flex-col ml-1">
@@ -140,7 +140,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mensaje
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('createdAt')">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none sort-header" data-column="createdAt">
                                     <div class="flex items-center justify-between">
                                         <span>Fecha Creación</span>
                                         <div class="flex flex-col ml-1">
@@ -153,7 +153,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('status')">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none sort-header" data-column="status">
                                     <div class="flex items-center justify-between">
                                         <span>Estado</span>
                                         <div class="flex flex-col ml-1">
@@ -166,7 +166,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                                         </div>
                                     </div>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('respondedAt')">
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none sort-header" data-column="respondedAt">
                                     <div class="flex items-center justify-between">
                                         <span>Fecha Respuesta</span>
                                         <div class="flex flex-col ml-1">
@@ -396,6 +396,67 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 confirmExport.addEventListener('click', exportCSV);
             }
             
+            // Sort headers event delegation
+            document.addEventListener('click', function(event) {
+                const target = event.target as HTMLElement;
+                const sortHeader = target.closest('.sort-header') as HTMLElement;
+                if (sortHeader) {
+                    const column = sortHeader.dataset.column;
+                    if (column) {
+                        sortBy(column);
+                    }
+                }
+            });
+            
+            // Pagination buttons event delegation
+            document.addEventListener('click', function(event) {
+                const target = event.target as HTMLElement;
+                const paginationBtn = target.closest('.pagination-btn') as HTMLElement;
+                if (paginationBtn && !paginationBtn.disabled) {
+                    const page = paginationBtn.dataset.page;
+                    if (page) {
+                        changePage(parseInt(page));
+                    }
+                }
+            });
+            
+            // Status tag click event delegation
+            document.addEventListener('click', function(event) {
+                const target = event.target as HTMLElement;
+                const statusTag = target.closest('.status-tag') as HTMLElement;
+                if (statusTag) {
+                    const formId = statusTag.dataset.formId;
+                    if (formId) {
+                        toggleStatusDropdown(formId);
+                    }
+                }
+            });
+            
+            // Status option click event delegation
+            document.addEventListener('click', function(event) {
+                const target = event.target as HTMLElement;
+                const statusOption = target.closest('.status-option') as HTMLElement;
+                if (statusOption) {
+                    const formId = statusOption.dataset.formId;
+                    const status = statusOption.dataset.status;
+                    if (formId && status) {
+                        updateFormStatus(formId, status);
+                    }
+                }
+            });
+            
+            // View form button event delegation
+            document.addEventListener('click', function(event) {
+                const target = event.target as HTMLElement;
+                const viewFormBtn = target.closest('.view-form-btn') as HTMLElement;
+                if (viewFormBtn) {
+                    const formId = viewFormBtn.dataset.formId;
+                    if (formId) {
+                        viewForm(formId);
+                    }
+                }
+            });
+            
             // Close modal on backdrop click
             const modal = document.getElementById('form-modal');
             if (modal) {
@@ -553,8 +614,8 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             updateSortIcons();
         }
 
-        // Función global para ordenamiento
-        (window as any).sortBy = function(column: string) {
+        // Función para ordenamiento
+        function sortBy(column: string) {
             if (sortColumn === column) {
                 sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
             } else {
@@ -564,7 +625,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             
             // Cargar datos desde el servidor con el nuevo ordenamiento
             loadForms(1); // Volver a la primera página al cambiar ordenamiento
-        };
+        }
         
         function updateSortIcons() {
             // Ocultar todos los iconos primero
@@ -635,15 +696,15 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
                     <div class="flex flex-1 justify-between sm:hidden">
                         <button
-                            class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${!hasPrevious ? 'opacity-50 cursor-not-allowed' : ''}"
-                            onclick="${hasPrevious ? `changePage(${currentPage - 1})` : ''}"
+                            class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${!hasPrevious ? 'opacity-50 cursor-not-allowed' : ''} pagination-btn"
+                            data-page="${hasPrevious ? currentPage - 1 : ''}"
                             ${!hasPrevious ? 'disabled' : ''}
                         >
                             Anterior
                         </button>
                         <button
-                            class="relative ml-3 inline-flex items-center rounded-md cursor-pointer border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${!hasNext ? 'opacity-50 cursor-not-allowed' : ''}"
-                            onclick="${hasNext ? `changePage(${currentPage + 1})` : ''}"
+                            class="relative ml-3 inline-flex items-center rounded-md cursor-pointer border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${!hasNext ? 'opacity-50 cursor-not-allowed' : ''} pagination-btn"
+                            data-page="${hasNext ? currentPage + 1 : ''}"
                             ${!hasNext ? 'disabled' : ''}
                         >
                             Siguiente
@@ -658,8 +719,8 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                         <div>
                             <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
                                 <button
-                                    class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!hasPrevious ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'}"
-                                    onclick="${hasPrevious ? `changePage(${currentPage - 1})` : ''}"
+                                    class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!hasPrevious ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'} pagination-btn"
+                                    data-page="${hasPrevious ? currentPage - 1 : ''}"
                                     ${!hasPrevious ? 'disabled' : ''}
                                 >
                                     <span class="sr-only">Anterior</span>
@@ -668,20 +729,20 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
 
                                 ${visiblePages.map(page => `
                                     <button
-                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold cursor-pointer ${
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold cursor-pointer pagination-btn ${
                                             page === currentPage
                                                 ? 'z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
                                                 : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
                                         }"
-                                        onclick="changePage(${page})"
+                                        data-page="${page}"
                                     >
                                         ${page}
                                     </button>
                                 `).join('')}
 
                                 <button
-                                    class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!hasNext ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'}"
-                                    onclick="${hasNext ? `changePage(${currentPage + 1})` : ''}"
+                                    class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!hasNext ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'} pagination-btn"
+                                    data-page="${hasNext ? currentPage + 1 : ''}"
                                     ${!hasNext ? 'disabled' : ''}
                                 >
                                     <span class="sr-only">Siguiente</span>
@@ -713,22 +774,22 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="relative">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${FORM_STATUS_COLORS[status]}" 
-                              onclick="toggleStatusDropdown('${form.id}')"
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${FORM_STATUS_COLORS[status]} status-tag" 
+                              data-form-id="${form.id}"
                               id="status-tag-${form.id}">
                             ${FORM_STATUS_LABELS[status]}
                         </span>
                         <div id="status-dropdown-${form.id}" class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-32 hidden">
-                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.PENDING ? 'bg-yellow-50 text-yellow-800' : 'text-gray-700'}" 
-                                    onclick="updateFormStatus('${form.id}', '${FORM_STATUS.PENDING}')">
+                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.PENDING ? 'bg-yellow-50 text-yellow-800' : 'text-gray-700'} status-option" 
+                                    data-form-id="${form.id}" data-status="${FORM_STATUS.PENDING}">
                                 ${FORM_STATUS_LABELS[FORM_STATUS.PENDING]}
                             </button>
-                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.READ ? 'bg-blue-50 text-blue-800' : 'text-gray-700'}" 
-                                    onclick="updateFormStatus('${form.id}', '${FORM_STATUS.READ}')">
+                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.READ ? 'bg-blue-50 text-blue-800' : 'text-gray-700'} status-option" 
+                                    data-form-id="${form.id}" data-status="${FORM_STATUS.READ}">
                                 ${FORM_STATUS_LABELS[FORM_STATUS.READ]}
                             </button>
-                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.REPLIED ? 'bg-green-50 text-green-800' : 'text-gray-700'}" 
-                                    onclick="updateFormStatus('${form.id}', '${FORM_STATUS.REPLIED}')">
+                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.REPLIED ? 'bg-green-50 text-green-800' : 'text-gray-700'} status-option" 
+                                    data-form-id="${form.id}" data-status="${FORM_STATUS.REPLIED}">
                                 ${FORM_STATUS_LABELS[FORM_STATUS.REPLIED]}
                             </button>
                         </div>
@@ -738,7 +799,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                     ${form.respondedAt ? formatDate(form.respondedAt) : '-'}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button class="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer" onclick="viewForm('${form.id}')">
+                    <button class="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer view-form-btn" data-form-id="${form.id}">
                         Ver
                     </button>
                     <a href="mailto:${form.email}" class="text-green-600 hover:text-green-900">
@@ -767,20 +828,20 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             return div.innerHTML;
         }
         
-        // Global function for row buttons
-        (window as any).viewForm = function(formId: string) {
+        // Function for viewing forms
+        function viewForm(formId: string) {
             const form = allForms.find(f => f.id === formId);
             if (form) {
                 showFormModal(form);
             }
-        };
+        }
 
-        // Global function for pagination
-        (window as any).changePage = function(page: number) {
+        // Function for pagination
+        function changePage(page: number) {
             if (page >= 1 && currentPagination && page <= currentPagination.totalPages) {
                 loadForms(page);
             }
-        };
+        }
         
         function showFormModal(form: FormData) {
             const modal = document.getElementById('form-modal');
@@ -899,8 +960,8 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             }
         }
         
-        // Global functions for status management
-        (window as any).toggleStatusDropdown = function(formId: string) {
+        // Functions for status management
+        function toggleStatusDropdown(formId: string) {
             const dropdown = document.getElementById(`status-dropdown-${formId}`);
             
             // Hide all other dropdowns first
@@ -913,9 +974,9 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             if (dropdown) {
                 dropdown.classList.toggle('hidden');
             }
-        };
+        }
         
-        (window as any).updateFormStatus = async function(formId: string, newStatus: string) {
+        async function updateFormStatus(formId: string, newStatus: string) {
             try {
                 const response = await authenticatedFetch(`/api/forms/${formId}`, {
                     method: 'PATCH',
@@ -967,7 +1028,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 console.error('Error updating form status:', error);
                 showError('Error de conexión al actualizar estado');
             }
-        };
+        }
         
         // Close dropdowns when clicking outside
         document.addEventListener('click', function(event) {
