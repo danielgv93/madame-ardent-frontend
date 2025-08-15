@@ -1,0 +1,57 @@
+---
+import { TABLE_ICONS } from '../../lib/constants/icons';
+
+export interface Props {
+    id?: string;
+    class?: string;
+}
+
+const { id = 'forms-table', class: className = '' } = Astro.props;
+
+function createSortHeader(column: string, label: string) {
+    return `
+        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none sort-header" data-column="${column}">
+            <div class="flex items-center justify-between">
+                <span>${label}</span>
+                <div class="flex flex-col ml-1">
+                    ${TABLE_ICONS.SORT_ASC.replace('sort-asc', `sort-asc" data-column="${column}`)}
+                    ${TABLE_ICONS.SORT_DESC.replace('sort-desc', `sort-desc" data-column="${column}`)}
+                </div>
+            </div>
+        </th>
+    `;
+}
+---
+
+<div id={id} class={`hidden ${className}`}>
+    <div>
+        <table class="min-w-full">
+            <thead class="bg-gray-50">
+                <tr>
+                    <Fragment set:html={createSortHeader('name', 'Remitente')} />
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Mensaje
+                    </th>
+                    <Fragment set:html={createSortHeader('createdAt', 'Fecha Creación')} />
+                    <Fragment set:html={createSortHeader('status', 'Estado')} />
+                    <Fragment set:html={createSortHeader('respondedAt', 'Fecha Respuesta')} />
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                        Acciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="forms-tbody" class="bg-white divide-y divide-gray-200">
+                <!-- Forms will be populated here -->
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    <div id="pagination-container"></div>
+</div>
+
+<style>
+    .sort-icon {
+        display: none;
+    }
+</style>
