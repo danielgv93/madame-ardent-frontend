@@ -6,13 +6,28 @@ export const GET: APIRoute = async ({ url }) => {
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const skip = (page - 1) * limit;
+    
+    // Parámetros de ordenamiento
+    const sortBy = searchParams.get('sortBy') || 'createdAt';
+    const sortOrder = searchParams.get('sortOrder') || 'desc';
+
+    // Mapear campos del frontend a campos de la base de datos
+    const fieldMapping: Record<string, string> = {
+        'name': 'name',
+        'createdAt': 'createdAt',
+        'status': 'status',
+        'respondedAt': 'respondedAt'
+    };
+
+    const dbField = fieldMapping[sortBy] || 'createdAt';
+    const dbOrder = sortOrder === 'asc' ? 'asc' : 'desc';
 
     const [forms, totalCount] = await Promise.all([
         prisma.form.findMany({
             skip,
             take: limit,
             orderBy: {
-                createdAt: 'desc'
+                [dbField]: dbOrder
             }
         }),
         prisma.form.count()

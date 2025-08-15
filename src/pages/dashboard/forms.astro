@@ -124,20 +124,60 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                     <table class="min-w-full">
                         <thead class="bg-gray-50">
                             <tr>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Remitente
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('name')">
+                                    <div class="flex items-center justify-between">
+                                        <span>Remitente</span>
+                                        <div class="flex flex-col ml-1">
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-asc" data-column="name" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-desc" data-column="name" fill="currentColor" viewBox="0 0 20 20" style="transform: rotate(180deg);">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Mensaje
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Fecha Creación
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('createdAt')">
+                                    <div class="flex items-center justify-between">
+                                        <span>Fecha Creación</span>
+                                        <div class="flex flex-col ml-1">
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-asc" data-column="createdAt" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-desc" data-column="createdAt" fill="currentColor" viewBox="0 0 20 20" style="transform: rotate(180deg);">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Estado
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('status')">
+                                    <div class="flex items-center justify-between">
+                                        <span>Estado</span>
+                                        <div class="flex flex-col ml-1">
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-asc" data-column="status" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-desc" data-column="status" fill="currentColor" viewBox="0 0 20 20" style="transform: rotate(180deg);">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </th>
-                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                    Fecha Respuesta
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100 transition-colors duration-150 select-none" onclick="sortBy('respondedAt')">
+                                    <div class="flex items-center justify-between">
+                                        <span>Fecha Respuesta</span>
+                                        <div class="flex flex-col ml-1">
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-asc" data-column="respondedAt" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                            <svg class="w-3 h-3 text-gray-400 sort-icon sort-desc" data-column="respondedAt" fill="currentColor" viewBox="0 0 20 20" style="transform: rotate(180deg);">
+                                                <path d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                     Acciones
@@ -284,6 +324,12 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
         </div>
     </div>
 
+    <style>
+        .sort-icon {
+            display: none;
+        }
+    </style>
+
     <script>
         import { authenticatedFetch } from '../../lib/client-api.ts';
         import { FORM_STATUS, FORM_STATUS_LABELS, FORM_STATUS_COLORS } from '../../lib/constants/form-status.ts';
@@ -312,6 +358,8 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
         let filteredForms: FormData[] = [];
         let currentPagination: PaginationData | null = null;
         let currentPage = 1;
+        let sortColumn: string | null = null;
+        let sortOrder: 'asc' | 'desc' = 'asc';
         
         document.addEventListener('DOMContentLoaded', function() {
             loadForms();
@@ -325,7 +373,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             const confirmExport = document.getElementById('confirm-export');
             
             if (refreshBtn) {
-                refreshBtn.addEventListener('click', () => loadForms(currentPage));
+                refreshBtn.addEventListener('click', () => loadForms(currentPage, true));
             }
             
             if (statusFilter) {
@@ -369,14 +417,26 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             }
         });
         
-        async function loadForms(page: number = 1) {
+        async function loadForms(page: number = 1, resetSorting: boolean = false) {
             try {
                 showLoading();
                 currentPage = page;
                 
+                // Si resetSorting es true, limpiar el ordenamiento
+                if (resetSorting) {
+                    sortColumn = null;
+                    sortOrder = 'asc';
+                }
+                
+                // Construir URL con parámetros de ordenamiento
+                let formsUrl = `/api/forms?page=${page}&limit=10`;
+                if (sortColumn) {
+                    formsUrl += `&sortBy=${sortColumn}&sortOrder=${sortOrder}`;
+                }
+                
                 // Load forms and stats in parallel
                 const [formsResponse, statsResponse] = await Promise.all([
-                    authenticatedFetch(`/api/forms?page=${page}&limit=10`),
+                    authenticatedFetch(formsUrl),
                     authenticatedFetch('/api/forms/stats')
                 ]);
                 
@@ -487,6 +547,39 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                     const row = createFormRow(form);
                     tbody.appendChild(row);
                 });
+            }
+            
+            // Actualizar iconos de ordenamiento
+            updateSortIcons();
+        }
+
+        // Función global para ordenamiento
+        (window as any).sortBy = function(column: string) {
+            if (sortColumn === column) {
+                sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            } else {
+                sortColumn = column;
+                sortOrder = 'asc';
+            }
+            
+            // Cargar datos desde el servidor con el nuevo ordenamiento
+            loadForms(1); // Volver a la primera página al cambiar ordenamiento
+        };
+        
+        function updateSortIcons() {
+            // Ocultar todos los iconos primero
+            document.querySelectorAll('.sort-icon').forEach(icon => {
+                (icon as HTMLElement).style.display = 'none';
+            });
+            
+            // Mostrar el icono correcto para la columna activa
+            if (sortColumn) {
+                const iconClass = sortOrder === 'asc' ? 'sort-asc' : 'sort-desc';
+                const activeIcon = document.querySelector(`.sort-icon.${iconClass}[data-column="${sortColumn}"]`) as HTMLElement;
+                if (activeIcon) {
+                    activeIcon.style.display = 'block';
+                    activeIcon.style.color = '#3B82F6'; // text-blue-500
+                }
             }
         }
 
