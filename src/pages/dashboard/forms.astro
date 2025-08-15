@@ -5,6 +5,7 @@ import StatsCard from '../../components/dashboard/StatsCard.astro';
 import Card from '../../components/dashboard/Card.astro';
 import EmptyState from '../../components/dashboard/EmptyState.astro';
 import Button from '../../components/Button.astro';
+import { FORM_STATUS, FORM_STATUS_LABELS } from '../../lib/constants/form-status.ts';
 
 const totalIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2M4 13h2m0 0V9a2 2 0 012-2h2a2 2 0 012 2v4.01" />
@@ -95,9 +96,9 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 <div class="flex space-x-2">
                     <select id="status-filter" class="border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500">
                         <option value="">Todos los estados</option>
-                        <option value="pending">Pendiente</option>
-                        <option value="read">Leído</option>
-                        <option value="replied">Respondido</option>
+                        <option value={FORM_STATUS.PENDING}>{FORM_STATUS_LABELS[FORM_STATUS.PENDING]}</option>
+                        <option value={FORM_STATUS.READ}>{FORM_STATUS_LABELS[FORM_STATUS.READ]}</option>
+                        <option value={FORM_STATUS.REPLIED}>{FORM_STATUS_LABELS[FORM_STATUS.REPLIED]}</option>
                     </select>
                 </div>
             </div>
@@ -247,9 +248,9 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                                         class="w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
                                     >
                                         <option value="">Todos los estados</option>
-                                        <option value="pending">Pendiente</option>
-                                        <option value="read">Leído</option>
-                                        <option value="replied">Respondido</option>
+                                        <option value={FORM_STATUS.PENDING}>{FORM_STATUS_LABELS[FORM_STATUS.PENDING]}</option>
+                                        <option value={FORM_STATUS.READ}>{FORM_STATUS_LABELS[FORM_STATUS.READ]}</option>
+                                        <option value={FORM_STATUS.REPLIED}>{FORM_STATUS_LABELS[FORM_STATUS.REPLIED]}</option>
                                     </select>
                                 </div>
                                 <div class="text-sm text-gray-500">
@@ -285,6 +286,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
 
     <script>
         import { authenticatedFetch } from '../../lib/client-api.ts';
+        import { FORM_STATUS, FORM_STATUS_LABELS, FORM_STATUS_COLORS } from '../../lib/constants/form-status.ts';
         
         interface FormData {
             id: string;
@@ -293,7 +295,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             phone?: string;
             message: string;
             createdAt: string;
-            status?: 'pending' | 'read' | 'replied';
+            status?: typeof FORM_STATUS[keyof typeof FORM_STATUS];
             respondedAt?: string;
         }
 
@@ -416,7 +418,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             
             // Calculate pending forms (assuming default status is pending)
             const pendingForms = allForms.filter(form => 
-                !form.status || form.status === 'pending'
+                !form.status || form.status === FORM_STATUS.PENDING
             );
             
             if (pendingElement) {
@@ -432,7 +434,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 filteredForms = [...allForms];
             } else {
                 filteredForms = allForms.filter(form => 
-                    (form.status || 'pending') === selectedStatus
+                    (form.status || FORM_STATUS.PENDING) === selectedStatus
                 );
             }
             
@@ -582,18 +584,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             const row = document.createElement('tr');
             row.className = 'hover:bg-gray-50';
             
-            const status = form.status || 'pending';
-            const statusColors = {
-                pending: 'bg-yellow-100 text-yellow-800',
-                read: 'bg-blue-100 text-blue-800',
-                replied: 'bg-green-100 text-green-800'
-            };
-            
-            const statusLabels = {
-                pending: 'Pendiente',
-                read: 'Leído',
-                replied: 'Respondido'
-            };
+            const status = form.status || FORM_STATUS.PENDING;
             
             row.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -608,23 +599,23 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                     <div class="relative">
-                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${statusColors[status]}" 
+                        <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${FORM_STATUS_COLORS[status]}" 
                               onclick="toggleStatusDropdown('${form.id}')"
                               id="status-tag-${form.id}">
-                            ${statusLabels[status]}
+                            ${FORM_STATUS_LABELS[status]}
                         </span>
                         <div id="status-dropdown-${form.id}" class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-32 hidden">
-                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === 'pending' ? 'bg-yellow-50 text-yellow-800' : 'text-gray-700'}" 
-                                    onclick="updateFormStatus('${form.id}', 'pending')">
-                                Pendiente
+                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.PENDING ? 'bg-yellow-50 text-yellow-800' : 'text-gray-700'}" 
+                                    onclick="updateFormStatus('${form.id}', '${FORM_STATUS.PENDING}')">
+                                ${FORM_STATUS_LABELS[FORM_STATUS.PENDING]}
                             </button>
-                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === 'read' ? 'bg-blue-50 text-blue-800' : 'text-gray-700'}" 
-                                    onclick="updateFormStatus('${form.id}', 'read')">
-                                Leído
+                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.READ ? 'bg-blue-50 text-blue-800' : 'text-gray-700'}" 
+                                    onclick="updateFormStatus('${form.id}', '${FORM_STATUS.READ}')">
+                                ${FORM_STATUS_LABELS[FORM_STATUS.READ]}
                             </button>
-                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === 'replied' ? 'bg-green-50 text-green-800' : 'text-gray-700'}" 
-                                    onclick="updateFormStatus('${form.id}', 'replied')">
-                                Respondido
+                            <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.REPLIED ? 'bg-green-50 text-green-800' : 'text-gray-700'}" 
+                                    onclick="updateFormStatus('${form.id}', '${FORM_STATUS.REPLIED}')">
+                                ${FORM_STATUS_LABELS[FORM_STATUS.REPLIED]}
                             </button>
                         </div>
                     </div>
@@ -826,7 +817,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                     // Update the form in local data
                     const formIndex = allForms.findIndex(f => f.id === formId);
                     if (formIndex !== -1) {
-                        allForms[formIndex].status = newStatus as 'pending' | 'read' | 'replied';
+                        allForms[formIndex].status = newStatus as typeof FORM_STATUS[keyof typeof FORM_STATUS];
                         if (result.form.respondedAt) {
                             allForms[formIndex].respondedAt = result.form.respondedAt;
                         } else {

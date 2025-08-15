@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import prisma from "../../../lib/prisma.ts";
 import { authenticateRequest } from "../../../lib/auth-server.ts";
+import { FORM_STATUS, VALID_FORM_STATUS } from "../../../lib/constants/form-status.ts";
 
 export const PATCH: APIRoute = async ({ request, params }) => {
     // Authenticate the request
@@ -27,9 +28,8 @@ export const PATCH: APIRoute = async ({ request, params }) => {
         const { status } = body;
 
         // Validate status
-        const validStatuses = ['pending', 'read', 'replied'];
-        if (!status || !validStatuses.includes(status)) {
-            return new Response(JSON.stringify({ error: "Estado inválido. Debe ser: pending, read, replied" }), {
+        if (!status || !VALID_FORM_STATUS.includes(status)) {
+            return new Response(JSON.stringify({ error: `Estado inválido. Debe ser: ${VALID_FORM_STATUS.join(', ')}` }), {
                 status: 400,
                 headers: { "Content-Type": "application/json" },
             });
@@ -51,11 +51,11 @@ export const PATCH: APIRoute = async ({ request, params }) => {
         const updateData: any = { status };
         
         // If changing to replied status, set respondedAt date
-        if (status === 'replied' && existingForm.status !== 'replied') {
+        if (status === FORM_STATUS.REPLIED && existingForm.status !== FORM_STATUS.REPLIED) {
             updateData.respondedAt = new Date();
         }
         // If changing from replied to another status, clear respondedAt
-        else if (status !== 'replied' && existingForm.status === 'replied') {
+        else if (status !== FORM_STATUS.REPLIED && existingForm.status === FORM_STATUS.REPLIED) {
             updateData.respondedAt = null;
         }
 

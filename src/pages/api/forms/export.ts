@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import prisma from "../../../lib/prisma.ts";
 import { authenticateRequest } from "../../../lib/auth-server.ts";
+import { FORM_STATUS } from "../../../lib/constants/form-status.ts";
 
 export const GET: APIRoute = async ({ request, url }) => {
     // Authenticate the request
@@ -67,7 +68,7 @@ export const GET: APIRoute = async ({ request, url }) => {
             escapeCSV(form.country),
             escapeCSV(form.services),
             escapeCSV(form.message),
-            escapeCSV(form.status || 'pending'),
+            escapeCSV(form.status || FORM_STATUS.PENDING),
             form.createdAt.toISOString(),
             form.respondedAt ? form.respondedAt.toISOString() : ''
         ]);
