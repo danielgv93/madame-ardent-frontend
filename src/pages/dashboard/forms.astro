@@ -374,19 +374,26 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                 showLoading();
                 currentPage = page;
                 
-                const response = await authenticatedFetch(`/api/forms?page=${page}&limit=10`);
-                if (response.ok) {
-                    const data = await response.json();
-                    allForms = data.forms;
-                    currentPagination = data.pagination;
+                // Load forms and stats in parallel
+                const [formsResponse, statsResponse] = await Promise.all([
+                    authenticatedFetch(`/api/forms?page=${page}&limit=10`),
+                    authenticatedFetch('/api/forms/stats')
+                ]);
+                
+                if (formsResponse.ok && statsResponse.ok) {
+                    const formsData = await formsResponse.json();
+                    const statsData = await statsResponse.json();
+                    
+                    allForms = formsData.forms;
+                    currentPagination = formsData.pagination;
                     filteredForms = [...allForms];
                     
-                    updateStats();
+                    updateStats(statsData);
                     renderFormsTable();
                     updatePagination();
                     
                 } else {
-                    console.error('Error loading forms:', await response.text());
+                    console.error('Error loading forms or stats');
                     showError('Error al cargar los formularios');
                 }
             } catch (error) {
@@ -395,34 +402,48 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             }
         }
         
-        function updateStats() {
+        function updateStats(statsData?: any) {
             const totalElement = document.getElementById('total-forms');
             const weekElement = document.getElementById('week-forms');
             const pendingElement = document.getElementById('pending-forms');
             
-            if (totalElement && currentPagination) {
-                totalElement.textContent = currentPagination.totalCount.toString();
-            }
-            
-            // Calculate this week's forms
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            
-            const thisWeekForms = allForms.filter(form => 
-                new Date(form.createdAt) >= oneWeekAgo
-            );
-            
-            if (weekElement) {
-                weekElement.textContent = thisWeekForms.length.toString();
-            }
-            
-            // Calculate pending forms (assuming default status is pending)
-            const pendingForms = allForms.filter(form => 
-                !form.status || form.status === FORM_STATUS.PENDING
-            );
-            
-            if (pendingElement) {
-                pendingElement.textContent = pendingForms.length.toString();
+            if (statsData) {
+                // Use stats from API
+                if (totalElement) {
+                    totalElement.textContent = statsData.total.toString();
+                }
+                if (weekElement) {
+                    weekElement.textContent = statsData.thisWeek.toString();
+                }
+                if (pendingElement) {
+                    pendingElement.textContent = statsData.pending.toString();
+                }
+            } else {
+                // Fallback to pagination data for total count
+                if (totalElement && currentPagination) {
+                    totalElement.textContent = currentPagination.totalCount.toString();
+                }
+                
+                // Calculate this week's forms from current page only (fallback)
+                const oneWeekAgo = new Date();
+                oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+                
+                const thisWeekForms = allForms.filter(form => 
+                    new Date(form.createdAt) >= oneWeekAgo
+                );
+                
+                if (weekElement) {
+                    weekElement.textContent = thisWeekForms.length.toString();
+                }
+                
+                // Calculate pending forms from current page only (fallback)
+                const pendingForms = allForms.filter(form => 
+                    !form.status || form.status === FORM_STATUS.PENDING
+                );
+                
+                if (pendingElement) {
+                    pendingElement.textContent = pendingForms.length.toString();
+                }
             }
         }
         
@@ -831,9 +852,19 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                         dropdown.classList.add('hidden');
                     }
                     
-                    // Refresh the view
+                    // Refresh the view and stats
                     filterForms();
-                    updateStats();
+                    
+                    // Reload stats to get accurate counts
+                    try {
+                        const statsResponse = await authenticatedFetch('/api/forms/stats');
+                        if (statsResponse.ok) {
+                            const statsData = await statsResponse.json();
+                            updateStats(statsData);
+                        }
+                    } catch (error) {
+                        console.error('Error reloading stats:', error);
+                    }
                     
                 } else {
                     console.error('Error updating form status:', await response.text());
