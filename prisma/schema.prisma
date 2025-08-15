@@ -17,12 +17,14 @@ model User {
   password String
 }
 model Form {
-  id        String   @id @default(cuid())
-  name      String
-  user      String
-  email     String
-  country   String
-  services  String
-  message   String
-  createdAt DateTime @default(now())
+  id          String    @id @default(cuid())
+  name        String
+  user        String
+  email       String
+  country     String
+  services    String
+  message     String
+  status      String    @default("pending")
+  respondedAt DateTime?
+  createdAt   DateTime  @default(now())
 }
