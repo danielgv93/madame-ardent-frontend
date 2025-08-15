@@ -1,0 +1,39 @@
+---
+export interface Props {
+  name?: string;
+  id?: string;
+  placeholder?: string;
+  required?: boolean;
+  rows?: number;
+  class?: string;
+  value?: string;
+}
+
+const { 
+  name,
+  id,
+  placeholder,
+  required = false,
+  rows = 4,
+  class: className = '',
+  value
+} = Astro.props;
+
+const baseClasses = 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white resize-vertical';
+
+const textareaClasses = [
+  baseClasses,
+  className
+].filter(Boolean).join(' ');
+---
+
+<textarea 
+  name={name}
+  id={id}
+  placeholder={placeholder}
+  required={required}
+  rows={rows}
+  class={textareaClasses}
+  value={value}
+  {...Astro.props}
+></textarea>

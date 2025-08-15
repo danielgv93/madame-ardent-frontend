@@ -1,0 +1,35 @@
+---
+export interface Props {
+  name?: string;
+  id?: string;
+  required?: boolean;
+  class?: string;
+  value?: string;
+}
+
+const { 
+  name,
+  id,
+  required = false,
+  class: className = '',
+  value
+} = Astro.props;
+
+const baseClasses = 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white';
+
+const selectClasses = [
+  baseClasses,
+  className
+].filter(Boolean).join(' ');
+---
+
+<select 
+  name={name}
+  id={id}
+  required={required}
+  class={selectClasses}
+  value={value}
+  {...Astro.props}
+>
+  <slot />
+</select>

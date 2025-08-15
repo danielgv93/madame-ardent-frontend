@@ -1,0 +1,31 @@
+---
+export interface Props {
+  for?: string;
+  required?: boolean;
+  class?: string;
+}
+
+const { 
+  for: htmlFor,
+  required = false,
+  class: className = ''
+} = Astro.props;
+
+const baseClasses = 'block text-sm font-medium mb-2';
+const colorClasses = 'text-gray-700';
+
+const labelClasses = [
+  baseClasses,
+  colorClasses,
+  className
+].filter(Boolean).join(' ');
+---
+
+<label 
+  for={htmlFor}
+  class={labelClasses}
+  {...Astro.props}
+>
+  <slot />
+  {required && <span class="text-red-500 ml-1">*</span>}
+</label>
