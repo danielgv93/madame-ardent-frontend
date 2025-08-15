@@ -1,0 +1,42 @@
+---
+import Button from '../Button.astro';
+
+export interface Props {
+    userDisplayName?: string;
+}
+
+const { userDisplayName } = Astro.props;
+---
+
+<div class="flex items-center space-x-4">
+    {userDisplayName && (
+        <span id="user-name" class="text-sm text-gray-700">{userDisplayName}</span>
+    )}
+    <Button id="logout-btn" variant="secondary" size="sm">
+        <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+        </svg>
+        Cerrar Sesión
+    </Button>
+</div>
+
+<script>
+    import { logout, getCurrentUser } from '../../lib/auth-client.ts';
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mostrar nombre del usuario si no se pasó como prop
+        const userNameElement = document.getElementById('user-name');
+        if (userNameElement && !userNameElement.textContent) {
+            const user = getCurrentUser();
+            if (user) {
+                userNameElement.textContent = user.name || user.email;
+            }
+        }
+        
+        // Configurar botón de logout
+        const logoutBtn = document.getElementById('logout-btn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', logout);
+        }
+    });
+</script>

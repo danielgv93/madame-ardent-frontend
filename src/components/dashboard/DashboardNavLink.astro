@@ -1,0 +1,26 @@
+---
+export interface Props {
+    href?: string;
+    label: string;
+    dataPage?: string;
+    isDisabled?: boolean;
+}
+
+const { href, label, dataPage, isDisabled = false } = Astro.props;
+---
+
+<li>
+    {isDisabled ? (
+        <div class="flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-400 cursor-not-allowed">
+            <slot name="icon" />
+            {label}
+        </div>
+    ) : (
+        <a href={href} 
+           class="dashboard-nav-link flex items-center px-3 py-2 text-sm font-medium rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+           data-page={dataPage}>
+            <slot name="icon" />
+            {label}
+        </a>
+    )}
+</li>
