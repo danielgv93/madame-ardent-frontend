@@ -148,6 +148,9 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                         </tbody>
                     </table>
                 </div>
+                
+                <!-- Pagination -->
+                <div id="pagination-container"></div>
             </div>
         </Card>
     </div>
@@ -293,9 +296,20 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             status?: 'pending' | 'read' | 'replied';
             respondedAt?: string;
         }
+
+        interface PaginationData {
+            currentPage: number;
+            totalPages: number;
+            totalCount: number;
+            limit: number;
+            hasNextPage: boolean;
+            hasPreviousPage: boolean;
+        }
         
         let allForms: FormData[] = [];
         let filteredForms: FormData[] = [];
+        let currentPagination: PaginationData | null = null;
+        let currentPage = 1;
         
         document.addEventListener('DOMContentLoaded', function() {
             loadForms();
@@ -309,7 +323,7 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             const confirmExport = document.getElementById('confirm-export');
             
             if (refreshBtn) {
-                refreshBtn.addEventListener('click', loadForms);
+                refreshBtn.addEventListener('click', () => loadForms(currentPage));
             }
             
             if (statusFilter) {
@@ -353,17 +367,21 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             }
         });
         
-        async function loadForms() {
+        async function loadForms(page: number = 1) {
             try {
                 showLoading();
+                currentPage = page;
                 
-                const response = await authenticatedFetch('/api/forms');
+                const response = await authenticatedFetch(`/api/forms?page=${page}&limit=10`);
                 if (response.ok) {
-                    allForms = await response.json();
+                    const data = await response.json();
+                    allForms = data.forms;
+                    currentPagination = data.pagination;
                     filteredForms = [...allForms];
                     
                     updateStats();
                     renderFormsTable();
+                    updatePagination();
                     
                 } else {
                     console.error('Error loading forms:', await response.text());
@@ -380,8 +398,8 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             const weekElement = document.getElementById('week-forms');
             const pendingElement = document.getElementById('pending-forms');
             
-            if (totalElement) {
-                totalElement.textContent = allForms.length.toString();
+            if (totalElement && currentPagination) {
+                totalElement.textContent = currentPagination.totalCount.toString();
             }
             
             // Calculate this week's forms
@@ -447,6 +465,117 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
                     tbody.appendChild(row);
                 });
             }
+        }
+
+        function updatePagination() {
+            const paginationContainer = document.getElementById('pagination-container');
+            
+            if (!currentPagination || currentPagination.totalPages <= 1) {
+                if (paginationContainer) paginationContainer.classList.add('hidden');
+                return;
+            }
+            
+            if (paginationContainer) {
+                paginationContainer.classList.remove('hidden');
+                paginationContainer.innerHTML = generatePaginationHTML();
+            }
+        }
+
+        function generatePaginationHTML(): string {
+            if (!currentPagination) return '';
+            
+            const { currentPage, totalPages } = currentPagination;
+            const maxVisible = 5;
+            
+            function getVisiblePages(current: number, total: number): number[] {
+                if (total <= maxVisible) {
+                    return Array.from({ length: total }, (_, i) => i + 1);
+                }
+
+                const half = Math.floor(maxVisible / 2);
+                let start = Math.max(1, current - half);
+                let end = Math.min(total, start + maxVisible - 1);
+
+                if (end - start + 1 < maxVisible) {
+                    start = Math.max(1, end - maxVisible + 1);
+                }
+
+                return Array.from({ length: end - start + 1 }, (_, i) => start + i);
+            }
+
+            const visiblePages = getVisiblePages(currentPage, totalPages);
+            const hasPrevious = currentPage > 1;
+            const hasNext = currentPage < totalPages;
+
+            const prevIcon = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>`;
+
+            const nextIcon = `<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>`;
+
+            return `
+                <div class="flex items-center justify-between border-t border-gray-200 bg-white px-4 py-3 sm:px-6">
+                    <div class="flex flex-1 justify-between sm:hidden">
+                        <button
+                            class="relative inline-flex items-center rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${!hasPrevious ? 'opacity-50 cursor-not-allowed' : ''}"
+                            onclick="${hasPrevious ? `changePage(${currentPage - 1})` : ''}"
+                            ${!hasPrevious ? 'disabled' : ''}
+                        >
+                            Anterior
+                        </button>
+                        <button
+                            class="relative ml-3 inline-flex items-center rounded-md cursor-pointer border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 ${!hasNext ? 'opacity-50 cursor-not-allowed' : ''}"
+                            onclick="${hasNext ? `changePage(${currentPage + 1})` : ''}"
+                            ${!hasNext ? 'disabled' : ''}
+                        >
+                            Siguiente
+                        </button>
+                    </div>
+                    <div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm text-gray-700">
+                                Página <span class="font-medium">${currentPage}</span> de <span class="font-medium">${totalPages}</span>
+                            </p>
+                        </div>
+                        <div>
+                            <nav class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                                <button
+                                    class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!hasPrevious ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'}"
+                                    onclick="${hasPrevious ? `changePage(${currentPage - 1})` : ''}"
+                                    ${!hasPrevious ? 'disabled' : ''}
+                                >
+                                    <span class="sr-only">Anterior</span>
+                                    ${prevIcon}
+                                </button>
+
+                                ${visiblePages.map(page => `
+                                    <button
+                                        class="relative inline-flex items-center px-4 py-2 text-sm font-semibold cursor-pointer ${
+                                            page === currentPage
+                                                ? 'z-10 bg-indigo-600 text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+                                                : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
+                                        }"
+                                        onclick="changePage(${page})"
+                                    >
+                                        ${page}
+                                    </button>
+                                `).join('')}
+
+                                <button
+                                    class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0 ${!hasNext ? 'opacity-50 cursor-not-allowed' : 'hover:text-gray-600'}"
+                                    onclick="${hasNext ? `changePage(${currentPage + 1})` : ''}"
+                                    ${!hasNext ? 'disabled' : ''}
+                                >
+                                    <span class="sr-only">Siguiente</span>
+                                    ${nextIcon}
+                                </button>
+                            </nav>
+                        </div>
+                    </div>
+                </div>
+            `;
         }
         
         function createFormRow(form: FormData): HTMLTableRowElement {
@@ -538,6 +667,13 @@ const exportIcon = `<svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" st
             const form = allForms.find(f => f.id === formId);
             if (form) {
                 showFormModal(form);
+            }
+        };
+
+        // Global function for pagination
+        (window as any).changePage = function(page: number) {
+            if (page >= 1 && currentPagination && page <= currentPagination.totalPages) {
+                loadForms(page);
             }
         };
         

@@ -1,9 +1,38 @@
 import type {APIRoute} from "astro";
 import prisma from "../../lib/prisma.ts";
 
-export const GET: APIRoute = async () => {
-    const forms = await prisma.form.findMany();
-    return new Response(JSON.stringify(forms), {
+export const GET: APIRoute = async ({ url }) => {
+    const searchParams = new URL(url).searchParams;
+    const page = parseInt(searchParams.get('page') || '1');
+    const limit = parseInt(searchParams.get('limit') || '10');
+    const skip = (page - 1) * limit;
+
+    const [forms, totalCount] = await Promise.all([
+        prisma.form.findMany({
+            skip,
+            take: limit,
+            orderBy: {
+                createdAt: 'desc'
+            }
+        }),
+        prisma.form.count()
+    ]);
+
+    const totalPages = Math.ceil(totalCount / limit);
+
+    const response = {
+        forms,
+        pagination: {
+            currentPage: page,
+            totalPages,
+            totalCount,
+            limit,
+            hasNextPage: page < totalPages,
+            hasPreviousPage: page > 1
+        }
+    };
+
+    return new Response(JSON.stringify(response), {
         headers: {"Content-Type": "application/json"},
     });
 };
