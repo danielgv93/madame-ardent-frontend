@@ -2,14 +2,32 @@
 
 @font-face {
     font-family: 'Simplify';
-    src: url('/fonts/SimplifyRegular.woff2') format('woff2');
+    src: url('/fonts/SIMPLIFY.TTF') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Broskon';
+    src: url('/fonts/ZTBROSOSKON90S-REGULAR.OTF') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@layer base {
+    h1 {
+        font-family: var(--font-simplify);
+    }
+    h2 {
+        font-family: var(--font-simplify);
+    }
+}
+
 @theme {
-    --font-family-simplify: 'Simplify', system-ui, sans-serif;
+    --font-simplify: 'Simplify', system-ui, sans-serif;
+    --font-broskon: 'Broskon', system-ui, sans-serif;
 
     --color-primary: #d62013;
     --color-primary-50: #fef2f2;
