@@ -1,0 +1,76 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Title from "../../components/Title.astro";
+import Text from "../../components/Text.astro";
+import PortfolioGallery from "../../components/portfolio/PortfolioGallery.tsx";
+import { sections as ilustratedSections } from "../../data/portfolio-ilustrado";
+import { sections as photoSections } from "../../data/portfolio-fotomanipulado";
+import SegmentedControl from "../../components/portfolio/SegmentedControl.tsx";
+
+const toggleOptions = [
+	{ id: "ilustradas", label: 'Portadas <span class="italic">Ilustradas</span>' },
+	{ id: "fotomanipuladas", label: 'Portadas <span class="italic">Fotomanipuladas</span>' },
+];
+---
+<Layout>
+	<!-- Hero -->
+	<section class="max-w-7xl mx-auto px-8 my-16">
+		<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+			<div class="md:w-1/2">
+				<Title>
+					Mi <span class="italic">Portfolio</span>
+				</Title>
+				<Text class="mt-6 text-secondary-500 max-w-md text-lg leading-relaxed">
+					Donde la narrativa se encuentra con la estética visual. Explora el arte de contar historias a través de portadas únicas y cautivadoras.
+				</Text>
+			</div>
+		</div>
+	</section>
+
+	<!-- Segmented Control -->
+	<section class="max-w-7xl mx-auto px-8 mb-16 flex justify-center">
+		<SegmentedControl client:load options={toggleOptions} defaultActive="ilustradas" />
+	</section>
+
+	<!-- Portfolio Galleries -->
+	<section class="max-w-7xl pb-16 mx-auto" id="portfolio-content">
+		<div id="panel-ilustradas" class="portfolio-panel">
+			{ilustratedSections.map((section, i) => (
+				<PortfolioGallery client:load section={section} key={i} />
+			))}
+		</div>
+		<div id="panel-fotomanipuladas" class="portfolio-panel hidden">
+			{photoSections.map((section, i) => (
+				<PortfolioGallery client:load section={section} key={i} />
+			))}
+		</div>
+	</section>
+</Layout>
+
+<style>
+	.portfolio-panel {
+		transition: opacity 0.3s ease;
+	}
+	.portfolio-panel.hidden {
+		display: none;
+	}
+</style>
+
+<script>
+	function initPortfolioToggle() {
+		document.addEventListener('segment-change', (e: Event) => {
+			const { id } = (e as CustomEvent).detail;
+			const panels = document.querySelectorAll('.portfolio-panel');
+			panels.forEach(panel => {
+				panel.classList.add('hidden');
+			});
+			const target = document.getElementById(`panel-${id}`);
+			if (target) {
+				target.classList.remove('hidden');
+			}
+		});
+	}
+
+	document.addEventListener('astro:page-load', initPortfolioToggle);
+	initPortfolioToggle();
+</script>

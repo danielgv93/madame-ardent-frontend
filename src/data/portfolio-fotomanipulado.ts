@@ -1,0 +1,37 @@
+import type { PortfolioSection } from './portfolio-types';
+
+export const sections: PortfolioSection[] = [
+    {
+        title: "Portadas fotomanipuladas",
+        images: [
+            { src: "/portfolio/portadas-fotomanipuladas/21-daas-de-disciplina.jpg", alt: "21 días de disciplina" },
+            { src: "/portfolio/portadas-fotomanipuladas/a-esta-s-preparada-para-moririy.jpg", alt: "¿Estás preparada para morir?" },
+            { src: "/portfolio/portadas-fotomanipuladas/amor-en-fuga.jpg", alt: "Amor en fuga" },
+            { src: "/portfolio/portadas-fotomanipuladas/antes-del-amor-amazon.jpg", alt: "Antes del amor" },
+            { src: "/portfolio/portadas-fotomanipuladas/brooken-comoa-taoa-mea-recuerdas-amazon.jpg", alt: "Brooken, ¿cómo tú me recuerdas?" },
+            { src: "/portfolio/portadas-fotomanipuladas/caso-riskwood_cubierta.jpg", alt: "Caso Riskwood" },
+            { src: "/portfolio/portadas-fotomanipuladas/cuando-todo-se-torcia3-amazon.jpg", alt: "Cuando todo se torció" },
+            { src: "/portfolio/portadas-fotomanipuladas/dante-cubeirta.jpg", alt: "Dante" },
+            { src: "/portfolio/portadas-fotomanipuladas/desapego-estoico.jpg", alt: "Desapego estoico" },
+            { src: "/portfolio/portadas-fotomanipuladas/el-juego-del-jefe.jpg", alt: "El juego del jefe" },
+            { src: "/portfolio/portadas-fotomanipuladas/el-mentiroso-era-yo-amazon.jpg", alt: "El mentiroso era yo" },
+            { src: "/portfolio/portadas-fotomanipuladas/el-reflejo-amazon.jpg", alt: "El reflejo" },
+            { src: "/portfolio/portadas-fotomanipuladas/el-secreto-del-dinero-ebook.jpg", alt: "El secreto del dinero" },
+            { src: "/portfolio/portadas-fotomanipuladas/entre-dos-mundos-definitiva.jpg", alt: "Entre dos mundos" },
+            { src: "/portfolio/portadas-fotomanipuladas/hasta-que-la-vida-nos-separe-ebook.jpg", alt: "Hasta que la vida nos separe" },
+            { src: "/portfolio/portadas-fotomanipuladas/jazba-roja-ebook.jpg", alt: "Jazba roja" },
+            { src: "/portfolio/portadas-fotomanipuladas/la-aoltima-vez-que-te-ayudo-a-suicidarte.jpg", alt: "La última vez que te ayudo a suicidarte" },
+            { src: "/portfolio/portadas-fotomanipuladas/la-consolidacia3n-de-la-injusticia-1-ebook.jpg", alt: "La consolidación de la injusticia" },
+            { src: "/portfolio/portadas-fotomanipuladas/la-sombra-de-la-bailarina-ebook.jpg", alt: "La sombra de la bailarina" },
+            { src: "/portfolio/portadas-fotomanipuladas/la-sombra-de-la-fruta_ebook.jpg", alt: "La sombra de la fruta" },
+            { src: "/portfolio/portadas-fotomanipuladas/libro-de-horas-de-las-oscuras-golondrinas-amazon.jpg", alt: "Libro de horas de las oscuras golondrinas" },
+            { src: "/portfolio/portadas-fotomanipuladas/lo-ma-s-valioso_portadawattpad.jpg", alt: "Lo más valioso" },
+            { src: "/portfolio/portadas-fotomanipuladas/ma-s-alla-del-mar-oscuro-amazon.jpg", alt: "Más allá del mar oscuro" },
+            { src: "/portfolio/portadas-fotomanipuladas/pacto-estoico.jpg", alt: "Pacto estoico" },
+            { src: "/portfolio/portadas-fotomanipuladas/recuerda-que-morira-s-amazon.jpg", alt: "Recuerda que morirás" },
+            { src: "/portfolio/portadas-fotomanipuladas/seven-and-i.jpg", alt: "Seven and I" },
+            { src: "/portfolio/portadas-fotomanipuladas/seven-and-six.jpg", alt: "Seven and Six" },
+            { src: "/portfolio/portadas-fotomanipuladas/six-and-i-ebook.jpg", alt: "Six and I" },
+        ],
+    },
+];
