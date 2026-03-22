@@ -3,13 +3,14 @@ import Col from "../components/Col.astro";
 import Row from "../components/Row.astro";
 import { TOP_MENU_HEIGHT } from "../lib/constants/constants";
 import Button from "../components/Button.astro";
+import Title from "../components/Title.astro";
 ---
 
-<section class="relative py-20 px-4" style={`height: calc(100dvh - ${TOP_MENU_HEIGHT.EXPANDED}px)`}>
+<section class="relative px-4" style={`height: calc(100dvh - ${TOP_MENU_HEIGHT.EXPANDED}px)`}>
     <Row>
         <Col class="w-1/2 items-end">
             <Col class="w-2/3 items-start gap-8">
-                <h1 class="text-[#d62013] text-6xl font-simplify font-bold mb-6" style="font-family: 'Simplify'">Diseño editorial</h1>
+                <Title class="mb-6">Diseño editorial</Title>
                 <span>Transformando tus novelas en portadas cautivadoras.</span>
                 <Button>Comienza tu proyecto</Button>
             </Col>
@@ -19,5 +20,7 @@ import Button from "../components/Button.astro";
             <img class="max-w-[700px] w-auto h-auto max-h-full" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=994,fit=crop/mxB80M662Qs3Z0G9/banner-YZ9XlZpNlzsxb1VZ.jpg"/>
         </Col>
     </Row>
+</section>
+<section class="bg-white">
 
 </section>

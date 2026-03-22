@@ -15,6 +15,7 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
         <!-- Desktop navigation -->
         <div class="hidden md:flex space-x-8">
             <a href="/" class="text-gray-800 hover:text-gray-600">Home</a>
+            <a href="/portfolio" class="text-gray-800 hover:text-gray-600">Portfolio</a>
             <a href="#sobre-mi" class="text-gray-800 hover:text-gray-600">Sobre mí</a>
             <a href="#servicios" class="text-gray-800 hover:text-gray-600">Servicios</a>
             <a href="/contacto" class="text-gray-800 hover:text-gray-600">Contacto</a>
@@ -57,7 +58,7 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
     window.addEventListener('scroll', () => {
         const currentScrollY = window.pageYOffset;
         const scrollingDown = currentScrollY > lastScrollY;
-        
+
         if (currentScrollY === 0) {
             // En top: altura completa, opacidad total y sin sombra, sin animación
             navbar.classList.remove('transition-all');
@@ -77,7 +78,7 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
             navbar.classList.remove('bg-white');
             navbar.style.height = `${TOP_MENU_HEIGHT.COLLAPSED}px`;
         }
-        
+
         lastScrollY = currentScrollY;
     });
 
