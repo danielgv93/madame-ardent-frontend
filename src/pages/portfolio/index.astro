@@ -6,6 +6,7 @@ import PortfolioGallery from "../../components/portfolio/PortfolioGallery.tsx";
 import { sections as ilustratedSections } from "../../data/portfolio-ilustrado";
 import { sections as photoSections } from "../../data/portfolio-fotomanipulado";
 import SegmentedControl from "../../components/portfolio/SegmentedControl.tsx";
+import Section from "../../layouts/Section.astro";
 
 const toggleOptions = [
 	{ id: "ilustradas", label: 'Portadas <span class="italic">Ilustradas</span>' },
@@ -14,7 +15,7 @@ const toggleOptions = [
 ---
 <Layout>
 	<!-- Hero -->
-	<section class="max-w-7xl mx-auto px-8 my-16">
+	<Section>
 		<div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
 			<div class="md:w-1/2">
 				<Title>
@@ -25,7 +26,7 @@ const toggleOptions = [
 				</Text>
 			</div>
 		</div>
-	</section>
+	</Section>
 
 	<!-- Segmented Control -->
 	<section class="max-w-7xl mx-auto px-8 mb-16 flex justify-center">
@@ -36,12 +37,12 @@ const toggleOptions = [
 	<section class="max-w-7xl pb-16 mx-auto" id="portfolio-content">
 		<div id="panel-ilustradas" class="portfolio-panel">
 			{ilustratedSections.map((section, i) => (
-				<PortfolioGallery client:load section={section} key={i} />
+				<PortfolioGallery client:load section={section} />
 			))}
 		</div>
 		<div id="panel-fotomanipuladas" class="portfolio-panel hidden">
 			{photoSections.map((section, i) => (
-				<PortfolioGallery client:load section={section} key={i} />
+				<PortfolioGallery client:load section={section} />
 			))}
 		</div>
 	</section>

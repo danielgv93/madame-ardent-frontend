@@ -35,13 +35,7 @@ export function logout() {
     }
 }
 
-export function getAuthHeader(): { Authorization: string } | {} {
-    if (typeof window === 'undefined') return {};
-
-    const token = localStorage.getItem('token');
-    if (!token) return {};
-
-    return {
-        Authorization: `Bearer ${token}`
-    };
+export function getToken(): string | null {
+    if (typeof window === 'undefined') return null;
+    return localStorage.getItem('token');
 }

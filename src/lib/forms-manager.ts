@@ -1,29 +1,13 @@
 import { authenticatedFetch } from './client-api';
 import { FORM_STATUS, FORM_STATUS_LABELS, FORM_STATUS_COLORS } from './constants/form-status';
+import { formatDate, escapeHtml } from './utils';
+import type { PaginationData, ContactFormData } from '../types/index';
 
-export interface FormData {
-    id: string;
-    name: string;
-    email: string;
-    phone?: string;
-    message: string;
-    createdAt: string;
-    status?: typeof FORM_STATUS[keyof typeof FORM_STATUS];
-    respondedAt?: string;
-}
-
-export interface PaginationData {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
-    limit: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
-}
+export type { PaginationData, ContactFormData };
 
 export class FormsManager {
-    private allForms: FormData[] = [];
-    private filteredForms: FormData[] = [];
+    private allForms: ContactFormData[] = [];
+    private filteredForms: ContactFormData[] = [];
     private currentPagination: PaginationData | null = null;
     private currentPage = 1;
     private sortColumn: string | null = null;
@@ -44,24 +28,23 @@ export class FormsManager {
                 formsUrl += `&sortBy=${this.sortColumn}&sortOrder=${this.sortOrder}`;
             }
             
-            const [formsResponse, statsResponse] = await Promise.all([
+            // Fetch forms and stats in parallel
+            const [formsResponse, statsPromise] = await Promise.all([
                 authenticatedFetch(formsUrl),
-                authenticatedFetch('/api/forms/stats')
+                this.fetchStats(),
             ]);
             
-            if (formsResponse.ok && statsResponse.ok) {
+            if (formsResponse.ok) {
                 const formsData = await formsResponse.json();
-                const statsData = await statsResponse.json();
                 
                 this.allForms = formsData.forms;
                 this.currentPagination = formsData.pagination;
                 this.filteredForms = [...this.allForms];
                 
-                this.updateStats(statsData);
                 this.renderFormsTable();
                 this.updatePagination();
             } else {
-                console.error('Error loading forms or stats');
+                console.error('Error loading forms');
                 this.showError('Error al cargar los formularios');
             }
         } catch (error) {
@@ -127,16 +110,7 @@ export class FormsManager {
                 
                 this.hideStatusDropdown(formId);
                 this.filterForms();
-                
-                try {
-                    const statsResponse = await authenticatedFetch('/api/forms/stats');
-                    if (statsResponse.ok) {
-                        const statsData = await statsResponse.json();
-                        this.updateStats(statsData);
-                    }
-                } catch (error) {
-                    console.error('Error reloading stats:', error);
-                }
+                await this.fetchStats();
                 
             } else {
                 console.error('Error updating form status:', await response.text());
@@ -224,7 +198,19 @@ export class FormsManager {
         }
     }
 
-    private updateStats(statsData?: any) {
+    private async fetchStats(): Promise<void> {
+        try {
+            const statsResponse = await authenticatedFetch('/api/forms/stats');
+            if (statsResponse.ok) {
+                const statsData = await statsResponse.json();
+                this.updateStats(statsData);
+            }
+        } catch (error) {
+            console.error('Error fetching stats:', error);
+        }
+    }
+
+    private updateStats(statsData?: { total: number; thisWeek: number; pending: number }) {
         const totalElement = document.getElementById('total-forms');
         const weekElement = document.getElementById('week-forms');
         const pendingElement = document.getElementById('pending-forms');
@@ -544,22 +530,7 @@ export class FormsManager {
         console.error(message);
     }
 
-    private formatDate(dateString: string): string {
-        const date = new Date(dateString);
-        return date.toLocaleDateString('es-ES', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-    }
-
-    private escapeHtml(text: string): string {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
+    private formatDate = formatDate;
 
     private createCopyToClipboardHTML(text: string): string {
         const componentId = `copy-${Math.random().toString(36).substr(2, 9)}`;

@@ -1,33 +1,18 @@
 import type { APIRoute } from "astro";
 import prisma from "../../lib/prisma.ts";
+import { createJsonResponse } from "../../lib/api-response.ts";
+import type { ContactFormData, PaginationData } from "../../types/index.ts";
 
-interface FormData {
-    name: string;
-    user: string;
-    email: string;
-    country: string;
-    services: string;
-    message: string;
-}
-
-interface PaginationParams {
-    page: number;
-    limit: number;
-    skip: number;
-}
 type SortOrder = 'asc' | 'desc'
 interface SortParams {
     sortBy: string;
     sortOrder: SortOrder;
 }
 
-interface PaginationResponse {
-    currentPage: number;
-    totalPages: number;
-    totalCount: number;
+interface PaginationParams {
+    page: number;
     limit: number;
-    hasNextPage: boolean;
-    hasPreviousPage: boolean;
+    skip: number;
 }
 
 const DEFAULT_PAGE = 1;
@@ -43,14 +28,7 @@ const SORTABLE_FIELDS = {
     respondedAt: 'respondedAt'
 } as const;
 
-const REQUIRED_FIELDS: (keyof FormData)[] = ['name', 'user', 'email', 'country', 'services', 'message'];
-
-const createJsonResponse = (data: any, status = 200) => {
-    return new Response(JSON.stringify(data), {
-        status,
-        headers: { "Content-Type": "application/json" }
-    });
-};
+const REQUIRED_FIELDS: (keyof ContactFormData)[] = ['name', 'user', 'email', 'country', 'services', 'message'];
 
 const parseQueryParams = (searchParams: URLSearchParams): PaginationParams & SortParams => {
     const page = Math.max(1, parseInt(searchParams.get('page') || String(DEFAULT_PAGE)));
@@ -67,22 +45,23 @@ const validateSortField = (sortBy: string): string => {
     return SORTABLE_FIELDS[sortBy as keyof typeof SORTABLE_FIELDS] || DEFAULT_SORT_BY;
 };
 
-const validateFormData = (data: any): { isValid: boolean; missingFields: string[] } => {
-    const missingFields = REQUIRED_FIELDS.filter(field => !data[field]?.trim());
+const validateFormData = (data: unknown): { isValid: boolean; missingFields: string[] } => {
+    const missingFields = REQUIRED_FIELDS.filter(field => !(data as Record<string, unknown>)[field]?.toString().trim());
     return {
         isValid: missingFields.length === 0,
         missingFields
     };
 };
 
-const sanitizeFormData = (data: any): FormData => {
+const sanitizeFormData = (data: unknown): ContactFormData => {
+    const d = data as Record<string, unknown>;
     return {
-        name: String(data.name || '').trim(),
-        user: String(data.user || '').trim(),
-        email: String(data.email || '').trim().toLowerCase(),
-        country: String(data.country || '').trim(),
-        services: String(data.services || '').trim(),
-        message: String(data.message || '').trim()
+        name: String(d.name || '').trim(),
+        user: String(d.user || '').trim(),
+        email: String(d.email || '').trim().toLowerCase(),
+        country: String(d.country || '').trim(),
+        services: String(d.services || '').trim(),
+        message: String(d.message || '').trim()
     };
 };
 
@@ -90,7 +69,7 @@ const createPaginationResponse = (
     page: number, 
     totalCount: number, 
     limit: number
-): PaginationResponse => {
+): PaginationData => {
     const totalPages = Math.ceil(totalCount / limit);
     
     return {

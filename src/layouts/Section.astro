@@ -1,0 +1,9 @@
+---
+import { cn } from "../lib/utils";
+
+const { class: className = "", ...rest } = Astro.props;
+---
+
+<section {...rest} class={cn("max-w-7xl mx-auto px-8 my-16 flex flex-col", className)}>
+    <slot />
+</section>

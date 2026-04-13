@@ -1,20 +1,10 @@
 import type {APIRoute} from "astro";
 import prisma from "../../lib/prisma.ts";
-import { authenticateRequest } from "../../lib/auth-server.ts";
+import { withAuth, createJsonResponse } from "../../lib/api-response.ts";
 
 export const prerender = false;
 
-export const GET: APIRoute = async ({request}) => {
-    const user = await authenticateRequest(request);
-    console.log(request)
-    
-    if (!user) {
-        return new Response(JSON.stringify({error: "Unauthorized"}), {
-            status: 401,
-            headers: {"Content-Type": "application/json"},
-        });
-    }
-    
+export const GET: APIRoute = withAuth(async () => {
     const users = await prisma.user.findMany({
         select: {
             id: true,
@@ -22,8 +12,6 @@ export const GET: APIRoute = async ({request}) => {
             name: true
         }
     });
-    
-    return new Response(JSON.stringify(users), {
-        headers: {"Content-Type": "application/json"},
-    });
-};
+
+    return createJsonResponse(users);
+});

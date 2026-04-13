@@ -22,11 +22,11 @@ const { title } = Astro.props;
 	<body>
         <div class="min-h-screen bg-gray-50 flex">
             <DashboardSidebar />
-            
+
             <!-- Main content -->
             <div class="flex-1 ml-64">
                 <DashboardHeader />
-                
+
                 <!-- Page content -->
                 <main class="p-6">
                     <slot />
@@ -47,20 +47,21 @@ const { title } = Astro.props;
 
 <script>
     import { isAuthenticated, redirectToRestricted } from '../lib/auth-client.ts';
-    
+
     // Verificar autenticación al cargar la página
     document.addEventListener('DOMContentLoaded', function() {
         if (!isAuthenticated()) {
             redirectToRestricted();
             return;
         }
-        
+
         // Marcar enlace activo en la navegación
         const currentPath = window.location.pathname;
         const navLinks = document.querySelectorAll('.dashboard-nav-link');
-        
+
         navLinks.forEach(link => {
             const href = link.getAttribute('href');
+            if (!href) return;
             if (href === currentPath || (currentPath.startsWith(href) && href !== '/dashboard')) {
                 link.classList.remove('text-gray-600', 'hover:text-gray-900');
                 link.classList.add('text-indigo-600', 'bg-indigo-50');

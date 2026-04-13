@@ -7,7 +7,7 @@ interface Props {
   section: PortfolioSection;
 }
 
-export default function PortfolioGallery({ section }: Props) {
+const PortfolioGallery = ({ section }: Props) => {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [leftDisabled, setLeftDisabled] = useState(true);
   const [rightDisabled, setRightDisabled] = useState(false);
@@ -147,3 +147,5 @@ export default function PortfolioGallery({ section }: Props) {
     </div>
   );
 }
+
+export default PortfolioGallery;

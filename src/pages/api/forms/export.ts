@@ -1,39 +1,38 @@
 import type { APIRoute } from "astro";
 import prisma from "../../../lib/prisma.ts";
-import { authenticateRequest } from "../../../lib/auth-server.ts";
+import { withAuth, createJsonResponse } from "../../../lib/api-response.ts";
 import { FORM_STATUS } from "../../../lib/constants/form-status.ts";
 
-export const GET: APIRoute = async ({ request, url }) => {
-    // Authenticate the request
-    const user = await authenticateRequest(request);
-    if (!user) {
-        return new Response(JSON.stringify({ error: "No autorizado" }), {
-            status: 401,
-            headers: { "Content-Type": "application/json" },
-        });
+function escapeCSV(value: unknown): string {
+    if (value === null || value === undefined) return '';
+
+    const stringValue = String(value);
+
+    if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n') || stringValue.includes('\r')) {
+        return `"${stringValue.replace(/"/g, '""')}"`;
     }
 
+    return stringValue;
+}
+
+export const GET: APIRoute = withAuth(async ({ url }) => {
     try {
-        // Get query parameters for filtering
         const searchParams = url.searchParams;
         const dateFrom = searchParams.get('dateFrom');
         const dateTo = searchParams.get('dateTo');
         const status = searchParams.get('status');
 
-        // Build the where clause for filtering
-        const where: any = {};
+        const where: Record<string, unknown> = {};
 
-        // Date filtering
         if (dateFrom || dateTo) {
             where.createdAt = {};
             if (dateFrom) {
-                where.createdAt.gte = new Date(dateFrom);
+                (where.createdAt as Record<string, Date>).gte = new Date(dateFrom);
             }
             if (dateTo) {
-                // Add one day to include the full day
                 const endDate = new Date(dateTo);
                 endDate.setDate(endDate.getDate() + 1);
-                where.createdAt.lt = endDate;
+                (where.createdAt as Record<string, Date>).lt = endDate;
             }
         }
 
@@ -46,18 +45,10 @@ export const GET: APIRoute = async ({ request, url }) => {
             orderBy: { createdAt: 'desc' }
         });
 
-        // Generate CSV content
         const csvHeaders = [
-            'ID',
-            'Nombre',
-            'Usuario',
-            'Email', 
-            'País',
-            'Servicios',
-            'Mensaje',
-            'Estado',
-            'Fecha de Creación',
-            'Fecha de Respuesta'
+            'ID', 'Nombre', 'Usuario', 'Email', 'País',
+            'Servicios', 'Mensaje', 'Estado',
+            'Fecha de Creación', 'Fecha de Respuesta'
         ];
 
         const csvRows = forms.map(form => [
@@ -73,13 +64,11 @@ export const GET: APIRoute = async ({ request, url }) => {
             form.respondedAt ? form.respondedAt.toISOString() : ''
         ]);
 
-        // Build CSV content
         const csvContent = [
             csvHeaders.join(','),
             ...csvRows.map(row => row.join(','))
         ].join('\n');
 
-        // Generate filename with current date
         const currentDate = new Date().toISOString().split('T')[0];
         const filename = `formularios-${currentDate}.csv`;
 
@@ -94,26 +83,6 @@ export const GET: APIRoute = async ({ request, url }) => {
 
     } catch (error) {
         console.error("Error exporting forms:", error);
-        return new Response(JSON.stringify({ error: "Error interno del servidor" }), {
-            status: 500,
-            headers: { "Content-Type": "application/json" },
-        });
+        return createJsonResponse({ error: "Error interno del servidor" }, 500);
     }
-};
-
-// Helper function to escape CSV values
-function escapeCSV(value: string): string {
-    if (value === null || value === undefined) {
-        return '';
-    }
-    
-    // Convert to string and escape quotes
-    const stringValue = String(value);
-    
-    // If the value contains comma, quote, or newline, wrap in quotes and escape internal quotes
-    if (stringValue.includes(',') || stringValue.includes('"') || stringValue.includes('\n') || stringValue.includes('\r')) {
-        return `"${stringValue.replace(/"/g, '""')}"`;
-    }
-    
-    return stringValue;
-}
+});

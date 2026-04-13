@@ -2,20 +2,23 @@ import type {APIRoute} from "astro";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import prisma from "../../../lib/prisma.ts";
+import { createJsonResponse } from "../../../lib/api-response.ts";
 
 export const prerender = false;
 
-const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
-
 export const POST: APIRoute = async ({request}) => {
     try {
+        const JWT_SECRET = process.env.JWT_SECRET;
+
+        if (!JWT_SECRET) {
+            console.error("JWT_SECRET no está definido");
+            return createJsonResponse({ error: "Error de configuración del servidor" }, 500);
+        }
+
         const {email, password} = await request.json();
 
         if (!email || !password) {
-            return new Response(JSON.stringify({error: "Email and password are required"}), {
-                status: 400,
-                headers: {"Content-Type": "application/json"},
-            });
+            return createJsonResponse({ error: "Email and password are required" }, 400);
         }
 
         const user = await prisma.user.findUnique({
@@ -23,19 +26,13 @@ export const POST: APIRoute = async ({request}) => {
         });
 
         if (!user) {
-            return new Response(JSON.stringify({error: "Invalid credentials"}), {
-                status: 401,
-                headers: {"Content-Type": "application/json"},
-            });
+            return createJsonResponse({ error: "Invalid credentials" }, 401);
         }
 
         const isValidPassword = await bcrypt.compare(password, user.password);
 
         if (!isValidPassword) {
-            return new Response(JSON.stringify({error: "Invalid credentials"}), {
-                status: 401,
-                headers: {"Content-Type": "application/json"},
-            });
+            return createJsonResponse({ error: "Invalid credentials" }, 401);
         }
 
         const token = jwt.sign(
@@ -44,23 +41,17 @@ export const POST: APIRoute = async ({request}) => {
             {expiresIn: "24h"}
         );
 
-        return new Response(JSON.stringify({
+        return createJsonResponse({
             token,
             user: {
                 id: user.id,
                 email: user.email,
                 name: user.name
             }
-        }), {
-            status: 200,
-            headers: {"Content-Type": "application/json"},
         });
 
     } catch (error) {
         console.error(error);
-        return new Response(JSON.stringify({error: "Internal server error"}), {
-            status: 500,
-            headers: {"Content-Type": "application/json"},
-        });
+        return createJsonResponse({ error: "Internal server error" }, 500);
     }
 };
