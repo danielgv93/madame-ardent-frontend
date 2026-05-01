@@ -30,10 +30,9 @@ const alertClasses = [
 ].filter(Boolean).join(' ');
 ---
 
-<div 
+<div
   class={alertClasses}
   id={id}
-  {...Astro.props}
 >
   <slot />
 </div>
