@@ -114,8 +114,10 @@ import Alert from '../components/Alert.astro';
 
 <script>
   import { ContactFormHandler } from '../lib/contact-form';
-  
-  document.addEventListener('DOMContentLoaded', () => {
-    new ContactFormHandler('contact-form');
+
+  document.addEventListener('astro:page-load', () => {
+    if (document.getElementById('contact-form')) {
+      new ContactFormHandler('contact-form');
+    }
   });
 </script>
