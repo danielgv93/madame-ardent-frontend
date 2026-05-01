@@ -41,7 +41,7 @@ export class FormValidator {
     };
   }
 
-  static validateForm(formData: Record<string, string>, rules: Record<string, ValidationRule>): ValidationResult {
+  static validateForm(formData: Record<string, string | undefined>, rules: Record<string, ValidationRule>): ValidationResult {
     const allErrors: string[] = [];
 
     for (const [field, fieldRules] of Object.entries(rules)) {

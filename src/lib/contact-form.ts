@@ -1,14 +1,6 @@
 import { FormValidator, type ValidationRule } from './form-validation';
 import { UIMessages } from './ui-messages';
-
-export interface ContactFormData extends Record<string, string> {
-  name: string;
-  user: string;
-  email: string;
-  country: string;
-  services: string;
-  message: string;
-}
+import type { ContactFormData } from '../types/index';
 
 const VALIDATION_RULES: Record<string, ValidationRule> = {
   name: { required: true, minLength: 2, maxLength: 50 },
@@ -41,7 +33,7 @@ export class ContactFormHandler {
 
   private async handleSubmit(e: Event): Promise<void> {
     e.preventDefault();
-    
+
     const formData = new FormData(this.form);
     const data: ContactFormData = {
       name: formData.get('name') as string,
@@ -52,8 +44,8 @@ export class ContactFormHandler {
       message: formData.get('message') as string,
     };
 
-    const validation = FormValidator.validateForm(data, this.validationRules);
-    
+    const validation = FormValidator.validateForm(data as unknown as Record<string, string | undefined>, this.validationRules);
+
     if (!validation.isValid) {
       this.uiMessages.showError(`Errores de validación: ${validation.errors.join('; ')}`);
       return;

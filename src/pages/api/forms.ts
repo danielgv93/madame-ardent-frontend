@@ -1,6 +1,7 @@
 import type { APIRoute } from "astro";
 import prisma from "../../lib/prisma.ts";
 import { createJsonResponse } from "../../lib/api-response.ts";
+import { sendContactFormNotification } from "../../lib/email.ts";
 import type { ContactFormData, PaginationData } from "../../types/index.ts";
 
 type SortOrder = 'asc' | 'desc'
@@ -34,7 +35,7 @@ const parseQueryParams = (searchParams: URLSearchParams): PaginationParams & Sor
     const page = Math.max(1, parseInt(searchParams.get('page') || String(DEFAULT_PAGE)));
     const limit = Math.min(MAX_LIMIT, Math.max(1, parseInt(searchParams.get('limit') || String(DEFAULT_LIMIT))));
     const skip = (page - 1) * limit;
-    
+
     const sortBy = searchParams.get('sortBy') || DEFAULT_SORT_BY;
     const sortOrder = (searchParams.get('sortOrder') === 'asc' ? 'asc' : DEFAULT_SORT_ORDER) as SortOrder;
 
@@ -66,12 +67,12 @@ const sanitizeFormData = (data: unknown): ContactFormData => {
 };
 
 const createPaginationResponse = (
-    page: number, 
-    totalCount: number, 
+    page: number,
+    totalCount: number,
     limit: number
 ): PaginationData => {
     const totalPages = Math.ceil(totalCount / limit);
-    
+
     return {
         currentPage: page,
         totalPages,
@@ -86,7 +87,7 @@ export const GET: APIRoute = async ({ url }) => {
     try {
         const searchParams = new URL(url).searchParams;
         const { page, limit, skip, sortBy, sortOrder } = parseQueryParams(searchParams);
-        
+
         const dbField = validateSortField(sortBy);
 
         const [forms, totalCount] = await Promise.all([
@@ -109,7 +110,7 @@ export const GET: APIRoute = async ({ url }) => {
     } catch (error) {
         console.error("Error fetching forms:", error);
         return createJsonResponse(
-            { error: "Error al obtener los formularios" }, 
+            { error: "Error al obtener los formularios" },
             500
         );
     }
@@ -123,10 +124,10 @@ export const POST: APIRoute = async ({ request }) => {
 
         if (!validation.isValid) {
             return createJsonResponse(
-                { 
-                    error: "Faltan campos requeridos", 
-                    missingFields: validation.missingFields 
-                }, 
+                {
+                    error: "Faltan campos requeridos",
+                    missingFields: validation.missingFields
+                },
                 400
             );
         }
@@ -135,19 +136,23 @@ export const POST: APIRoute = async ({ request }) => {
             data: sanitizedData
         });
 
+        sendContactFormNotification(sanitizedData).catch((emailError) => {
+            console.error("Error sending notification email:", emailError);
+        });
+
         return createJsonResponse(form, 201);
     } catch (error) {
         console.error("Error creating form:", error);
-        
+
         if (error instanceof SyntaxError) {
             return createJsonResponse(
-                { error: "Formato de datos inválido" }, 
+                { error: "Formato de datos inválido" },
                 400
             );
         }
 
         return createJsonResponse(
-            { error: "Error interno del servidor" }, 
+            { error: "Error interno del servidor" },
             500
         );
     }

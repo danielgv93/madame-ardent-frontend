@@ -28,6 +28,7 @@
     "astro": "^5.12.3",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
+    "nodemailer": "^8.0.7",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwind-merge": "^3.4.0",
@@ -37,6 +38,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.0.0",
+    "@types/nodemailer": "^8.0.0",
     "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4"
