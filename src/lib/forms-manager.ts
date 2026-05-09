@@ -531,6 +531,7 @@ export class FormsManager {
     }
 
     private formatDate = formatDate;
+    private escapeHtml = escapeHtml;
 
     private createCopyToClipboardHTML(text: string): string {
         const componentId = `copy-${Math.random().toString(36).substr(2, 9)}`;
