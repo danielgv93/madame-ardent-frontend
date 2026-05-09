@@ -14,9 +14,10 @@ export function isAuthenticated(): boolean {
     }
 }
 
-export function redirectToRestricted() {
+export function redirectToLogin() {
     if (typeof window !== 'undefined') {
-        window.location.href = '/restricted';
+        const from = window.location.pathname + window.location.search;
+        window.location.href = `/login?redirect=${encodeURIComponent(from)}`;
     }
 }
 

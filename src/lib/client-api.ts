@@ -1,4 +1,4 @@
-import { getToken, redirectToRestricted } from './auth-client.ts';
+import { getToken, redirectToLogin } from './auth-client.ts';
 
 interface FetchOptions extends RequestInit {
     headers?: Record<string, string>;
@@ -6,7 +6,7 @@ interface FetchOptions extends RequestInit {
 
 /**
  * Wrapper around fetch that automatically includes JWT authentication.
- * Redirects to /restricted on 401 responses (token expired or invalid).
+ * Redirects to /login on 401 responses (token expired or invalid).
  */
 export async function authenticatedFetch(url: string, options: FetchOptions = {}): Promise<Response> {
     const token = getToken();
@@ -27,7 +27,7 @@ export async function authenticatedFetch(url: string, options: FetchOptions = {}
 
     // Auto-redirect on authentication errors
     if (response.status === 401) {
-        redirectToRestricted();
+        redirectToLogin();
     }
 
     return response;
