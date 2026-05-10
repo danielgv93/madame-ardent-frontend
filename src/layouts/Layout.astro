@@ -2,6 +2,7 @@
 import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import TopMenu from "./TopMenu.astro";
+import Footer from "./Footer.astro";
 ---
 <!doctype html>
 <html lang="es">
@@ -18,6 +19,7 @@ import TopMenu from "./TopMenu.astro";
 	<div id="container" class="pt-24">
 		<slot />
 	</div>
+	<Footer />
 	</body>
 </html>
 
