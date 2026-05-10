@@ -6,18 +6,17 @@ import Button from "../components/Button.astro";
 import Title from "../components/Title.astro";
 ---
 
-<section class="relative px-4" style={`height: calc(100dvh - ${TOP_MENU_HEIGHT.EXPANDED}px)`}>
-    <Row>
-        <Col class="w-1/2 items-end">
-            <Col class="w-2/3 items-start gap-8">
-                <Title class="mb-6">Diseño editorial</Title>
+<section class="relative px-4" style={`min-height: calc(100dvh - ${TOP_MENU_HEIGHT.EXPANDED}px)`}>
+    <Row class="flex-col md:flex-row h-full">
+        <Col class="w-full md:w-1/2 items-center md:items-end order-2 md:order-1">
+            <Col class="w-full md:w-2/3 items-center md:items-start gap-6 md:gap-8 text-center md:text-left">
+                <Title class="mb-2 md:mb-6">Diseño editorial</Title>
                 <span>Transformando tus novelas en portadas cautivadoras.</span>
                 <Button>Comienza tu proyecto</Button>
             </Col>
-
         </Col>
-        <Col class="w-1/2 items-start">
-            <img class="max-w-[700px] w-auto h-auto max-h-full" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=994,fit=crop/mxB80M662Qs3Z0G9/banner-YZ9XlZpNlzsxb1VZ.jpg"/>
+        <Col class="w-full md:w-1/2 items-center md:items-start order-1 md:order-2">
+            <img class="max-w-full md:max-w-[700px] w-auto h-auto max-h-[40vh] md:max-h-full" src="https://assets.zyrosite.com/cdn-cgi/image/format=auto,w=768,h=994,fit=crop/mxB80M662Qs3Z0G9/banner-YZ9XlZpNlzsxb1VZ.jpg"/>
         </Col>
     </Row>
 </section>
