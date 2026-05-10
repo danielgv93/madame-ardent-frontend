@@ -6,6 +6,7 @@ import Text from "../../components/Text.astro";
 import Row from "../../components/Row.astro";
 import Col from "../../components/Col.astro";
 import Button from "../../components/Button.astro";
+import BulletList from "../../components/BulletList.astro";
 
 const includes = [
     "Cubierta completa para autopublicación",
@@ -29,14 +30,7 @@ const includes = [
 
                 <span class="text-primary font-simplify text-2xl md:text-3xl block mt-6">¿Qué contiene el Pack?</span>
 
-                <ul class="flex flex-col gap-3 mt-2 w-full">
-                    {includes.map((item) => (
-                        <li class="flex items-start gap-3">
-                            <span class="text-primary font-simplify text-xl leading-none mt-1">✦</span>
-                            <Text class="flex-1">{item}</Text>
-                        </li>
-                    ))}
-                </ul>
+                <BulletList items={includes} class="mt-2" />
 
                 <div class="mt-8 flex flex-col gap-1">
                     <span class="text-secondary-500 text-sm">desde</span>
