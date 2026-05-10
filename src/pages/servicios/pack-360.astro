@@ -1,0 +1,53 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../layouts/Section.astro";
+import Title from "../../components/Title.astro";
+import Text from "../../components/Text.astro";
+import Row from "../../components/Row.astro";
+import Col from "../../components/Col.astro";
+import Button from "../../components/Button.astro";
+
+const includes = [
+    "Cubierta completa para autopublicación",
+    "Maquetación interior para físico a juego",
+    "Contenido A+ para Amazon (banners)",
+    "Diseño de marcapáginas",
+    "3 posts para redes sociales de lanzamiento de la novela",
+];
+---
+
+<Layout>
+    <Section>
+        <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+            <Col class="md:w-1/2 w-full">
+                <img class="rounded-xl w-full" src="/servicios/pack-360.webp" alt="Pack 360 para autores" />
+            </Col>
+            <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
+                <Title class="md:text-5xl text-4xl md:leading-16">
+                    Pack 360 <span class="italic">para autores</span>
+                </Title>
+
+                <span class="text-primary font-simplify text-2xl md:text-3xl block mt-6">¿Qué contiene el Pack?</span>
+
+                <ul class="flex flex-col gap-3 mt-2 w-full">
+                    {includes.map((item) => (
+                        <li class="flex items-start gap-3">
+                            <span class="text-primary font-simplify text-xl leading-none mt-1">✦</span>
+                            <Text class="flex-1">{item}</Text>
+                        </li>
+                    ))}
+                </ul>
+
+                <div class="mt-8 flex flex-col gap-1">
+                    <span class="text-secondary-500 text-sm">desde</span>
+                    <span class="text-primary font-simplify text-5xl md:text-6xl leading-none">690€</span>
+                    <span class="text-secondary-500 text-sm italic">(opción de pago a plazos)*</span>
+                </div>
+
+                <a href="/contacto" class="mt-8">
+                    <Button variant="primary" size="lg">Solicita presupuesto</Button>
+                </a>
+            </Col>
+        </Row>
+    </Section>
+</Layout>

@@ -1,0 +1,51 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../layouts/Section.astro";
+import Title from "../../components/Title.astro";
+import Text from "../../components/Text.astro";
+import Row from "../../components/Row.astro";
+import Col from "../../components/Col.astro";
+import Button from "../../components/Button.astro";
+
+const tiers = [
+    { range: "Hasta 60.000 palabras", price: "220€" },
+    { range: "60.000 – 100.000 palabras", price: "300€" },
+    { range: "100.000 – 200.000 palabras", price: "430€" },
+];
+---
+
+<Layout>
+    <Section>
+        <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+            <Col class="md:w-1/2 w-full md:px-6 px-0 items-start order-2 md:order-1">
+                <Title class="md:text-5xl text-4xl md:leading-16">
+                    Maquetación <span class="italic">para físico</span>
+                </Title>
+
+                <ul class="flex flex-col gap-4 mt-8 w-full">
+                    {tiers.map((tier) => (
+                        <li class="flex items-baseline justify-between gap-4 border-b border-primary/20 pb-3">
+                            <Text>{tier.range}</Text>
+                            <span class="text-primary font-simplify text-2xl md:text-3xl whitespace-nowrap">{tier.price}</span>
+                        </li>
+                    ))}
+                </ul>
+
+                <Text class="mt-6 text-secondary-500">
+                    Si quieres además de la maquetación en físico la digital formato e-pub, se añadirán <span class="text-primary font-simplify">45€</span> al presupuesto final.
+                </Text>
+
+                <Text class="mt-4 text-sm text-secondary-500 italic">
+                    (*) Los precios se ajustarán dependiendo de la complejidad de la maquetación. Estos son ejemplos para novelas.
+                </Text>
+
+                <a href="/contacto" class="mt-8">
+                    <Button variant="primary" size="lg">Solicita presupuesto</Button>
+                </a>
+            </Col>
+            <Col class="md:w-1/2 w-full order-1 md:order-2">
+                <img class="rounded-xl w-full" src="/servicios/maquetacion-fisico.webp" alt="Maquetación para físico" />
+            </Col>
+        </Row>
+    </Section>
+</Layout>

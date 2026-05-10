@@ -1,0 +1,82 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import Section from "../../layouts/Section.astro";
+import Title from "../../components/Title.astro";
+import Text from "../../components/Text.astro";
+import Row from "../../components/Row.astro";
+import Col from "../../components/Col.astro";
+import Button from "../../components/Button.astro";
+
+const covers = [
+    {
+        name: "Cubierta simple",
+        price: "desde 200€",
+        image: "/servicios/simple.webp",
+    },
+    {
+        name: "Cubierta manipulada",
+        price: "desde 350€",
+        image: "/servicios/fotomanipulacion.webp",
+    },
+    {
+        name: "Cubierta ilustrada simple",
+        price: "desde 350€",
+        image: "/servicios/ilustrada-simple.webp",
+    },
+    {
+        name: "Cubierta ilustrada compleja",
+        price: "desde 450€",
+        image: "/servicios/ilustrada-compleja.webp",
+    },
+];
+---
+
+<Layout>
+    <Section>
+        <Col class="items-start md:px-12 px-0">
+            <Title class="md:text-6xl text-4xl md:leading-22">
+                Cubiertas <span class="italic">físicas</span>
+            </Title>
+            <Text class="mt-6 max-w-2xl text-secondary-500 text-lg leading-relaxed">
+                Cubiertas comerciales para autopublicación o publicación con editorial tradicional. Incluye portada, lomo y contraportada. Con o sin solapas.
+            </Text>
+        </Col>
+    </Section>
+
+    <Section class="md:py-12 py-8">
+        <Col class="md:gap-12 gap-8 w-full">
+            {covers.map((cover) => (
+                <Row class="w-full items-center md:gap-10 gap-6 flex-col md:flex-row">
+                    <div class="md:w-2/3 w-full">
+                        <img src={cover.image} alt={cover.name} class="w-full h-auto object-contain rounded-xl" />
+                    </div>
+                    <Col class="md:w-1/3 w-full items-start gap-4">
+                        <div class="flex flex-col gap-1">
+                            <Title class="text-2xl md:text-3xl">{cover.name}</Title>
+                            <span class="text-secondary-500 italic">{cover.price}</span>
+                        </div>
+                        <a href="/contacto">
+                            <Button variant="primary">Solicita presupuesto</Button>
+                        </a>
+                    </Col>
+                </Row>
+            ))}
+        </Col>
+    </Section>
+
+    <Section class="bg-primary-50 md:py-20 py-12">
+        <Row class="items-center md:gap-12 gap-6 flex-col md:flex-row">
+            <Col class="md:w-2/3 w-full items-start">
+                <span class="text-primary font-simplify text-2xl md:text-3xl block mb-2">Si eres autor autopublicado</span>
+                <Title class="md:text-4xl text-2xl md:leading-12">
+                    Descubre el <span class="italic">pack 360 para autores</span>, la opción más económica para publicar tu libro a mayor calidad
+                </Title>
+            </Col>
+            <Col class="md:w-1/3 w-full md:items-end items-start">
+                <a href="/servicios/pack-360">
+                    <Button variant="primary" size="lg">Quiero descubrirla</Button>
+                </a>
+            </Col>
+        </Row>
+    </Section>
+</Layout>
