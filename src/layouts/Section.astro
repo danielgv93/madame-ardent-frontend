@@ -2,8 +2,14 @@
 import { cn } from "../lib/utils";
 
 const { class: className = "", ...rest } = Astro.props;
+
+const classes = String(className).split(/\s+/).filter(Boolean);
+const bgClasses = classes.filter((c) => /^(?:[a-z]+:)*bg-/.test(c)).join(" ");
+const innerClasses = classes.filter((c) => !/^(?:[a-z]+:)*bg-/.test(c)).join(" ");
 ---
 
-<section {...rest} class={cn("max-w-7xl mx-auto px-8 my-16 flex flex-col", className)}>
-    <slot />
+<section {...rest} class={cn(bgClasses ? "" : "my-16", bgClasses)}>
+    <div class={cn("max-w-7xl mx-auto px-8 flex flex-col", innerClasses)}>
+        <slot />
+    </div>
 </section>
