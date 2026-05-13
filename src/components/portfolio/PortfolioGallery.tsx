@@ -111,13 +111,13 @@ const PortfolioGallery = ({ section }: Props) => {
 
   return (
     <div className="mb-12">
-      <div className="flex items-center gap-4 mb-6 px-8">
+      <div className="flex items-center gap-4 mb-6 px-6 md:px-8">
         <span className="text-xs tracking-[0.2em] uppercase text-secondary-500 whitespace-nowrap">{section.title}</span>
         <div className="grow h-px bg-black/10" />
       </div>
-      <div className="relative group/wrapper">
+      <div className="relative group/wrapper px-6 md:px-0">
         <button
-          className="absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-black/10 bg-white text-primary flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.1)] transition-[opacity,transform] duration-200 opacity-0 group-hover/wrapper:opacity-100 hover:-translate-y-1/2 hover:scale-110 disabled:!opacity-0 disabled:cursor-default left-2"
+          className="absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-black/10 bg-white text-primary hidden md:flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.1)] transition-[opacity,transform] duration-200 opacity-0 group-hover/wrapper:opacity-100 hover:-translate-y-1/2 hover:scale-110 disabled:!opacity-0 disabled:cursor-default left-2"
           aria-label="Anterior"
           type="button"
           disabled={leftDisabled}
@@ -127,13 +127,13 @@ const PortfolioGallery = ({ section }: Props) => {
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6" /></svg>
         </button>
-        <div className="gallery-scroll flex gap-6 overflow-x-auto px-8 pt-2 pb-6 cursor-grab select-none" ref={scrollRef}>
+        <div className="gallery-scroll flex gap-4 md:gap-6 overflow-x-auto md:px-8 pt-2 pb-6 cursor-grab select-none snap-x snap-mandatory md:snap-none md:scroll-px-8" ref={scrollRef}>
           {section.images.map((image, i) => (
             <PortfolioCard key={i} image={image} />
           ))}
         </div>
         <button
-          className="absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-black/10 bg-white text-primary flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.1)] transition-[opacity,transform] duration-200 opacity-0 group-hover/wrapper:opacity-100 hover:-translate-y-1/2 hover:scale-110 disabled:!opacity-0 disabled:cursor-default right-2"
+          className="absolute top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full border border-black/10 bg-white text-primary hidden md:flex items-center justify-center cursor-pointer shadow-[0_2px_8px_rgba(0,0,0,0.1)] transition-[opacity,transform] duration-200 opacity-0 group-hover/wrapper:opacity-100 hover:-translate-y-1/2 hover:scale-110 disabled:!opacity-0 disabled:cursor-default right-2"
           aria-label="Siguiente"
           type="button"
           disabled={rightDisabled}

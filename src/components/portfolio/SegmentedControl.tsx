@@ -65,7 +65,7 @@ export const SegmentedControl = ({ options, defaultActive, onChange }: Props) =>
           ref={(el) => {
             if (el) buttonsRef.current.set(option.id, el);
           }}
-          className={`toggle-option relative z-2 py-2.5 px-6 cursor-pointer transition-colors duration-400 ease-in-out text-lg bg-transparent border-none whitespace-nowrap text-(--color-secondary-500) ${
+          className={`toggle-option relative z-2 py-2 px-4 md:py-2.5 md:px-6 cursor-pointer transition-colors duration-400 ease-in-out text-sm md:text-lg bg-transparent border-none whitespace-nowrap text-(--color-secondary-500) ${
             option.id === activeId ? 'active text-white!' : ''
           }`}
           data-segment-id={option.id}

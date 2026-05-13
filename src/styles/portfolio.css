@@ -2,7 +2,7 @@
 .gallery-scroll {
   -webkit-overflow-scrolling: touch;
   scrollbar-width: thin;
-  scrollbar-color: var(--color-primary-200) transparent;
+  scrollbar-color: var(--color-primary-500) transparent;
 }
 
 .gallery-scroll::-webkit-scrollbar {
@@ -14,7 +14,7 @@
 }
 
 .gallery-scroll::-webkit-scrollbar-thumb {
-  background: var(--color-primary-200);
+  background: var(--color-primary-500);
   border-radius: 3px;
 }
 

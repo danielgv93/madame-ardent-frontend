@@ -10,7 +10,7 @@ export default function PortfolioCard({ image }: Props) {
 
   return (
     <div
-      className={`shrink-0 snap-start group cursor-pointer ${isHorizontal ? 'w-[320px] md:w-[380px]' : 'w-[200px] md:w-[240px]'}`}
+      className={`shrink-0 snap-start group cursor-pointer ${isHorizontal ? 'w-[260px] sm:w-[320px] md:w-[380px]' : 'w-[170px] sm:w-[200px] md:w-[240px]'}`}
     >
       <div className="relative rounded-lg overflow-hidden transition-transform duration-500 ease-in-out shadow-[0_4px_24px_-4px_rgba(0,0,0,0.1)] group-hover:scale-[1.02]">
         <div className={`overflow-hidden ${isHorizontal ? 'aspect-[3/2]' : 'aspect-[2/3]'}`}>
