@@ -1,35 +1,229 @@
 ---
+export interface SelectOption {
+  value: string;
+  label: string;
+}
+
 export interface Props {
   name?: string;
   id?: string;
   required?: boolean;
   class?: string;
   value?: string;
+  multi?: boolean;
+  options?: SelectOption[];
+  placeholder?: string;
 }
 
-const { 
+const {
   name,
   id,
   required = false,
   class: className = '',
-  value
+  value,
+  multi = false,
+  options = [],
+  placeholder = 'Selecciona una opción',
 } = Astro.props;
 
 const baseClasses = 'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white';
 
-const selectClasses = [
-  baseClasses,
-  className
-].filter(Boolean).join(' ');
+const selectClasses = [baseClasses, className].filter(Boolean).join(' ');
 ---
 
-<select 
-  name={name}
-  id={id}
-  required={required}
-  class={selectClasses}
-  value={value}
-  {...Astro.props}
->
-  <slot />
-</select>
+{multi ? (
+  <div
+    class="multi-select relative"
+    data-multi-select
+    data-placeholder={placeholder}
+    data-required={required ? 'true' : 'false'}
+    id={id}
+  >
+    <input type="hidden" name={name} value={value ?? ''} data-multi-value />
+
+    <div
+      class={`${selectClasses} cursor-pointer flex flex-wrap gap-2 min-h-[42px] items-center`}
+      data-multi-trigger
+      tabindex="0"
+      role="combobox"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+    >
+      <div class="flex flex-wrap gap-2 flex-1" data-multi-tags>
+        <span class="text-gray-400 text-sm">{placeholder}</span>
+      </div>
+      <svg class="w-4 h-4 text-gray-500 shrink-0 transition-transform" data-multi-caret viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.06l3.71-3.83a.75.75 0 111.08 1.04l-4.24 4.38a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+      </svg>
+    </div>
+
+    <div
+      class="absolute z-20 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-y-auto hidden"
+      data-multi-dropdown
+      role="listbox"
+    >
+      {options.map((opt) => (
+        <button
+          type="button"
+          class="w-full text-left px-3 py-2 text-sm hover:bg-[#d62013]/5 cursor-pointer flex items-center justify-between"
+          data-multi-option
+          data-value={opt.value}
+          role="option"
+          aria-selected="false"
+        >
+          <span data-multi-label>{opt.label}</span>
+          <svg class="w-4 h-4 text-[#d62013] hidden" data-multi-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 010 1.42l-7.5 7.5a1 1 0 01-1.42 0l-3.5-3.5a1 1 0 111.42-1.42L8.5 12.08l6.79-6.79a1 1 0 011.42 0z" clip-rule="evenodd"/>
+          </svg>
+        </button>
+      ))}
+    </div>
+  </div>
+) : (
+  <select
+    name={name}
+    id={id}
+    required={required}
+    class={selectClasses}
+    value={value}
+  >
+    <slot />
+  </select>
+)}
+
+<script>
+  function escapeHtml(s: string): string {
+    return s.replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c] || c));
+  }
+
+  function initMultiSelect(root: HTMLElement): void {
+    if ((root as any)._multiInit) return;
+    (root as any)._multiInit = true;
+
+    const hidden = root.querySelector('[data-multi-value]') as HTMLInputElement;
+    const trigger = root.querySelector('[data-multi-trigger]') as HTMLElement;
+    const dropdown = root.querySelector('[data-multi-dropdown]') as HTMLElement;
+    const tagsContainer = root.querySelector('[data-multi-tags]') as HTMLElement;
+    const caret = root.querySelector('[data-multi-caret]') as HTMLElement;
+    const placeholder = root.dataset.placeholder || '';
+    const optionButtons = Array.from(
+      root.querySelectorAll('[data-multi-option]')
+    ) as HTMLButtonElement[];
+
+    const labelMap = new Map<string, string>();
+    optionButtons.forEach((btn) => {
+      const v = btn.dataset.value || '';
+      const labelEl = btn.querySelector('[data-multi-label]');
+      labelMap.set(v, labelEl?.textContent?.trim() || v);
+    });
+
+    const parseValue = (raw: string): string[] =>
+      raw ? raw.split(',').map((s) => s.trim()).filter(Boolean) : [];
+
+    let selected: string[] = parseValue(hidden.value);
+
+    function render(): void {
+      tagsContainer.innerHTML = '';
+      if (selected.length === 0) {
+        const ph = document.createElement('span');
+        ph.className = 'text-gray-400 text-sm';
+        ph.textContent = placeholder;
+        tagsContainer.appendChild(ph);
+      } else {
+        selected.forEach((value) => {
+          const label = labelMap.get(value) || value;
+          const tag = document.createElement('span');
+          tag.className =
+            'inline-flex items-center gap-1 bg-[#d62013]/10 text-[#d62013] text-sm px-2 py-1 rounded-md';
+          tag.innerHTML = `<span>${escapeHtml(label)}</span>`;
+
+          const x = document.createElement('button');
+          x.type = 'button';
+          x.className = 'ml-1 text-[#d62013] hover:text-[#a01a0f] cursor-pointer';
+          x.setAttribute('aria-label', `Eliminar ${label}`);
+          x.innerHTML =
+            '<svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
+          x.addEventListener('click', (e) => {
+            e.stopPropagation();
+            selected = selected.filter((s) => s !== value);
+            sync();
+          });
+          tag.appendChild(x);
+          tagsContainer.appendChild(tag);
+        });
+      }
+
+      optionButtons.forEach((btn) => {
+        const v = btn.dataset.value || '';
+        const check = btn.querySelector('[data-multi-check]') as HTMLElement | null;
+        const isSelected = selected.includes(v);
+        btn.setAttribute('aria-selected', String(isSelected));
+        if (check) check.classList.toggle('hidden', !isSelected);
+        btn.classList.toggle('bg-[#d62013]/5', isSelected);
+      });
+    }
+
+    function sync(): void {
+      hidden.value = selected.join(',');
+      render();
+      hidden.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    function openDropdown(open: boolean): void {
+      dropdown.classList.toggle('hidden', !open);
+      trigger.setAttribute('aria-expanded', String(open));
+      caret?.classList.toggle('rotate-180', open);
+    }
+
+    trigger.addEventListener('click', () => {
+      openDropdown(dropdown.classList.contains('hidden'));
+    });
+
+    trigger.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openDropdown(dropdown.classList.contains('hidden'));
+      } else if (e.key === 'Escape') {
+        openDropdown(false);
+      }
+    });
+
+    optionButtons.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const v = btn.dataset.value || '';
+        if (selected.includes(v)) {
+          selected = selected.filter((s) => s !== v);
+        } else {
+          selected.push(v);
+        }
+        sync();
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!root.contains(e.target as Node)) openDropdown(false);
+    });
+
+    const parentForm = root.closest('form');
+    parentForm?.addEventListener('reset', () => {
+      setTimeout(() => {
+        selected = parseValue(hidden.value);
+        render();
+      }, 0);
+    });
+
+    render();
+  }
+
+  function initAllMultiSelects(): void {
+    document.querySelectorAll('[data-multi-select]').forEach((el) => {
+      initMultiSelect(el as HTMLElement);
+    });
+  }
+
+  document.addEventListener('astro:page-load', initAllMultiSelects);
+  initAllMultiSelects();
+</script>
