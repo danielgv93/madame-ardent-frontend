@@ -17,11 +17,12 @@ export default function PortfolioCard({ image }: Props) {
           <img
             src={image.src}
             alt={image.alt}
-            className="w-full h-full object-cover block"
+            className="w-full h-full object-cover block cursor-zoom-in"
             loading="lazy"
+            data-zoomable
           />
         </div>
-        <div className="absolute inset-0 bg-[rgba(214,32,19,0.85)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out flex flex-col justify-end p-5 text-white">
+        <div className="pointer-events-none absolute inset-0 bg-[rgba(214,32,19,0.85)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out flex flex-col justify-end p-5 text-white">
           <h3 className="font-simplify text-[1.15rem] mb-1 leading-[1.3]">{image.alt}</h3>
           {image.author && <p className="text-xs tracking-[0.05em] opacity-85">{image.author}</p>}
         </div>

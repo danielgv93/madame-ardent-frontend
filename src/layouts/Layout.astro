@@ -3,6 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import "../styles/global.css";
 import TopMenu from "./TopMenu.astro";
 import Footer from "./Footer.astro";
+import Lightbox from "../components/Lightbox.astro";
 ---
 <!doctype html>
 <html lang="es">
@@ -20,6 +21,7 @@ import Footer from "./Footer.astro";
 		<slot />
 	</div>
 	<Footer />
+	<Lightbox />
 	</body>
 </html>
 
