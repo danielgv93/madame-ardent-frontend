@@ -1,7 +1,8 @@
 ---
 import madameArdent from '../assets/madame-ardent.svg';
 import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
-import { getLangFromUrl, useTranslations, localizedRoute, getAlternateUrl } from '../i18n/utils';
+import { getLangFromUrl, useTranslations, localizedRoute } from '../i18n/utils';
+import LanguageSwitcher from '../components/LanguageSwitcher.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -13,10 +14,6 @@ const servicios = [
     { label: t('servicesIndex.items.illustrationTitle'), href: localizedRoute('illustration', lang) },
     { label: t('servicesIndex.items.mapsTitle'),    href: localizedRoute('maps', lang) },
 ];
-
-const altLang = lang === 'es' ? 'en' : 'es';
-const altLabel = altLang.toUpperCase();
-const altHref = getAlternateUrl(Astro.url, altLang);
 ---
 <!-- Navbar component with scroll shrink and mobile fullscreen menu -->
 <nav id="navbar" class="fixed top-0 left-0 w-full bg-white backdrop-blur-[15px] transition-all duration-300 ease-in-out z-50" style={`height: ${TOP_MENU_HEIGHT.EXPANDED}px`}>
@@ -66,32 +63,19 @@ const altHref = getAlternateUrl(Astro.url, altLang);
                 </div>
             </div>
 
+            <LanguageSwitcher variant="desktop" />
+
             <a
                 href={localizedRoute('contact', lang)}
                 class="inline-flex items-center px-4 py-2 rounded-full bg-[#d62013] text-white font-medium border border-[#d62013] hover:bg-transparent hover:text-[#d62013] transition-colors duration-200 shadow-sm"
             >
                 {t('nav.cta')}
             </a>
-
-            <!-- Language switcher (desktop) -->
-            <a
-                href={altHref}
-                aria-label={t('nav.languageSwitch')}
-                class="text-xs font-semibold tracking-wider text-gray-700 hover:text-[#d62013] border border-gray-300 hover:border-[#d62013] rounded-full px-2.5 py-1 transition-colors"
-            >
-                {altLabel}
-            </a>
         </div>
 
         <!-- Mobile hamburger -->
         <div class="md:hidden flex items-center gap-3">
-            <a
-                href={altHref}
-                aria-label={t('nav.languageSwitch')}
-                class="text-xs font-semibold tracking-wider text-gray-700 border border-gray-300 rounded-full px-2.5 py-1"
-            >
-                {altLabel}
-            </a>
+            <LanguageSwitcher variant="mobile" />
             <button id="menu-btn" aria-label={t('nav.openMenu')} class="focus:outline-none">
                 <!-- Hamburger icon -->
                 <svg class="h-6 w-6 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">

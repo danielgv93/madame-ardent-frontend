@@ -1,0 +1,135 @@
+---
+import { getLangFromUrl, useTranslations, getAlternateUrl } from '../i18n/utils';
+
+interface Props {
+    variant?: 'desktop' | 'mobile';
+}
+
+const { variant = 'desktop' } = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const languages = [
+    { code: 'es', label: 'ES', flag: '🇪🇸', href: getAlternateUrl(Astro.url, 'es') },
+    { code: 'en', label: 'EN', flag: '🇺🇸', href: getAlternateUrl(Astro.url, 'en') },
+] as const;
+
+const currentLang = languages.find((l) => l.code === lang)!;
+const altLang = lang === 'es' ? 'en' : 'es';
+const altEntry = languages.find((l) => l.code === altLang)!;
+---
+
+{variant === 'desktop' ? (
+    <div id="lang-dropdown" class="relative h-full flex items-center">
+        <button
+            id="lang-trigger"
+            type="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            aria-controls="lang-menu"
+            aria-label={t('nav.languageSwitch')}
+            class="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-gray-700 hover:text-[#d62013] border border-gray-300 hover:border-[#d62013] rounded-full px-2.5 py-1 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400"
+        >
+            <span aria-hidden="true">{currentLang.flag}</span>
+            <span>{currentLang.label}</span>
+            <svg class="h-3.5 w-3.5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+        <div
+            id="lang-menu"
+            role="menu"
+            aria-labelledby="lang-trigger"
+            class="absolute right-0 top-full min-w-[110px] bg-white shadow-lg rounded-md py-1 opacity-0 invisible translate-y-1 transition-all duration-200 ease-out"
+        >
+            {languages.map((l) => (
+                <a
+                    href={l.href}
+                    role="menuitem"
+                    aria-current={l.code === lang ? 'true' : undefined}
+                    class:list={[
+                        'flex items-center gap-2 px-3 py-2 text-sm text-gray-800 hover:bg-gray-100',
+                        l.code === lang && 'font-semibold',
+                    ]}
+                >
+                    <span aria-hidden="true">{l.flag}</span>
+                    <span>{l.label}</span>
+                </a>
+            ))}
+        </div>
+    </div>
+) : (
+    <a
+        href={altEntry.href}
+        aria-label={t('nav.languageSwitch')}
+        class="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-gray-700 border border-gray-300 rounded-full px-2.5 py-1"
+    >
+        <span aria-hidden="true">{altEntry.flag}</span>
+        <span>{altEntry.label}</span>
+    </a>
+)}
+
+<script>
+function initLanguageSwitcher() {
+    const dropdown = document.getElementById('lang-dropdown');
+    const trigger = document.getElementById('lang-trigger');
+    const menu = document.getElementById('lang-menu');
+    if (!dropdown || !trigger || !menu) return;
+
+    const chevron = trigger.querySelector('svg');
+    const openClasses = ['opacity-100', 'visible', 'translate-y-0'];
+    const closedClasses = ['opacity-0', 'invisible', 'translate-y-1'];
+    let hoverTimeout: ReturnType<typeof setTimeout> | undefined;
+
+    const open = () => {
+        if (hoverTimeout) clearTimeout(hoverTimeout);
+        menu.classList.remove(...closedClasses);
+        menu.classList.add(...openClasses);
+        trigger.setAttribute('aria-expanded', 'true');
+        chevron?.classList.add('rotate-180');
+    };
+    const close = () => {
+        menu.classList.remove(...openClasses);
+        menu.classList.add(...closedClasses);
+        trigger.setAttribute('aria-expanded', 'false');
+        chevron?.classList.remove('rotate-180');
+    };
+    const toggle = () => {
+        if (trigger.getAttribute('aria-expanded') === 'true') close();
+        else open();
+    };
+
+    const onTriggerClick = (e: Event) => {
+        e.stopPropagation();
+        toggle();
+    };
+    const onMouseEnter = () => open();
+    const onMouseLeave = () => {
+        hoverTimeout = setTimeout(close, 150);
+    };
+    const onDocClick = (e: MouseEvent) => {
+        if (!dropdown.contains(e.target as Node)) close();
+    };
+    const onDocKey = (e: KeyboardEvent) => {
+        if (e.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+            close();
+            trigger.focus();
+        }
+    };
+
+    trigger.addEventListener('click', onTriggerClick);
+    dropdown.addEventListener('mouseenter', onMouseEnter);
+    dropdown.addEventListener('mouseleave', onMouseLeave);
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onDocKey);
+
+    document.addEventListener('astro:before-swap', () => {
+        document.removeEventListener('click', onDocClick);
+        document.removeEventListener('keydown', onDocKey);
+    }, { once: true });
+}
+
+initLanguageSwitcher();
+document.addEventListener('astro:page-load', initLanguageSwitcher);
+</script>
