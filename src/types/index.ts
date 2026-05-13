@@ -1,6 +1,4 @@
-/**
- * Shared types used across client and server code.
- */
+import type { FormStatus } from '../lib/constants/form-status';
 
 export interface PaginationData {
     currentPage: number;
@@ -11,15 +9,19 @@ export interface PaginationData {
     hasPreviousPage: boolean;
 }
 
-export interface ContactFormData {
-    id?: string;
+export interface ContactFormInput {
     name: string;
     user: string;
     email: string;
     country: string;
     services: string;
+    budget: string;
     message: string;
-    status?: string;
-    respondedAt?: string | null;
-    createdAt?: string;
+}
+
+export interface ContactFormRecord extends ContactFormInput {
+    id: string;
+    status: FormStatus;
+    respondedAt: string | null;
+    createdAt: string;
 }

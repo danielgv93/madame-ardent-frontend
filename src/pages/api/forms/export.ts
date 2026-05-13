@@ -47,7 +47,7 @@ export const GET: APIRoute = withAuth(async ({ url }) => {
 
         const csvHeaders = [
             'ID', 'Nombre', 'Usuario', 'Email', 'País',
-            'Servicios', 'Mensaje', 'Estado',
+            'Servicios', 'Presupuesto', 'Mensaje', 'Estado',
             'Fecha de Creación', 'Fecha de Respuesta'
         ];
 
@@ -58,6 +58,7 @@ export const GET: APIRoute = withAuth(async ({ url }) => {
             escapeCSV(form.email),
             escapeCSV(form.country),
             escapeCSV(form.services),
+            escapeCSV(form.budget),
             escapeCSV(form.message),
             escapeCSV(form.status || FORM_STATUS.PENDING),
             form.createdAt.toISOString(),

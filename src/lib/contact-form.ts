@@ -1,6 +1,6 @@
 import { FormValidator, type ValidationRule } from './form-validation';
 import { UIMessages } from './ui-messages';
-import type { ContactFormData } from '../types/index';
+import type { ContactFormInput } from '../types/index';
 
 const VALIDATION_RULES: Record<string, ValidationRule> = {
   name: { required: true, minLength: 2, maxLength: 50 },
@@ -8,6 +8,7 @@ const VALIDATION_RULES: Record<string, ValidationRule> = {
   email: { required: true, email: true, maxLength: 100 },
   country: { required: true, minLength: 2, maxLength: 50 },
   services: { required: true },
+  budget: { required: true },
   message: { required: true, minLength: 10, maxLength: 1000 }
 }
 
@@ -35,12 +36,13 @@ export class ContactFormHandler {
     e.preventDefault();
 
     const formData = new FormData(this.form);
-    const data: ContactFormData = {
+    const data: ContactFormInput = {
       name: formData.get('name') as string,
       user: formData.get('user') as string,
       email: formData.get('email') as string,
       country: formData.get('country') as string,
       services: formData.get('services') as string,
+      budget: formData.get('budget') as string,
       message: formData.get('message') as string,
     };
 

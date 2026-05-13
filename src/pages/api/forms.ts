@@ -1,8 +1,8 @@
 import type { APIRoute } from "astro";
 import prisma from "../../lib/prisma.ts";
 import { createJsonResponse } from "../../lib/api-response.ts";
-import { sendContactFormNotification } from "../../lib/email.ts";
-import type { ContactFormData, PaginationData } from "../../types/index.ts";
+import { sendContactFormNotification, sendContactFormConfirmation } from "../../lib/email.ts";
+import type { ContactFormInput, PaginationData } from "../../types/index.ts";
 
 type SortOrder = 'asc' | 'desc'
 interface SortParams {
@@ -29,7 +29,7 @@ const SORTABLE_FIELDS = {
     respondedAt: 'respondedAt'
 } as const;
 
-const REQUIRED_FIELDS: (keyof ContactFormData)[] = ['name', 'user', 'email', 'country', 'services', 'message'];
+const REQUIRED_FIELDS: (keyof ContactFormInput)[] = ['name', 'user', 'email', 'country', 'services', 'budget', 'message'];
 
 const parseQueryParams = (searchParams: URLSearchParams): PaginationParams & SortParams => {
     const page = Math.max(1, parseInt(searchParams.get('page') || String(DEFAULT_PAGE)));
@@ -54,7 +54,7 @@ const validateFormData = (data: unknown): { isValid: boolean; missingFields: str
     };
 };
 
-const sanitizeFormData = (data: unknown): ContactFormData => {
+const sanitizeFormData = (data: unknown): ContactFormInput => {
     const d = data as Record<string, unknown>;
     return {
         name: String(d.name || '').trim(),
@@ -62,6 +62,7 @@ const sanitizeFormData = (data: unknown): ContactFormData => {
         email: String(d.email || '').trim().toLowerCase(),
         country: String(d.country || '').trim(),
         services: String(d.services || '').trim(),
+        budget: String(d.budget || '').trim(),
         message: String(d.message || '').trim()
     };
 };
@@ -138,6 +139,10 @@ export const POST: APIRoute = async ({ request }) => {
 
         sendContactFormNotification(sanitizedData).catch((emailError) => {
             console.error("Error sending notification email:", emailError);
+        });
+
+        sendContactFormConfirmation(sanitizedData).catch((emailError) => {
+            console.error("Error sending confirmation email to client:", emailError);
         });
 
         return createJsonResponse(form, 201);

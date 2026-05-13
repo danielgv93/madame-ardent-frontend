@@ -1,5 +1,9 @@
 import nodemailer from 'nodemailer';
-import type { ContactFormData } from '../types/index.js';
+import { render } from '@react-email/render';
+import type { ContactFormInput } from '../types/index.js';
+import ContactNotification from '../emails/ContactNotification';
+import ContactConfirmation from '../emails/ContactConfirmation';
+import ReplyEmail from '../emails/ReplyEmail';
 
 interface SmtpConfig {
   host: string;
@@ -34,90 +38,62 @@ function createTransporter() {
   });
 }
 
-function buildContactNotificationHtml(data: ContactFormData): string {
-  return `
-    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background-color: #f9f9f9; padding: 20px;">
-      <div style="background-color: #ffffff; border-radius: 8px; padding: 30px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        <h1 style="color: #6b21a8; margin-top: 0; border-bottom: 2px solid #e9d5ff; padding-bottom: 10px;">
-          Nueva solicitud de contacto
-        </h1>
-        <p style="color: #666; font-size: 14px;">
-          Recibido el ${new Date().toLocaleString('es-ES', { dateStyle: 'long', timeStyle: 'short' })}
-        </p>
-        <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; color: #999; font-size: 13px; width: 140px;">Nombre</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">${escapeHtml(data.name)}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; color: #999; font-size: 13px;">Usuario</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; font-weight: bold;">${escapeHtml(data.user)}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; color: #999; font-size: 13px;">Email</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">
-              <a href="mailto:${escapeHtml(data.email)}" style="color: #6b21a8;">${escapeHtml(data.email)}</a>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; color: #999; font-size: 13px;">País</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">${escapeHtml(data.country)}</td>
-          </tr>
-          <tr>
-            <td style="padding: 10px; border-bottom: 1px solid #eee; color: #999; font-size: 13px;">Servicio</td>
-            <td style="padding: 10px; border-bottom: 1px solid #eee;">
-              <span style="background-color: #f3e8ff; color: #6b21a8; padding: 4px 10px; border-radius: 12px; font-size: 13px;">
-                ${escapeHtml(data.services)}
-              </span>
-            </td>
-          </tr>
-        </table>
-        <div style="margin-top: 20px; padding-top: 15px; border-top: 2px solid #e9d5ff;">
-          <p style="color: #999; font-size: 13px; margin-bottom: 5px;">Mensaje:</p>
-          <p style="background-color: #f9f5ff; padding: 15px; border-radius: 6px; line-height: 1.6; color: #333;">
-            ${escapeHtml(data.message).replace(/\n/g, '<br>')}
-          </p>
-        </div>
-        <div style="margin-top: 25px; text-align: center;">
-          <a href="${import.meta.env.SITE_URL || 'https://madame-ardent.com'}/dashboard/forms"
-             style="background-color: #6b21a8; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
-            Ver en el panel
-          </a>
-        </div>
-      </div>
-      <p style="text-align: center; color: #999; font-size: 12px; margin-top: 15px;">
-        Este email se generó automáticamente desde el formulario de contacto de Madame Ardent.
-      </p>
-    </div>
-  `;
+interface SendEmailParams {
+  to: string;
+  subject: string;
+  html: string;
+  replyTo?: string;
+  fromName?: string;
 }
 
-function escapeHtml(text: string): string {
-  const map: Record<string, string> = {
-    '&': '&amp;',
-    '<': '&lt;',
-    '>': '&gt;',
-    '"': '&quot;',
-    "'": '&#039;',
-  };
-  return text.replace(/[&<>"']/g, (m) => map[m]);
-}
-
-export async function sendContactFormNotification(data: ContactFormData): Promise<void> {
-  const recipientEmail = getRecipientEmail();
+export async function sendEmail({ to, subject, html, replyTo, fromName = 'Madame Ardent' }: SendEmailParams): Promise<void> {
   const smtpConfig = getSmtpConfig();
-  if (!recipientEmail || !smtpConfig.user || !smtpConfig.password) {
-    console.warn('Email configuration missing. Skipping notification email.');
-    return;
+  if (!smtpConfig.user || !smtpConfig.password) {
+    throw new Error('SMTP configuration missing (SMTP_USER / SMTP_PASSWORD)');
   }
 
   const transporter = createTransporter();
 
   await transporter.sendMail({
-    from: `"Madame Ardent - Contacto" <${smtpConfig.user}>`,
-    to: recipientEmail,
-    subject: `Nueva solicitud: ${data.services} — ${data.name}`,
-    html: buildContactNotificationHtml(data),
-    replyTo: data.email,
+    from: `"${fromName}" <${smtpConfig.user}>`,
+    to,
+    subject,
+    html,
+    ...(replyTo ? { replyTo } : {}),
   });
+}
+
+export async function buildReplyEmailHtml(bodyHtml: string, originalMessage: string): Promise<string> {
+  return render(ReplyEmail({ bodyHtml, originalMessage }));
+}
+
+export async function sendContactFormConfirmation(data: ContactFormInput): Promise<void> {
+  const html = await render(ContactConfirmation({ data }));
+  await sendEmail({
+    to: data.email,
+    subject: 'Hemos recibido tu solicitud — Madame Ardent',
+    html,
+    fromName: 'Madame Ardent',
+  });
+}
+
+export async function sendContactFormNotification(data: ContactFormInput): Promise<void> {
+  const recipientEmail = getRecipientEmail();
+  if (!recipientEmail) {
+    console.warn('RECIPIENT_EMAIL missing. Skipping notification email.');
+    return;
+  }
+
+  try {
+    const html = await render(ContactNotification({ data }));
+    await sendEmail({
+      to: recipientEmail,
+      subject: `Nueva solicitud: ${data.services} — ${data.name}`,
+      html,
+      replyTo: data.email,
+      fromName: 'Madame Ardent - Contacto',
+    });
+  } catch (error) {
+    console.warn('Skipping notification email:', (error as Error).message);
+  }
 }

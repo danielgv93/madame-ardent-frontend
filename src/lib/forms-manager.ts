@@ -1,46 +1,47 @@
+import Quill from 'quill';
 import { authenticatedFetch } from './client-api';
-import { FORM_STATUS, FORM_STATUS_LABELS, FORM_STATUS_COLORS } from './constants/form-status';
+import { FORM_STATUS, FORM_STATUS_LABELS, FORM_STATUS_COLORS, type FormStatus } from './constants/form-status';
 import { formatDate, escapeHtml } from './utils';
-import type { PaginationData, ContactFormData } from '../types/index';
-
-export type { PaginationData, ContactFormData };
+import type { PaginationData, ContactFormRecord } from '../types/index';
 
 export class FormsManager {
-    private allForms: ContactFormData[] = [];
-    private filteredForms: ContactFormData[] = [];
+    private allForms: ContactFormRecord[] = [];
+    private filteredForms: ContactFormRecord[] = [];
     private currentPagination: PaginationData | null = null;
     private currentPage = 1;
     private sortColumn: string | null = null;
     private sortOrder: 'asc' | 'desc' = 'asc';
+    private quill: Quill | null = null;
+    private replyingFormId: string | null = null;
 
     async loadForms(page: number = 1, resetSorting: boolean = false) {
         try {
             this.showLoading();
             this.currentPage = page;
-            
+
             if (resetSorting) {
                 this.sortColumn = null;
                 this.sortOrder = 'asc';
             }
-            
+
             let formsUrl = `/api/forms?page=${page}&limit=10`;
             if (this.sortColumn) {
                 formsUrl += `&sortBy=${this.sortColumn}&sortOrder=${this.sortOrder}`;
             }
-            
+
             // Fetch forms and stats in parallel
             const [formsResponse, statsPromise] = await Promise.all([
                 authenticatedFetch(formsUrl),
                 this.fetchStats(),
             ]);
-            
+
             if (formsResponse.ok) {
                 const formsData = await formsResponse.json();
-                
+
                 this.allForms = formsData.forms;
                 this.currentPagination = formsData.pagination;
                 this.filteredForms = [...this.allForms];
-                
+
                 this.renderFormsTable();
                 this.updatePagination();
             } else {
@@ -56,15 +57,15 @@ export class FormsManager {
     filterForms() {
         const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
         const selectedStatus = statusFilter?.value;
-        
+
         if (!selectedStatus) {
             this.filteredForms = [...this.allForms];
         } else {
-            this.filteredForms = this.allForms.filter(form => 
+            this.filteredForms = this.allForms.filter(form =>
                 (form.status || FORM_STATUS.PENDING) === selectedStatus
             );
         }
-        
+
         this.renderFormsTable();
     }
 
@@ -75,7 +76,7 @@ export class FormsManager {
             this.sortColumn = column;
             this.sortOrder = 'asc';
         }
-        
+
         this.loadForms(1);
     }
 
@@ -94,24 +95,20 @@ export class FormsManager {
                 },
                 body: JSON.stringify({ status: newStatus })
             });
-            
+
             if (response.ok) {
                 const result = await response.json();
-                
+
                 const formIndex = this.allForms.findIndex(f => f.id === formId);
                 if (formIndex !== -1) {
-                    this.allForms[formIndex].status = newStatus as typeof FORM_STATUS[keyof typeof FORM_STATUS];
-                    if (result.form.respondedAt) {
-                        this.allForms[formIndex].respondedAt = result.form.respondedAt;
-                    } else {
-                        delete this.allForms[formIndex].respondedAt;
-                    }
+                    this.allForms[formIndex].status = newStatus as FormStatus;
+                    this.allForms[formIndex].respondedAt = result.form.respondedAt ?? null;
                 }
-                
+
                 this.hideStatusDropdown(formId);
                 this.filterForms();
                 await this.fetchStats();
-                
+
             } else {
                 console.error('Error updating form status:', await response.text());
                 this.showError('Error al actualizar el estado del formulario');
@@ -127,27 +124,27 @@ export class FormsManager {
             const dateFromInput = document.getElementById('export-date-from') as HTMLInputElement;
             const dateToInput = document.getElementById('export-date-to') as HTMLInputElement;
             const statusSelect = document.getElementById('export-status') as HTMLSelectElement;
-            
+
             const dateFrom = dateFromInput?.value || '';
             const dateTo = dateToInput?.value || '';
             const status = statusSelect?.value || '';
-            
+
             const params = new URLSearchParams();
             if (dateFrom) params.append('dateFrom', dateFrom);
             if (dateTo) params.append('dateTo', dateTo);
             if (status) params.append('status', status);
-            
+
             const url = `/api/forms/export?${params.toString()}`;
             const response = await authenticatedFetch(url);
-            
+
             if (response.ok) {
                 const csvContent = await response.text();
                 const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
                 const link = document.createElement('a');
-                
+
                 const currentDate = new Date().toISOString().split('T')[0];
                 const filename = `formularios-${currentDate}.csv`;
-                
+
                 if (link.download !== undefined) {
                     const url = URL.createObjectURL(blob);
                     link.setAttribute('href', url);
@@ -158,7 +155,7 @@ export class FormsManager {
                     document.body.removeChild(link);
                     URL.revokeObjectURL(url);
                 }
-                
+
                 this.hideExportModal();
             } else {
                 console.error('Error exporting CSV:', await response.text());
@@ -179,13 +176,13 @@ export class FormsManager {
 
     toggleStatusDropdown(formId: string) {
         const dropdown = document.getElementById(`status-dropdown-${formId}`);
-        
+
         document.querySelectorAll('[id^="status-dropdown-"]').forEach((element) => {
             if (element.id !== `status-dropdown-${formId}`) {
                 element.classList.add('hidden');
             }
         });
-        
+
         if (dropdown) {
             dropdown.classList.toggle('hidden');
         }
@@ -214,7 +211,7 @@ export class FormsManager {
         const totalElement = document.getElementById('total-forms');
         const weekElement = document.getElementById('week-forms');
         const pendingElement = document.getElementById('pending-forms');
-        
+
         if (statsData) {
             if (totalElement) {
                 totalElement.textContent = statsData.total.toString();
@@ -229,22 +226,22 @@ export class FormsManager {
             if (totalElement && this.currentPagination) {
                 totalElement.textContent = this.currentPagination.totalCount.toString();
             }
-            
+
             const oneWeekAgo = new Date();
             oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-            
-            const thisWeekForms = this.allForms.filter(form => 
+
+            const thisWeekForms = this.allForms.filter(form =>
                 new Date(form.createdAt) >= oneWeekAgo
             );
-            
+
             if (weekElement) {
                 weekElement.textContent = thisWeekForms.length.toString();
             }
-            
-            const pendingForms = this.allForms.filter(form => 
+
+            const pendingForms = this.allForms.filter(form =>
                 !form.status || form.status === FORM_STATUS.PENDING
             );
-            
+
             if (pendingElement) {
                 pendingElement.textContent = pendingForms.length.toString();
             }
@@ -256,36 +253,36 @@ export class FormsManager {
         const emptyState = document.getElementById('empty-state');
         const formsTable = document.getElementById('forms-table');
         const tbody = document.getElementById('forms-tbody');
-        
+
         if (loadingState) loadingState.classList.add('hidden');
-        
+
         if (this.filteredForms.length === 0) {
             if (emptyState) emptyState.classList.remove('hidden');
             if (formsTable) formsTable.classList.add('hidden');
             return;
         }
-        
+
         if (emptyState) emptyState.classList.add('hidden');
         if (formsTable) formsTable.classList.remove('hidden');
-        
+
         if (tbody) {
             tbody.innerHTML = '';
-            
+
             this.filteredForms.forEach(form => {
                 const row = this.createFormRow(form);
                 tbody.appendChild(row);
             });
         }
-        
+
         this.updateSortIcons();
     }
 
-    private createFormRow(form: FormData): HTMLTableRowElement {
+    private createFormRow(form: ContactFormRecord): HTMLTableRowElement {
         const row = document.createElement('tr');
         row.className = 'hover:bg-gray-50';
-        
+
         const status = form.status || FORM_STATUS.PENDING;
-        
+
         row.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900">${this.escapeHtml(form.name)}</div>
@@ -299,21 +296,21 @@ export class FormsManager {
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
                 <div class="relative">
-                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${FORM_STATUS_COLORS[status]} status-tag" 
+                    <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full cursor-pointer hover:opacity-80 ${FORM_STATUS_COLORS[status]} status-tag"
                           data-form-id="${form.id}"
                           id="status-tag-${form.id}">
                         ${FORM_STATUS_LABELS[status]}
                     </span>
                     <div id="status-dropdown-${form.id}" class="absolute top-full left-0 mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-10 min-w-32 hidden">
-                        <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.PENDING ? 'bg-yellow-50 text-yellow-800' : 'text-gray-700'} status-option" 
+                        <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.PENDING ? 'bg-yellow-50 text-yellow-800' : 'text-gray-700'} status-option"
                                 data-form-id="${form.id}" data-status="${FORM_STATUS.PENDING}">
                             ${FORM_STATUS_LABELS[FORM_STATUS.PENDING]}
                         </button>
-                        <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.READ ? 'bg-blue-50 text-blue-800' : 'text-gray-700'} status-option" 
+                        <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.READ ? 'bg-blue-50 text-blue-800' : 'text-gray-700'} status-option"
                                 data-form-id="${form.id}" data-status="${FORM_STATUS.READ}">
                             ${FORM_STATUS_LABELS[FORM_STATUS.READ]}
                         </button>
-                        <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.REPLIED ? 'bg-green-50 text-green-800' : 'text-gray-700'} status-option" 
+                        <button class="block w-full text-left px-3 py-2 text-xs cursor-pointer hover:bg-gray-50 ${status === FORM_STATUS.REPLIED ? 'bg-green-50 text-green-800' : 'text-gray-700'} status-option"
                                 data-form-id="${form.id}" data-status="${FORM_STATUS.REPLIED}">
                             ${FORM_STATUS_LABELS[FORM_STATUS.REPLIED]}
                         </button>
@@ -327,12 +324,12 @@ export class FormsManager {
                 <button class="text-indigo-600 hover:text-indigo-900 mr-3 cursor-pointer view-form-btn" data-form-id="${form.id}">
                     Ver
                 </button>
-                <a href="mailto:${form.email}" class="text-green-600 hover:text-green-900">
+                <button class="text-green-600 hover:text-green-900 cursor-pointer reply-form-btn" data-form-id="${form.id}">
                     Responder
-                </a>
+                </button>
             </td>
         `;
-        
+
         return row;
     }
 
@@ -340,7 +337,7 @@ export class FormsManager {
         document.querySelectorAll('.sort-icon').forEach(icon => {
             (icon as HTMLElement).style.display = 'none';
         });
-        
+
         if (this.sortColumn) {
             const iconClass = this.sortOrder === 'asc' ? 'sort-asc' : 'sort-desc';
             const activeIcon = document.querySelector(`.sort-icon.${iconClass}[data-column="${this.sortColumn}"]`) as HTMLElement;
@@ -353,12 +350,12 @@ export class FormsManager {
 
     private updatePagination() {
         const paginationContainer = document.getElementById('pagination-container');
-        
+
         if (!this.currentPagination || this.currentPagination.totalPages <= 1) {
             if (paginationContainer) paginationContainer.classList.add('hidden');
             return;
         }
-        
+
         if (paginationContainer) {
             paginationContainer.classList.remove('hidden');
             paginationContainer.innerHTML = this.generatePaginationHTML();
@@ -367,10 +364,10 @@ export class FormsManager {
 
     private generatePaginationHTML(): string {
         if (!this.currentPagination) return '';
-        
+
         const { currentPage, totalPages } = this.currentPagination;
         const maxVisible = 5;
-        
+
         const getVisiblePages = (current: number, total: number): number[] => {
             if (total <= maxVisible) {
                 return Array.from({ length: total }, (_, i) => i + 1);
@@ -462,27 +459,47 @@ export class FormsManager {
         `;
     }
 
-    private showFormModal(form: FormData) {
+    private showFormModal(form: ContactFormRecord) {
         const modal = document.getElementById('form-modal');
         const modalName = document.getElementById('modal-name');
         const modalEmailContainer = document.getElementById('modal-email-container');
+        const modalBudget = document.getElementById('modal-budget');
+        const modalServices = document.getElementById('modal-services');
         const modalMessage = document.getElementById('modal-message');
         const modalDate = document.getElementById('modal-date');
-        
+
         if (modalName) modalName.textContent = form.name;
         if (modalEmailContainer) {
             const copyToClipboardHTML = this.createCopyToClipboardHTML(form.email);
             modalEmailContainer.innerHTML = copyToClipboardHTML;
-            
+
             // Initialize the copy functionality for the newly created element
             const copyElement = modalEmailContainer.querySelector('.copy-to-clipboard') as HTMLElement;
             if (copyElement) {
                 this.initializeCopyToClipboardElement(copyElement);
             }
         }
+        if (modalBudget) modalBudget.textContent = form.budget || '-';
+        if (modalServices) {
+            modalServices.innerHTML = '';
+            const services = (form.services || '')
+                .split(',')
+                .map((s) => s.trim())
+                .filter(Boolean);
+            if (services.length === 0) {
+                modalServices.textContent = '-';
+            } else {
+                services.forEach((svc) => {
+                    const tag = document.createElement('span');
+                    tag.className = 'inline-flex items-center bg-[#d62013]/10 text-[#d62013] text-sm px-2 py-1 rounded-md';
+                    tag.textContent = svc;
+                    modalServices.appendChild(tag);
+                });
+            }
+        }
         if (modalMessage) modalMessage.textContent = form.message;
         if (modalDate) modalDate.textContent = this.formatDate(form.createdAt);
-        
+
         if (modal) {
             modal.classList.remove('hidden');
         }
@@ -502,7 +519,7 @@ export class FormsManager {
             const dateFromInput = document.getElementById('export-date-from') as HTMLInputElement;
             const dateToInput = document.getElementById('export-date-to') as HTMLInputElement;
             const statusSelect = document.getElementById('export-status') as HTMLSelectElement;
-            
+
             if (dateFromInput) dateFromInput.value = '';
             if (dateToInput) dateToInput.value = '';
             if (statusSelect) statusSelect.value = '';
@@ -516,11 +533,133 @@ export class FormsManager {
         }
     }
 
+    openReplyModal(formId: string) {
+        const form = this.allForms.find(f => f.id === formId);
+        if (!form) return;
+
+        this.replyingFormId = formId;
+
+        const modal = document.getElementById('reply-modal');
+        const toEl = document.getElementById('reply-to');
+        const subjectInput = document.getElementById('reply-subject') as HTMLInputElement;
+        const statusEl = document.getElementById('reply-status');
+
+        if (toEl) toEl.textContent = `${form.name} <${form.email}>`;
+        if (subjectInput) subjectInput.value = `Re: ${form.services} — Madame Ardent`;
+        if (statusEl) {
+            statusEl.classList.add('hidden');
+            statusEl.textContent = '';
+        }
+
+        if (modal) modal.classList.remove('hidden');
+
+        this.ensureQuill();
+        if (this.quill) {
+            this.quill.setContents([]);
+        }
+    }
+
+    hideReplyModal() {
+        const modal = document.getElementById('reply-modal');
+        if (modal) modal.classList.add('hidden');
+        this.replyingFormId = null;
+    }
+
+    async sendReply() {
+        if (!this.replyingFormId || !this.quill) return;
+
+        const subjectInput = document.getElementById('reply-subject') as HTMLInputElement;
+        const statusEl = document.getElementById('reply-status');
+        const confirmBtn = document.getElementById('confirm-reply') as HTMLButtonElement | null;
+
+        const subject = subjectInput?.value.trim() || '';
+        const html = this.quill.root.innerHTML;
+        const plain = this.quill.getText().trim();
+
+        if (!subject) {
+            this.setReplyStatus('El asunto es requerido', 'error');
+            return;
+        }
+        if (!plain) {
+            this.setReplyStatus('El mensaje no puede estar vacío', 'error');
+            return;
+        }
+
+        try {
+            if (confirmBtn) confirmBtn.disabled = true;
+            this.setReplyStatus('Enviando...', 'info');
+
+            const response = await authenticatedFetch(`/api/forms/${this.replyingFormId}/reply`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ subject, html }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                this.setReplyStatus(errorData.error || 'Error al enviar la respuesta', 'error');
+                return;
+            }
+
+            const result = await response.json();
+            const formIndex = this.allForms.findIndex(f => f.id === this.replyingFormId);
+            if (formIndex !== -1) {
+                this.allForms[formIndex].status = result.form.status;
+                this.allForms[formIndex].respondedAt = result.form.respondedAt;
+            }
+
+            this.setReplyStatus('Respuesta enviada correctamente', 'success');
+            this.filterForms();
+            await this.fetchStats();
+
+            setTimeout(() => this.hideReplyModal(), 1200);
+        } catch (error) {
+            console.error('Error sending reply:', error);
+            this.setReplyStatus('Error de conexión al enviar la respuesta', 'error');
+        } finally {
+            if (confirmBtn) confirmBtn.disabled = false;
+        }
+    }
+
+    private ensureQuill() {
+        if (this.quill) return;
+        const container = document.getElementById('reply-editor');
+        if (!container) return;
+
+        this.quill = new Quill(container, {
+            theme: 'snow',
+            placeholder: 'Escribí tu respuesta...',
+            modules: {
+                toolbar: [
+                    [{ header: [1, 2, 3, false] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ list: 'ordered' }, { list: 'bullet' }],
+                    ['link', 'blockquote'],
+                    [{ align: [] }],
+                    ['clean'],
+                ],
+            },
+        });
+    }
+
+    private setReplyStatus(message: string, type: 'error' | 'success' | 'info') {
+        const statusEl = document.getElementById('reply-status');
+        if (!statusEl) return;
+        const colors = {
+            error: 'text-red-600',
+            success: 'text-green-600',
+            info: 'text-gray-600',
+        };
+        statusEl.className = `text-sm ${colors[type]}`;
+        statusEl.textContent = message;
+        statusEl.classList.remove('hidden');
+    }
+
     private showLoading() {
         const loadingState = document.getElementById('loading-state');
         const emptyState = document.getElementById('empty-state');
         const formsTable = document.getElementById('forms-table');
-        
+
         if (loadingState) loadingState.classList.remove('hidden');
         if (emptyState) emptyState.classList.add('hidden');
         if (formsTable) formsTable.classList.add('hidden');
@@ -536,7 +675,7 @@ export class FormsManager {
     private createCopyToClipboardHTML(text: string): string {
         const componentId = `copy-${Math.random().toString(36).substr(2, 9)}`;
         return `
-            <span 
+            <span
                 id="${componentId}"
                 class="copy-to-clipboard cursor-pointer inline-flex items-center text-sm text-gray-900"
                 data-text="${this.escapeHtml(text)}"
@@ -553,32 +692,32 @@ export class FormsManager {
     private initializeCopyToClipboardElement(copyElement: HTMLElement) {
         const componentId = copyElement.id;
         const tooltipId = `tooltip-${componentId}`;
-        
+
         if (copyElement && !copyElement.dataset.initialized) {
             copyElement.dataset.initialized = 'true';
-            
+
             copyElement.addEventListener('click', async (event) => {
                 event.preventDefault();
-                
+
                 const textToCopy = copyElement.getAttribute('data-text');
                 if (textToCopy) {
                     try {
                         await navigator.clipboard.writeText(textToCopy);
-                        
+
                         // Visual feedback
                         copyElement.classList.add('copied');
-                        
+
                         // Show tooltip at mouse position
                         this.showCopyTooltip((event as MouseEvent).clientX, (event as MouseEvent).clientY, tooltipId);
-                        
+
                         // Remove feedback after 2 seconds
                         setTimeout(() => {
                             copyElement.classList.remove('copied');
                         }, 2000);
-                        
+
                     } catch (err) {
                         console.error('Error copying to clipboard:', err);
-                        
+
                         // Fallback for older browsers
                         const textArea = document.createElement('textarea');
                         textArea.value = textToCopy;
@@ -588,21 +727,21 @@ export class FormsManager {
                         document.body.appendChild(textArea);
                         textArea.focus();
                         textArea.select();
-                        
+
                         try {
                             document.execCommand('copy');
                             copyElement.classList.add('copied');
-                            
+
                             // Show tooltip at mouse position
                             this.showCopyTooltip((event as MouseEvent).clientX, (event as MouseEvent).clientY, tooltipId);
-                            
+
                             setTimeout(() => {
                                 copyElement.classList.remove('copied');
                             }, 2000);
                         } catch (fallbackErr) {
                             console.error('Fallback copy failed:', fallbackErr);
                         }
-                        
+
                         document.body.removeChild(textArea);
                     }
                 }
@@ -613,7 +752,7 @@ export class FormsManager {
     private showCopyTooltip(x: number, y: number, tooltipId: string) {
         // Look for existing tooltip or create one
         let tooltip = document.getElementById(tooltipId);
-        
+
         if (!tooltip) {
             // Create tooltip if it doesn't exist
             tooltip = document.createElement('div');
@@ -622,11 +761,11 @@ export class FormsManager {
             tooltip.textContent = '¡Copiado!';
             document.body.appendChild(tooltip);
         }
-        
+
         tooltip.style.left = `${x + 10}px`;
         tooltip.style.top = `${y - 40}px`;
         tooltip.classList.add('show');
-        
+
         setTimeout(() => {
             tooltip.classList.remove('show');
         }, 1500);
