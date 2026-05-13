@@ -1,0 +1,84 @@
+---
+// Single global lightbox overlay. Listens for clicks on any [data-zoomable]
+// element in the document and shows its image enlarged. Include once in Layout.
+---
+
+<div
+    id="zoomable-lightbox"
+    class="fixed inset-0 z-[100] hidden items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+    role="dialog"
+    aria-modal="true"
+    aria-hidden="true"
+>
+    <button
+        type="button"
+        aria-label="Cerrar"
+        data-lightbox-close
+        class="absolute top-4 right-4 flex h-12 w-12 items-center justify-center rounded-full bg-white/10 text-white transition hover:bg-white/20 focus:outline-none focus:ring-2 focus:ring-white"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+    </button>
+
+    <img
+        id="zoomable-lightbox-img"
+        src=""
+        alt=""
+        class="max-h-[90vh] max-w-[92vw] rounded-lg object-contain shadow-2xl"
+    />
+</div>
+
+<script>
+    function initZoomableLightbox() {
+        const lightbox = document.getElementById("zoomable-lightbox");
+        const lightboxImg = document.getElementById(
+            "zoomable-lightbox-img"
+        ) as HTMLImageElement | null;
+        if (!lightbox || !lightboxImg) return;
+        if (lightbox.dataset.initialized === "true") return;
+        lightbox.dataset.initialized = "true";
+
+        const open = (src: string, alt: string) => {
+            lightboxImg.src = src;
+            lightboxImg.alt = alt;
+            lightbox.classList.remove("hidden");
+            lightbox.classList.add("flex");
+            lightbox.setAttribute("aria-hidden", "false");
+            document.body.style.overflow = "hidden";
+        };
+
+        const close = () => {
+            lightbox.classList.add("hidden");
+            lightbox.classList.remove("flex");
+            lightbox.setAttribute("aria-hidden", "true");
+            lightboxImg.src = "";
+            document.body.style.overflow = "";
+        };
+
+        document.addEventListener("click", (e) => {
+            const target = e.target as HTMLElement;
+            const img = target.closest("[data-zoomable]") as HTMLImageElement | null;
+            if (img) {
+                open(img.currentSrc || img.src, img.alt);
+            }
+        });
+
+        lightbox.addEventListener("click", (e) => {
+            const target = e.target as HTMLElement;
+            if (target === lightbox || target.closest("[data-lightbox-close]")) {
+                close();
+            }
+        });
+
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Escape" && !lightbox.classList.contains("hidden")) {
+                close();
+            }
+        });
+    }
+
+    initZoomableLightbox();
+    document.addEventListener("astro:page-load", initZoomableLightbox);
+</script>

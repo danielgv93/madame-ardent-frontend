@@ -1,0 +1,18 @@
+---
+export interface Props {
+    src: string;
+    alt: string;
+    class?: string;
+    loading?: "lazy" | "eager";
+}
+
+const { src, alt, class: className = "", loading = "lazy" } = Astro.props;
+---
+
+<img
+    src={src}
+    alt={alt}
+    loading={loading}
+    class={`cursor-zoom-in ${className}`}
+    data-zoomable
+/>
