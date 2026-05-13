@@ -7,6 +7,7 @@ import Row from "../../components/Row.astro";
 import Col from "../../components/Col.astro";
 import Button from "../../components/Button.astro";
 import BulletList from "../../components/BulletList.astro";
+import ZoomableImage from "../../components/ZoomableImage.astro";
 
 const includes = [
     "Cubierta completa para autopublicación",
@@ -21,7 +22,7 @@ const includes = [
     <Section>
         <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
             <Col class="md:w-1/2 w-full">
-                <img class="rounded-xl w-full" src="/servicios/pack-360.webp" alt="Pack 360 para autores" />
+                <ZoomableImage class="rounded-xl w-full" src="/servicios/pack-360.webp" alt="Pack 360 para autores" />
             </Col>
             <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
                 <Title class="md:text-5xl text-4xl md:leading-16">
