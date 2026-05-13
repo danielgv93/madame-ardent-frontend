@@ -9,12 +9,24 @@ import Alert from '../components/Alert.astro';
 ---
 
 <Layout title="Contacto - Madame Ardent">
-  <main class="min-h-[calc(100vh-6rem)] bg-gradient-to-br from-purple-50 to-pink-50 pt-12">
-    <div class="container mx-auto px-4 max-w-2xl">
-      <div class="bg-white rounded-lg shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2 text-center">Contáctanos</h1>
-        <p class="text-gray-600 text-center mb-8">Solicita nuestros servicios de diseño de portadas</p>
-        
+  <main class="min-h-[calc(100vh-6rem)] bg-[#fee1e3] pt-12 pb-16">
+    <div class="container mx-auto px-4 max-w-3xl">
+      <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 border border-[#d62013]/10">
+        <h1 class="text-4xl md:text-5xl font-bold text-[#d62013] mb-8 text-center">Cuéntame tu historia</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 text-gray-700 leading-relaxed">
+          <div class="space-y-3">
+            <p>Me inspiran las historias. Cuéntame todo sobre tu proyecto.</p>
+            <p>Quiero trabajar contigo y crear portadas con las que soñamos. <span class="text-[#d62013] font-semibold">¡Escríbeme!</span></p>
+          </div>
+          <div class="md:border-l md:border-[#d62013]/20 md:pl-8">
+            <p>
+              Para cualquier otra consulta puedes contactarnos directamente a nuestro email:
+            </p>
+            <a href="mailto:info@madameardent.com" class="inline-block mt-2 text-[#d62013] hover:text-[#a01a0f] font-semibold underline underline-offset-4 decoration-[#d62013]/30 hover:decoration-[#d62013]">info@madameardent.com</a>
+          </div>
+        </div>
+
         <form id="contact-form" class="space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>

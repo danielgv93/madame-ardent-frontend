@@ -1,6 +1,14 @@
 ---
 import madameArdent from '../assets/madame-ardent.svg';
 import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
+
+const servicios = [
+    { label: "Pack 360 para autores", href: "/servicios/pack-360" },
+    { label: "Portadas de libros", href: "/servicios/portadas" },
+    { label: "Maquetación interior", href: "/servicios/maquetacion-interior" },
+    { label: "Ilustración", href: "/servicios/ilustracion" },
+    { label: "Mapas", href: "/servicios/mapas" },
+];
 ---
 <!-- Navbar component with scroll shrink and mobile fullscreen menu -->
 <nav id="navbar" class="fixed top-0 left-0 w-full bg-white backdrop-blur-[15px] transition-all duration-300 ease-in-out z-50" style={`height: ${TOP_MENU_HEIGHT.EXPANDED}px`}>
@@ -13,12 +21,49 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
         </div>
 
         <!-- Desktop navigation -->
-        <div class="hidden md:flex space-x-8">
+        <div class="hidden md:flex items-center space-x-8">
             <a href="/" class="text-gray-800 hover:text-gray-600">Home</a>
             <a href="/portfolio" class="text-gray-800 hover:text-gray-600">Portfolio</a>
             <a href="/sobre-mi" class="text-gray-800 hover:text-gray-600">Sobre mí</a>
-            <a href="/servicios" class="text-gray-800 hover:text-gray-600">Servicios</a>
-            <a href="/contacto" class="text-gray-800 hover:text-gray-600">Contacto</a>
+
+            <!-- Servicios dropdown -->
+            <div id="servicios-dropdown" class="relative h-full flex items-center">
+                <button
+                    id="servicios-trigger"
+                    type="button"
+                    aria-haspopup="true"
+                    aria-expanded="false"
+                    aria-controls="servicios-menu"
+                    class="flex items-center gap-1 text-gray-800 hover:text-gray-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400 rounded"
+                >
+                    Servicios
+                    <svg class="h-4 w-4 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div
+                    id="servicios-menu"
+                    role="menu"
+                    aria-labelledby="servicios-trigger"
+                    class="absolute left-1/2 -translate-x-1/2 top-full min-w-[240px] bg-white shadow-lg rounded-md py-2 opacity-0 invisible translate-y-1 transition-all duration-200 ease-out"
+                >
+                    <a href="/servicios" role="menuitem" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 font-medium border-b border-gray-100 mb-1">
+                        Ver todos los servicios
+                    </a>
+                    {servicios.map((s) => (
+                        <a href={s.href} role="menuitem" class="block px-4 py-2 text-sm text-gray-800 hover:bg-gray-100">
+                            {s.label}
+                        </a>
+                    ))}
+                </div>
+            </div>
+
+            <a
+                href="/contacto"
+                class="inline-flex items-center px-4 py-2 rounded-full bg-[#d62013] text-white font-medium border border-[#d62013] hover:bg-transparent hover:text-[#d62013] transition-colors duration-200 shadow-sm"
+            >
+                Trabajemos juntos
+            </a>
         </div>
 
         <!-- Mobile hamburger -->
@@ -34,7 +79,7 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
 </nav>
 
 <!-- Mobile fullscreen menu -->
-<div id="mobile-menu" class="fixed inset-0 bg-white flex flex-col items-center justify-center space-y-8 transform scale-0 transition-transform duration-300 ease-in-out z-40">
+<div id="mobile-menu" class="fixed inset-0 bg-white flex flex-col items-center justify-center space-y-6 transform scale-0 transition-transform duration-300 ease-in-out z-40 overflow-y-auto py-16">
     <button id="close-btn" aria-label="Close menu" class="absolute top-4 right-4 focus:outline-none">
         <!-- Close icon -->
         <svg class="h-6 w-6 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -42,36 +87,62 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
         </svg>
     </button>
     <a href="/" class="text-2xl text-gray-800 hover:text-gray-600">Home</a>
-    <a href="#sobre-mi" class="text-2xl text-gray-800 hover:text-gray-600">Sobre mí</a>
-    <a href="/servicios" class="text-2xl text-gray-800 hover:text-gray-600">Servicios</a>
-    <a href="/contacto" class="text-2xl text-gray-800 hover:text-gray-600">Contacto</a>
+    <a href="/portfolio" class="text-2xl text-gray-800 hover:text-gray-600">Portfolio</a>
+    <a href="/sobre-mi" class="text-2xl text-gray-800 hover:text-gray-600">Sobre mí</a>
+
+    <!-- Servicios accordion (mobile) -->
+    <div class="flex flex-col items-center w-full">
+        <button
+            id="servicios-mobile-trigger"
+            type="button"
+            aria-expanded="false"
+            aria-controls="servicios-mobile-menu"
+            class="flex items-center gap-2 text-2xl text-gray-800 hover:text-gray-600 focus:outline-none"
+        >
+            Servicios
+            <svg id="servicios-mobile-chevron" class="h-5 w-5 transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+            </svg>
+        </button>
+        <div id="servicios-mobile-menu" class="hidden flex-col items-center gap-3 mt-4">
+            <a href="/servicios" class="text-lg text-gray-700 hover:text-gray-500 font-medium">Ver todos</a>
+            {servicios.map((s) => (
+                <a href={s.href} class="text-lg text-gray-700 hover:text-gray-500">{s.label}</a>
+            ))}
+        </div>
+    </div>
+
+    <a
+        href="/contacto"
+        class="inline-flex items-center px-6 py-3 rounded-full bg-[#d62013] text-white text-xl font-medium border border-[#d62013] hover:bg-transparent hover:text-[#d62013] transition-colors duration-200 shadow-sm mt-4"
+    >
+        Trabajemos juntos
+    </a>
 </div>
 
 <script type="module" define:vars={{ TOP_MENU_HEIGHT }}>
+function initTopMenu() {
     const navbar = document.getElementById('navbar');
     const mobileMenu = document.getElementById('mobile-menu');
     const menuBtn = document.getElementById('menu-btn');
     const closeBtn = document.getElementById('close-btn');
+    if (!navbar || !menuBtn) return;
 
     // Ajusta altura, opacidad y sombra según posición de scroll
     let lastScrollY = 0;
-    window.addEventListener('scroll', () => {
+    const onScroll = () => {
         const currentScrollY = window.pageYOffset;
         const scrollingDown = currentScrollY > lastScrollY;
 
         if (currentScrollY === 0) {
-            // En top: altura completa, opacidad total y sin sombra, sin animación
             navbar.classList.remove('transition-all');
             navbar.classList.remove('bg-white/50', 'shadow-md');
             navbar.classList.add('bg-white');
             navbar.style.height = `${TOP_MENU_HEIGHT.EXPANDED}px`;
         } else {
-            // En cualquier otro punto: más bajo, semitransparente y con sombra
             if (scrollingDown) {
-                // Solo animar cuando se baja
                 navbar.classList.add('transition-all');
             } else {
-                // Sin animación cuando se sube
                 navbar.classList.remove('transition-all');
             }
             navbar.classList.add('bg-white/50', 'shadow-md');
@@ -80,7 +151,8 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
         }
 
         lastScrollY = currentScrollY;
-    });
+    };
+    window.addEventListener('scroll', onScroll);
 
     // Abrir y cerrar menú móvil
     menuBtn.addEventListener('click', () => {
@@ -92,4 +164,83 @@ import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
         mobileMenu.classList.remove('scale-100');
         mobileMenu.classList.add('scale-0');
     });
+
+    // ----- Servicios dropdown (desktop) -----
+    const dropdown = document.getElementById('servicios-dropdown');
+    const trigger = document.getElementById('servicios-trigger');
+    const menu = document.getElementById('servicios-menu');
+    if (!dropdown || !trigger || !menu) return;
+    const chevron = trigger.querySelector('svg');
+
+    const openClasses = ['opacity-100', 'visible', 'translate-y-0'];
+    const closedClasses = ['opacity-0', 'invisible', 'translate-y-1'];
+
+    let hoverTimeout;
+
+    const openDropdown = () => {
+        clearTimeout(hoverTimeout);
+        menu.classList.remove(...closedClasses);
+        menu.classList.add(...openClasses);
+        trigger.setAttribute('aria-expanded', 'true');
+        chevron.classList.add('rotate-180');
+    };
+
+    const closeDropdown = () => {
+        menu.classList.remove(...openClasses);
+        menu.classList.add(...closedClasses);
+        trigger.setAttribute('aria-expanded', 'false');
+        chevron.classList.remove('rotate-180');
+    };
+
+    const toggleDropdown = () => {
+        if (trigger.getAttribute('aria-expanded') === 'true') closeDropdown();
+        else openDropdown();
+    };
+
+    trigger.addEventListener('click', (e) => {
+        e.stopPropagation();
+        toggleDropdown();
+    });
+
+    dropdown.addEventListener('mouseenter', openDropdown);
+    dropdown.addEventListener('mouseleave', () => {
+        hoverTimeout = setTimeout(closeDropdown, 150);
+    });
+
+    const onDocClick = (e) => {
+        if (!dropdown.contains(e.target)) closeDropdown();
+    };
+    const onDocKey = (e) => {
+        if (e.key === 'Escape' && trigger.getAttribute('aria-expanded') === 'true') {
+            closeDropdown();
+            trigger.focus();
+        }
+    };
+    document.addEventListener('click', onDocClick);
+    document.addEventListener('keydown', onDocKey);
+
+    // Cleanup on view transition navigation
+    document.addEventListener('astro:before-swap', () => {
+        window.removeEventListener('scroll', onScroll);
+        document.removeEventListener('click', onDocClick);
+        document.removeEventListener('keydown', onDocKey);
+    }, { once: true });
+
+    // ----- Servicios accordion (mobile) -----
+    const mobileTrigger = document.getElementById('servicios-mobile-trigger');
+    const mobileSubmenu = document.getElementById('servicios-mobile-menu');
+    const mobileChevron = document.getElementById('servicios-mobile-chevron');
+    if (mobileTrigger && mobileSubmenu && mobileChevron) {
+        mobileTrigger.addEventListener('click', () => {
+            const expanded = mobileTrigger.getAttribute('aria-expanded') === 'true';
+            mobileTrigger.setAttribute('aria-expanded', String(!expanded));
+            mobileSubmenu.classList.toggle('hidden');
+            mobileSubmenu.classList.toggle('flex');
+            mobileChevron.classList.toggle('rotate-180');
+        });
+    }
+}
+
+initTopMenu();
+document.addEventListener('astro:page-load', initTopMenu);
 </script>
