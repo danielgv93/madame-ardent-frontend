@@ -23,6 +23,7 @@ model Form {
   email       String
   country     String
   services    String
+  budget      String
   message     String
   status      String    @default("pending")
   respondedAt DateTime?
