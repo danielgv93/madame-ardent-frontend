@@ -1,0 +1,188 @@
+{
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "about": "About me",
+    "services": "Services",
+    "viewAllServices": "View all services",
+    "viewAllShort": "View all",
+    "cta": "Let's work together",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu",
+    "languageSwitch": "Language"
+  },
+  "footer": {
+    "tagline": "Transforming your novels into captivating book covers.",
+    "contact": "Contact",
+    "rights": "All rights reserved.",
+    "subline": "Editorial design · Novel covers"
+  },
+  "common": {
+    "requestQuote": "Request a quote",
+    "startProject": "Start your project",
+    "from": "from",
+    "onlyFor": "only for",
+    "installmentNote": "(installment payment available)*"
+  },
+  "home": {
+    "title": "Editorial design",
+    "subtitle": "Transforming your novels into captivating book covers."
+  },
+  "about": {
+    "metaTitle": "About me - Madame Ardent",
+    "heroTitle": "Hi! I'm Gabi and I'd love for you to get to know me :)",
+    "intro1": "My name is Gabriela Rey, though on social media you probably know me as madameardent. I'm a graphic designer and editorial illustrator and, since 2020, I help authors all over the world dress their novels so they shine and find their place in the market. I love working hand in hand with you, having you present in every step of the process and making sure you feel accompanied, heard and, above all, that you enjoy your project as much as I enjoy creating it with you.",
+    "intro2": "I'm passionate about my work. I've been working very hard for years to be able to do what I do and give your books the best treatment they deserve.",
+    "intro3Prefix": "If you'd like to shape your story with care and enthusiasm, write to me at ",
+    "intro3Suffix": " and we'll start this adventure together.",
+    "storyTitle": "Let me tell you my story to inspire yours:",
+    "y2015": "I was making book covers for free as a hobby while studying. It was a way to channel my creativity and my love for reading, never imagining it would become my profession.",
+    "y2017": "I dropped out of my Marine Sciences degree. I didn't know what to do with my future and it was a complicated, gray year, full of uncertainty, in which I had to rethink where I wanted to go.",
+    "y2020": "I finished studying graphic design, opened this account and got my first client. Many people doubted you could make a living from this, but I decided to try anyway and take the first step.",
+    "y2024": "I was fired from a job where I was very unhappy and made the decision to study an advanced master's degree in graphic design to take my business to the next level and dedicate myself to this full-time.",
+    "y2025": "More than 100 books carry my covers and more than 20,000 people follow my work. Today I'm a full-time freelancer and I live off what I love most: dressing stories so they find their readers.",
+    "futureTitle": "About the future",
+    "writingTitle": "Writing",
+    "writingText": "I'm currently working on my first novel and I hope to share more soon about this professional branch of mine in letters and literature.",
+    "writingHandle": "@madamewrites",
+    "teachingTitle": "Courses and training",
+    "teachingText": "I want to help emerging professionals be able to make a living from this as freelancers and build their client base from scratch. The first project will be a complete course teaching you my work system step by step."
+  },
+  "contact": {
+    "metaTitle": "Contact - Madame Ardent",
+    "title": "Tell me your story",
+    "intro1a": "Stories inspire me. Tell me everything about your project.",
+    "intro1bStart": "I want to work with you and create the covers we dream of. ",
+    "intro1bHighlight": "Write to me!",
+    "intro2": "For any other inquiry you can contact us directly at our email:",
+    "labelName": "Name",
+    "labelUser": "Social media handle",
+    "labelEmail": "Email",
+    "labelCountry": "Where are you from?",
+    "labelServices": "Which services would you like?",
+    "labelBudget": "Estimated budget (not final)",
+    "labelMessage": "Message",
+    "selectServicesPlaceholder": "Select one or more services",
+    "selectBudgetPlaceholder": "Select a budget",
+    "messagePlaceholder": "Describe your project, budget, deadlines and any important details...",
+    "submit": "Send request",
+    "success": "Message sent successfully! We'll contact you soon.",
+    "error": "Error sending the message. Please try again.",
+    "services": {
+      "fullCover": "Full book cover design",
+      "redesign": "Existing cover redesign",
+      "backCover": "Back cover design",
+      "spine": "Spine design",
+      "complete": "Complete design (cover + back + spine)",
+      "consulting": "Design consulting",
+      "other": "Other"
+    }
+  },
+  "servicesIndex": {
+    "title": "My",
+    "titleEmph": "Services",
+    "subtitle": "Every project is unique. Find the service that best fits your novel and let's start shaping it.",
+    "items": {
+      "pack360Title": "360 Pack for authors",
+      "pack360Desc": "Everything your novel needs to be published, from cover to social media launch.",
+      "coversTitle": "Book covers",
+      "coversDesc": "Commercial print covers for self-publishing or traditional publishing.",
+      "layoutTitle": "Interior layout",
+      "layoutDesc": "Professional layout for print and digital, tailored to the complexity of your work.",
+      "illustrationTitle": "Illustration",
+      "illustrationDesc": "Custom illustrations to accompany your story.",
+      "mapsTitle": "Maps",
+      "mapsDesc": "Illustrated maps for fantasy worlds and novels with their own geography."
+    }
+  },
+  "pack360": {
+    "title": "360 Pack",
+    "titleEmph": "for authors",
+    "contains": "What's in the Pack?",
+    "includes": [
+      "Full cover for self-publishing",
+      "Matching interior layout for print",
+      "A+ content for Amazon (banners)",
+      "Bookmark design",
+      "3 social media posts for the novel launch"
+    ]
+  },
+  "covers": {
+    "title": "Print",
+    "titleEmph": "covers",
+    "subtitle": "Commercial covers for self-publishing or traditional publishing. Includes front, spine and back. With or without flaps.",
+    "simple": "Simple cover",
+    "manipulated": "Photo-manipulated cover",
+    "illustratedSimple": "Simple illustrated cover",
+    "illustratedComplex": "Complex illustrated cover",
+    "priceSimple": "from 200€",
+    "priceManipulated": "from 350€",
+    "priceIllustratedSimple": "from 350€",
+    "priceIllustratedComplex": "from 450€",
+    "promoTag": "If you're a self-published author",
+    "promoTitleStart": "Discover the ",
+    "promoTitleEmph": "360 pack for authors",
+    "promoTitleEnd": ", the most affordable option to publish your book at higher quality",
+    "promoCta": "I want to discover it"
+  },
+  "interiorLayout": {
+    "title": "Print",
+    "titleEmph": "layout",
+    "tiers": [
+      { "range": "Up to 60,000 words", "price": "220€" },
+      { "range": "60,000 – 100,000 words", "price": "300€" },
+      { "range": "100,000 – 200,000 words", "price": "430€" }
+    ],
+    "epubNoteStart": "If, in addition to the print layout, you want the digital e-pub format, ",
+    "epubNoteAmount": "45€",
+    "epubNoteEnd": " will be added to the final quote.",
+    "disclaimer": "(*) Prices will be adjusted depending on the complexity of the layout. These are examples for novels."
+  },
+  "illustration": {
+    "charactersTitle": "Character",
+    "charactersTitleEmph": "illustrations",
+    "characters": [
+      { "label": "1-character design", "price": "110€" },
+      { "label": "2-character design", "price": "200€" },
+      { "label": "Simple background", "price": "+45€" },
+      { "label": "Complex background", "price": "+110€" }
+    ],
+    "charactersNote": "The simple background is like the one shown in the blue example, monochromatic. A flat background like the yellow one has no additional cost.",
+    "packTitle": "Character",
+    "packTitleEmph": "design pack",
+    "packIncludes": [
+      "Design of 4 characters",
+      "Full body",
+      "Color and black and white",
+      "Any gender, ethnicity and proportions"
+    ],
+    "silhouettesTitle": "Silhouette",
+    "silhouettesTitleEmph": "illustrations",
+    "silhouettesText": "They feature low-detail characters drawn in flat color over a vivid, lively background.",
+    "sketchesTitleEmph": "Sketches",
+    "sketches": [
+      { "label": "Portrait", "price": "25€" },
+      { "label": "Half bust", "price": "35€" },
+      { "label": "Full body", "price": "45€" }
+    ],
+    "sketchesNote": "The sketch is characterized by a loose, unfussy line. Perfect for bestiaries and interior layouts on a tight budget."
+  },
+  "maps": {
+    "title": "Map",
+    "titleEmph": "design",
+    "tiers": [
+      { "label": "Black and white", "price": "from 199€" },
+      { "label": "Color (includes black and white)", "price": "from 299€" }
+    ]
+  },
+  "portfolio": {
+    "title": "My",
+    "titleEmph": "Portfolio",
+    "subtitle": "Where narrative meets visual aesthetics. Explore the art of telling stories through unique and captivating book covers.",
+    "tabIllustrated": "<span class=\"italic\">Illustrated</span> Covers",
+    "tabPhoto": "<span class=\"italic\">Photo-manipulated</span> Covers"
+  },
+  "coverCreator": {
+    "title": "Designer"
+  }
+}

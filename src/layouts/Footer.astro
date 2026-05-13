@@ -1,5 +1,9 @@
 ---
 import madameArdent from '../assets/madame-ardent.svg';
+import { getLangFromUrl, useTranslations, localizedRoute } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 <footer class="relative w-full pt-12 overflow-hidden" style="background-color: #fee1e3;">
     <div class="max-w-7xl mx-auto px-6 lg:px-10 pt-16 pb-8">
@@ -7,18 +11,18 @@ import madameArdent from '../assets/madame-ardent.svg';
 
             <!-- Brand block -->
             <div class="flex flex-col items-center md:items-start text-center md:text-left">
-                <a href="/" class="inline-block mb-5">
+                <a href={localizedRoute('home', lang)} class="inline-block mb-5">
                     <img src={madameArdent.src} alt="Madame Ardent" class="h-20 w-auto" />
                 </a>
                 <p class="text-gray-700 max-w-xs leading-relaxed text-sm">
-                    Transformando tus novelas en portadas cautivadoras.
+                    {t('footer.tagline')}
                 </p>
             </div>
 
             <!-- Contacto + Redes -->
             <div class="flex flex-col items-center md:items-end">
                 <h3 class="text-xs font-semibold tracking-[0.2em] uppercase text-primary mb-5" style="font-family: var(--font-simplify);">
-                    Contacto
+                    {t('footer.contact')}
                 </h3>
 
                 <a
@@ -69,10 +73,10 @@ import madameArdent from '../assets/madame-ardent.svg';
         <!-- Bottom strip -->
         <div class="mt-14 pt-6 border-t border-white/60 flex flex-col sm:flex-row items-center justify-between gap-3">
             <p class="text-xs text-gray-600 tracking-wide">
-                © {new Date().getFullYear()} Madame Ardent. Todos los derechos reservados.
+                © {new Date().getFullYear()} Madame Ardent. {t('footer.rights')}
             </p>
             <p class="text-xs text-gray-600 tracking-wide">
-                Diseño editorial · Portadas de novelas
+                {t('footer.subline')}
             </p>
         </div>
     </div>

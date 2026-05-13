@@ -4,15 +4,21 @@ import Row from "../components/Row.astro";
 import { TOP_MENU_HEIGHT } from "../lib/constants/constants";
 import Button from "../components/Button.astro";
 import Title from "../components/Title.astro";
+import { getLangFromUrl, useTranslations, localizedRoute } from "../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
 ---
 
 <section class="relative px-4" style={`min-height: calc(100dvh - ${TOP_MENU_HEIGHT.EXPANDED}px)`}>
     <Row class="flex-col md:flex-row h-full">
         <Col class="w-full md:w-1/2 items-center md:items-end order-2 md:order-1">
             <Col class="w-full md:w-2/3 items-center md:items-start gap-6 md:gap-8 text-center md:text-left">
-                <Title class="mb-2 md:mb-6">Diseño editorial</Title>
-                <span>Transformando tus novelas en portadas cautivadoras.</span>
-                <Button>Comienza tu proyecto</Button>
+                <Title class="mb-2 md:mb-6">{t('home.title')}</Title>
+                <span>{t('home.subtitle')}</span>
+                <a href={localizedRoute('contact', lang)}>
+                    <Button>{t('common.startProject')}</Button>
+                </a>
             </Col>
         </Col>
         <Col class="w-full md:w-1/2 items-center md:items-start order-1 md:order-2">

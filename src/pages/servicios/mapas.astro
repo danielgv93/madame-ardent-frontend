@@ -1,47 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import Section from "../../layouts/Section.astro";
-import Title from "../../components/Title.astro";
-import Text from "../../components/Text.astro";
-import Row from "../../components/Row.astro";
-import Col from "../../components/Col.astro";
-import Button from "../../components/Button.astro";
-import ZoomableImage from "../../components/ZoomableImage.astro";
-
-const mapas = [
-    { label: "En blanco y negro", price: "desde 199€" },
-    { label: "A color (incluye blanco y negro)", price: "desde 299€" },
-];
+import MapsPage from "../../components/pages/MapsPage.astro";
 ---
-
 <Layout>
-    <Section class="md:py-20 py-12">
-        <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
-            <Col class="md:w-1/2 w-full">
-                <Row class="gap-4 w-full items-center">
-                    <ZoomableImage class="rounded-xl w-2/5 h-auto object-cover" src="/mapas/mapa-1-1.webp" alt="Mapa 1" />
-                    <ZoomableImage class="rounded-xl w-2/5 h-auto object-cover" src="/mapas/mapa-1-2.webp" alt="Mapa 2" />
-                    <ZoomableImage class="rounded-xl w-1/5 h-auto object-cover" src="/mapas/mapa-1-3.webp" alt="Mapa 3" />
-                </Row>
-            </Col>
-            <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
-                <Title class="md:text-5xl text-4xl md:leading-16">
-                    Diseño <span class="italic">de mapa</span>
-                </Title>
-
-                <ul class="flex flex-col gap-4 mt-8 w-full">
-                    {mapas.map((item) => (
-                        <li class="flex items-baseline justify-between gap-4 border-b border-primary/20 pb-3">
-                            <Text>{item.label}</Text>
-                            <span class="text-primary font-simplify text-2xl md:text-3xl whitespace-nowrap">{item.price}</span>
-                        </li>
-                    ))}
-                </ul>
-
-                <a href="/contacto" class="mt-8">
-                    <Button variant="primary" size="lg">Solicita presupuesto</Button>
-                </a>
-            </Col>
-        </Row>
-    </Section>
+    <MapsPage />
 </Layout>

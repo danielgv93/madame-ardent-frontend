@@ -1,0 +1,123 @@
+---
+import Button from '../Button.astro';
+import Input from '../Input.astro';
+import Label from '../Label.astro';
+import Select from '../Select.astro';
+import Textarea from '../Textarea.astro';
+import Alert from '../Alert.astro';
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const serviceOptions = [
+  { value: 'Diseño de portada completa', label: t('contact.services.fullCover') },
+  { value: 'Rediseño de portada existente', label: t('contact.services.redesign') },
+  { value: 'Diseño de contraportada', label: t('contact.services.backCover') },
+  { value: 'Diseño de lomo', label: t('contact.services.spine') },
+  { value: 'Diseño completo (portada + contraportada + lomo)', label: t('contact.services.complete') },
+  { value: 'Consultoría de diseño', label: t('contact.services.consulting') },
+  { value: 'Otro', label: t('contact.services.other') },
+];
+---
+
+<main class="min-h-[calc(100vh-6rem)] bg-[#fee1e3] pt-12 pb-16">
+  <div class="container mx-auto px-4 max-w-3xl">
+    <div class="bg-white rounded-lg shadow-lg p-8 md:p-12 border border-[#d62013]/10">
+      <h1 class="text-4xl md:text-5xl font-bold text-[#d62013] mb-8 text-center">{t('contact.title')}</h1>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10 text-gray-700 leading-relaxed">
+        <div class="space-y-3">
+          <p>{t('contact.intro1a')}</p>
+          <p>{t('contact.intro1bStart')}<span class="text-[#d62013] font-semibold">{t('contact.intro1bHighlight')}</span></p>
+        </div>
+        <div class="md:border-l md:border-[#d62013]/20 md:pl-8">
+          <p>{t('contact.intro2')}</p>
+          <a href="mailto:info@madameardent.com" class="inline-block mt-2 text-[#d62013] hover:text-[#a01a0f] font-semibold underline underline-offset-4 decoration-[#d62013]/30 hover:decoration-[#d62013]">info@madameardent.com</a>
+        </div>
+      </div>
+
+      <form id="contact-form" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label for="name" required>{t('contact.labelName')}</Label>
+            <Input type="text" id="name" name="name" required />
+          </div>
+
+          <div>
+            <Label for="user" required>{t('contact.labelUser')}</Label>
+            <Input type="text" id="user" name="user" required />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <Label for="email" required>{t('contact.labelEmail')}</Label>
+            <Input type="email" id="email" name="email" required />
+          </div>
+
+          <div>
+            <Label for="country" required>{t('contact.labelCountry')}</Label>
+            <Input type="text" id="country" name="country" required />
+          </div>
+        </div>
+
+        <div>
+          <Label for="services" required>{t('contact.labelServices')}</Label>
+          <Select
+            id="services"
+            name="services"
+            multi
+            required
+            placeholder={t('contact.selectServicesPlaceholder')}
+            options={serviceOptions}
+          />
+        </div>
+
+        <div>
+          <Label for="budget" required>{t('contact.labelBudget')}</Label>
+          <Select id="budget" name="budget" required>
+            <option value="">{t('contact.selectBudgetPlaceholder')}</option>
+            <option value="200€">200€</option>
+            <option value="300€">300€</option>
+            <option value="400€">400€</option>
+            <option value="+500€">+500€</option>
+          </Select>
+        </div>
+
+        <div>
+          <Label for="message" required>{t('contact.labelMessage')}</Label>
+          <Textarea
+            id="message"
+            name="message"
+            rows={5}
+            required
+            placeholder={t('contact.messagePlaceholder')}
+          />
+        </div>
+
+        <div class="text-center">
+          <Button type="submit" variant="primary" size="lg">{t('contact.submit')}</Button>
+        </div>
+      </form>
+
+      <Alert id="success-message" variant="success" hidden>
+        {t('contact.success')}
+      </Alert>
+
+      <Alert id="error-message" variant="error" hidden>
+        {t('contact.error')}
+      </Alert>
+    </div>
+  </div>
+</main>
+
+<script>
+  import { ContactFormHandler } from '../../lib/contact-form';
+
+  document.addEventListener('astro:page-load', () => {
+    if (document.getElementById('contact-form')) {
+      new ContactFormHandler('contact-form');
+    }
+  });
+</script>

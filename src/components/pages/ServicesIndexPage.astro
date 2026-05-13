@@ -1,0 +1,71 @@
+---
+import Section from "../../layouts/Section.astro";
+import Title from "../Title.astro";
+import Text from "../Text.astro";
+import Row from "../Row.astro";
+import Col from "../Col.astro";
+import { getLangFromUrl, useTranslations, localizedRoute } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const services = [
+    {
+        title: t('servicesIndex.items.pack360Title'),
+        description: t('servicesIndex.items.pack360Desc'),
+        href: localizedRoute('pack360', lang),
+        image: "/servicios/pack-360.webp",
+    },
+    {
+        title: t('servicesIndex.items.coversTitle'),
+        description: t('servicesIndex.items.coversDesc'),
+        href: localizedRoute('covers', lang),
+        image: "/servicios/simple.webp",
+    },
+    {
+        title: t('servicesIndex.items.layoutTitle'),
+        description: t('servicesIndex.items.layoutDesc'),
+        href: localizedRoute('interiorLayout', lang),
+        image: "/servicios/maquetacion-fisico.webp",
+    },
+    {
+        title: t('servicesIndex.items.illustrationTitle'),
+        description: t('servicesIndex.items.illustrationDesc'),
+        href: localizedRoute('illustration', lang),
+        image: "/servicios/ilustrada-simple.webp",
+    },
+    {
+        title: t('servicesIndex.items.mapsTitle'),
+        description: t('servicesIndex.items.mapsDesc'),
+        href: localizedRoute('maps', lang),
+        image: "/servicios/ilustrada-compleja.webp",
+    },
+];
+---
+
+<Section>
+    <div class="md:w-2/3">
+        <Title>
+            {t('servicesIndex.title')} <span class="italic">{t('servicesIndex.titleEmph')}</span>
+        </Title>
+        <Text class="mt-6 text-secondary-500 max-w-md text-lg leading-relaxed">
+            {t('servicesIndex.subtitle')}
+        </Text>
+    </div>
+</Section>
+
+<Section class="md:py-12 py-8">
+    <Row class="flex-wrap items-stretch md:gap-8 gap-6">
+        {services.map((s) => (
+            <Col class="md:w-[calc(33.333%-1.5rem)] w-full">
+                <a href={s.href} class="group w-full flex flex-col gap-4">
+                    <div class="overflow-hidden rounded-xl aspect-[4/3]">
+                        <img src={s.image} alt={s.title} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+                    <Title class="text-2xl md:text-3xl">{s.title}</Title>
+                    <Text class="text-secondary-500">{s.description}</Text>
+                </a>
+            </Col>
+        ))}
+    </Row>
+</Section>

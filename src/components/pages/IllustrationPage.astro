@@ -1,0 +1,136 @@
+---
+import Section from "../../layouts/Section.astro";
+import Title from "../Title.astro";
+import Text from "../Text.astro";
+import Row from "../Row.astro";
+import Col from "../Col.astro";
+import Button from "../Button.astro";
+import BulletList from "../BulletList.astro";
+import ZoomableImage from "../ZoomableImage.astro";
+import { getLangFromUrl, useTranslations, localizedRoute } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const characters = t('illustration.characters') as unknown as { label: string; price: string }[];
+const packIncludes = t('illustration.packIncludes') as unknown as string[];
+const sketches = t('illustration.sketches') as unknown as { label: string; price: string }[];
+---
+
+<Section class="md:py-20 py-12">
+    <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+        <Col class="md:w-1/2 w-full">
+            <ZoomableImage class="rounded-xl w-full" src="/servicios/ilustracion-1.webp" alt={`${t('illustration.charactersTitle')} ${t('illustration.charactersTitleEmph')}`} />
+        </Col>
+        <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
+            <Title class="md:text-5xl text-4xl md:leading-16">
+                {t('illustration.charactersTitle')} <span class="italic">{t('illustration.charactersTitleEmph')}</span>
+            </Title>
+
+            <ul class="flex flex-col gap-4 mt-8 w-full">
+                {characters.map((item) => (
+                    <li class="flex items-baseline justify-between gap-4 border-b border-primary/20 pb-3">
+                        <Text>{item.label}</Text>
+                        <span class="text-primary font-simplify text-2xl md:text-3xl whitespace-nowrap">{item.price}</span>
+                    </li>
+                ))}
+            </ul>
+
+            <Text class="mt-6 text-secondary-500">
+                {t('illustration.charactersNote')}
+            </Text>
+
+            <a href={localizedRoute('contact', lang)} class="mt-8">
+                <Button variant="primary" size="lg">{t('common.requestQuote')}</Button>
+            </a>
+        </Col>
+    </Row>
+</Section>
+
+<Section class="bg-primary-50 md:py-20 py-12">
+    <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+        <Col class="md:w-1/2 w-full order-1">
+            <ZoomableImage class="rounded-xl w-full" src="/servicios/ilustracion-2.webp" alt={`${t('illustration.packTitle')} ${t('illustration.packTitleEmph')}`} />
+        </Col>
+        <Col class="md:w-1/2 w-full md:px-6 px-0 items-start order-2">
+            <Title class="md:text-5xl text-4xl md:leading-16">
+                {t('illustration.packTitle')} <span class="italic">{t('illustration.packTitleEmph')}</span>
+            </Title>
+
+            <BulletList items={packIncludes} class="mt-8" />
+
+            <div class="mt-8 flex flex-col gap-1">
+                <span class="text-secondary-500 text-sm">{t('common.onlyFor')}</span>
+                <span class="text-primary font-simplify text-5xl md:text-6xl leading-none">399€</span>
+                <span class="text-secondary-500 text-sm italic">{t('common.installmentNote')}</span>
+            </div>
+
+            <a href={localizedRoute('contact', lang)} class="mt-8">
+                <Button variant="primary" size="lg">{t('common.requestQuote')}</Button>
+            </a>
+        </Col>
+    </Row>
+</Section>
+
+<Section class="md:py-20 py-12">
+    <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+        <Col class="md:w-1/2 w-full">
+            <Row class="gap-4 w-full">
+                <ZoomableImage class="rounded-xl w-1/2 h-auto object-cover" src="/servicios/ilustracion-3-1.webp" alt={`${t('illustration.silhouettesTitle')} 1`} />
+                <ZoomableImage class="rounded-xl w-1/2 h-auto object-cover" src="/servicios/ilustracion-3-2.webp" alt={`${t('illustration.silhouettesTitle')} 2`} />
+            </Row>
+        </Col>
+        <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
+            <Title class="md:text-5xl text-4xl md:leading-16">
+                {t('illustration.silhouettesTitle')} <span class="italic">{t('illustration.silhouettesTitleEmph')}</span>
+            </Title>
+
+            <Text class="mt-6 text-secondary-500">
+                {t('illustration.silhouettesText')}
+            </Text>
+
+            <div class="mt-8 flex flex-col gap-1">
+                <span class="text-secondary-500 text-sm">{t('common.from')}</span>
+                <span class="text-primary font-simplify text-5xl md:text-6xl leading-none">130€</span>
+            </div>
+
+            <a href={localizedRoute('contact', lang)} class="mt-8">
+                <Button variant="primary" size="lg">{t('common.requestQuote')}</Button>
+            </a>
+        </Col>
+    </Row>
+</Section>
+
+<Section class="bg-primary-50 md:py-20 py-12">
+    <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+        <Col class="md:w-1/2 w-full">
+            <Row class="gap-4 w-full items-center">
+                <ZoomableImage class="rounded-xl w-1/3 h-auto object-cover scale-85" src="/servicios/ilustracion-4-1.webp" alt={`${t('illustration.sketchesTitleEmph')} 1`} />
+                <ZoomableImage class="rounded-xl w-1/3 h-auto object-cover" src="/servicios/ilustracion-4-2.webp" alt={`${t('illustration.sketchesTitleEmph')} 2`} />
+                <ZoomableImage class="rounded-xl w-1/3 h-auto object-cover scale-85" src="/servicios/ilustracion-4-3.webp" alt={`${t('illustration.sketchesTitleEmph')} 3`} />
+            </Row>
+        </Col>
+        <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
+            <Title class="md:text-5xl text-4xl md:leading-16">
+                <span class="italic">{t('illustration.sketchesTitleEmph')}</span>
+            </Title>
+
+            <ul class="flex flex-col gap-4 mt-8 w-full">
+                {sketches.map((item) => (
+                    <li class="flex items-baseline justify-between gap-4 border-b border-primary/20 pb-3">
+                        <Text>{item.label}</Text>
+                        <span class="text-primary font-simplify text-2xl md:text-3xl whitespace-nowrap">{item.price}</span>
+                    </li>
+                ))}
+            </ul>
+
+            <Text class="mt-6 text-secondary-500">
+                {t('illustration.sketchesNote')}
+            </Text>
+
+            <a href={localizedRoute('contact', lang)} class="mt-8">
+                <Button variant="primary" size="lg">{t('common.requestQuote')}</Button>
+            </a>
+        </Col>
+    </Row>
+</Section>

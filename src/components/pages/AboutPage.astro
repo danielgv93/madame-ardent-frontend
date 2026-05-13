@@ -1,0 +1,81 @@
+---
+import Col from "../Col.astro";
+import Row from "../Row.astro";
+import Text from "../Text.astro";
+import Link from "../Link.astro";
+import Title from "../Title.astro";
+import Section from "../../layouts/Section.astro";
+import { getLangFromUrl, useTranslations } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Section>
+    <Row class="items-start">
+        <Col class="md:px-12 px-0">
+            <Title class="md:text-6xl text-4xl pt-12 md:leading-22">{t('about.heroTitle')}</Title>
+            <img class="rounded-xl my-6 md:hidden" src="/sobre-mi/me.webp" />
+            <Text>{t('about.intro1')}</Text>
+            <Text>{t('about.intro2')}</Text>
+            <Text class="font-bold">{t('about.intro3Prefix')}<Link href="mailto:madameardent@gmail.com">madameardent@gmail.com</Link>{t('about.intro3Suffix')}</Text>
+        </Col>
+        <Col class="hidden md:block">
+            <img class="rounded-xl" src="/sobre-mi/me.webp" />
+        </Col>
+    </Row>
+</Section>
+
+<Section class="bg-primary-50 md:py-20 py-12">
+    <Row class="flex-col md:flex-row items-stretch md:gap-12 gap-6">
+        <Col class="md:w-1/2 w-full flex items-center justify-center">
+            <img class="rounded-xl w-full" src="/sobre-mi/me2.webp" alt="Gabriela Rey" />
+        </Col>
+        <Col class="md:w-1/2 w-full flex flex-col justify-center">
+            <Title class="md:text-3xl text-2xl md:leading-10 mb-6">{t('about.storyTitle')}</Title>
+
+            <div class="flex flex-col gap-4">
+                <div>
+                    <span class="text-primary font-simplify text-2xl md:text-3xl block mb-1">2015</span>
+                    <Text class="text-sm md:text-base">{t('about.y2015')}</Text>
+                </div>
+                <div>
+                    <span class="text-primary font-simplify text-2xl md:text-3xl block mb-1">2017</span>
+                    <Text class="text-sm md:text-base">{t('about.y2017')}</Text>
+                </div>
+                <div>
+                    <span class="text-primary font-simplify text-2xl md:text-3xl block mb-1">2020</span>
+                    <Text class="text-sm md:text-base">{t('about.y2020')}</Text>
+                </div>
+                <div>
+                    <span class="text-primary font-simplify text-2xl md:text-3xl block mb-1">2024</span>
+                    <Text class="text-sm md:text-base">{t('about.y2024')}</Text>
+                </div>
+                <div>
+                    <span class="text-primary font-simplify text-2xl md:text-3xl block mb-1">2025</span>
+                    <Text class="text-sm md:text-base">{t('about.y2025')}</Text>
+                </div>
+            </div>
+        </Col>
+    </Row>
+</Section>
+
+<Section class="md:py-20 py-12">
+    <Row>
+        <Col class="md:px-12 px-0">
+            <Title class="md:text-5xl text-3xl md:leading-16 mb-6">{t('about.futureTitle')}</Title>
+        </Col>
+    </Row>
+
+    <Row class="flex-col md:flex-row items-start md:gap-12 gap-8 mt-12">
+        <Col class="md:w-1/2 w-full md:px-12 px-0">
+            <span class="text-primary font-simplify text-3xl md:text-4xl block mb-3">{t('about.writingTitle')}</span>
+            <Text>{t('about.writingText')}</Text>
+            <Title class="md:text-2xl text-xl">{t('about.writingHandle')}</Title>
+        </Col>
+        <Col class="md:w-1/2 w-full md:px-12 px-0">
+            <span class="text-primary font-simplify text-3xl md:text-4xl block mb-3">{t('about.teachingTitle')}</span>
+            <Text>{t('about.teachingText')}</Text>
+        </Col>
+    </Row>
+</Section>

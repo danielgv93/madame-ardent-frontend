@@ -1,0 +1,188 @@
+{
+  "nav": {
+    "home": "Home",
+    "portfolio": "Portfolio",
+    "about": "Sobre mí",
+    "services": "Servicios",
+    "viewAllServices": "Ver todos los servicios",
+    "viewAllShort": "Ver todos",
+    "cta": "Trabajemos juntos",
+    "openMenu": "Abrir menú",
+    "closeMenu": "Cerrar menú",
+    "languageSwitch": "Idioma"
+  },
+  "footer": {
+    "tagline": "Transformando tus novelas en portadas cautivadoras.",
+    "contact": "Contacto",
+    "rights": "Todos los derechos reservados.",
+    "subline": "Diseño editorial · Portadas de novelas"
+  },
+  "common": {
+    "requestQuote": "Solicita presupuesto",
+    "startProject": "Comienza tu proyecto",
+    "from": "desde",
+    "onlyFor": "solo por",
+    "installmentNote": "(opción de pago a plazos)*"
+  },
+  "home": {
+    "title": "Diseño editorial",
+    "subtitle": "Transformando tus novelas en portadas cautivadoras."
+  },
+  "about": {
+    "metaTitle": "Sobre mí - Madame Ardent",
+    "heroTitle": "¡Hola! Soy Gabi y te invito a conocerme :)",
+    "intro1": "Me llamo Gabriela Rey, aunque en redes seguramente me conozcas como madameardent. Soy diseñadora gráfica e ilustradora editorial y, desde 2020, ayudo a autoras y autores de todo el mundo a vestir sus novelas para que brillen y encuentren su lugar en el mercado. Me encanta trabajar mano a mano contigo, que estés presente en cada paso del proceso y que te sientas acompañado, escuchado y, sobre todo, que disfrutes tu proyecto tanto como yo disfruto crearlo contigo.",
+    "intro2": "Soy una apasionada de mi trabajo. Llevo años trabajando muy duro para poder hacer lo que hago y que vuestros libros tengan el mejor trato que se merecen.",
+    "intro3Prefix": "Si te apetece dar forma a tu historia con mimo y muchas ganas, escríbeme a ",
+    "intro3Suffix": " y empezamos esta aventura juntas/os.",
+    "storyTitle": "Te cuento mi historia para inspirar a la tuya:",
+    "y2015": "Hacía portadas de libros gratis por entretenimiento mientras estudiaba. Era una forma de canalizar mi creatividad y mi amor por la lectura, sin imaginar que aquello terminaría siendo mi profesión.",
+    "y2017": "Dejé mi carrera de Ciencias del Mar. No sabía qué hacer con mi futuro y fue un año complicado y gris, lleno de incertidumbre, en el que tuve que replantearme hacia dónde quería ir.",
+    "y2020": "Terminé de estudiar diseño gráfico, abrí esta cuenta y conseguí mi primer cliente. Mucha gente dudaba de que se pudiera vivir de esto, pero yo decidí intentarlo igualmente y dar el primer paso.",
+    "y2024": "Me despidieron de un trabajo en el que era muy infeliz y tomé la decisión de estudiar un máster avanzado de diseño gráfico para llevar mi negocio al siguiente nivel y dedicarme a esto a tiempo completo.",
+    "y2025": "Más de 100 libros tienen mis portadas y más de 20.000 personas siguen mi trabajo. Hoy soy freelance a tiempo completo y vivo de lo que más me gusta: vestir historias para que encuentren a sus lectores.",
+    "futureTitle": "Sobre el futuro",
+    "writingTitle": "Escritura",
+    "writingText": "Actualmente me encuentro trabajando en mi primera novela y espero pronto compartiros sobre esta rama profesional mía de las letras y la literatura.",
+    "writingHandle": "@madamewrites",
+    "teachingTitle": "Lectivo y formaciones",
+    "teachingText": "Quiero ayudar a profesionales emergentes a poder trabajar de esto siendo freelance y creando su cartera de clientes desde cero. El primer proyecto será un curso completo enseñándote mi sistema de trabajo paso por paso."
+  },
+  "contact": {
+    "metaTitle": "Contacto - Madame Ardent",
+    "title": "Cuéntame tu historia",
+    "intro1a": "Me inspiran las historias. Cuéntame todo sobre tu proyecto.",
+    "intro1bStart": "Quiero trabajar contigo y crear portadas con las que soñamos. ",
+    "intro1bHighlight": "¡Escríbeme!",
+    "intro2": "Para cualquier otra consulta puedes contactarnos directamente a nuestro email:",
+    "labelName": "Nombre",
+    "labelUser": "Usuario en redes",
+    "labelEmail": "Correo electrónico",
+    "labelCountry": "¿De dónde eres?",
+    "labelServices": "¿Qué servicios quieres contratar?",
+    "labelBudget": "Presupuesto estimado (no será el final)",
+    "labelMessage": "Mensaje",
+    "selectServicesPlaceholder": "Selecciona uno o más servicios",
+    "selectBudgetPlaceholder": "Selecciona un presupuesto",
+    "messagePlaceholder": "Describe tu proyecto, presupuesto, plazos y cualquier detalle importante...",
+    "submit": "Enviar solicitud",
+    "success": "¡Mensaje enviado correctamente! Te contactaremos pronto.",
+    "error": "Error al enviar el mensaje. Por favor, inténtalo de nuevo.",
+    "services": {
+      "fullCover": "Diseño de portada completa",
+      "redesign": "Rediseño de portada existente",
+      "backCover": "Diseño de contraportada",
+      "spine": "Diseño de lomo",
+      "complete": "Diseño completo (portada + contraportada + lomo)",
+      "consulting": "Consultoría de diseño",
+      "other": "Otro"
+    }
+  },
+  "servicesIndex": {
+    "title": "Mis",
+    "titleEmph": "Servicios",
+    "subtitle": "Cada proyecto es único. Encontrá el servicio que mejor se ajusta a tu novela y empecemos a darle forma.",
+    "items": {
+      "pack360Title": "Pack 360 para autores",
+      "pack360Desc": "Todo lo que tu novela necesita para publicarse, desde la cubierta hasta el lanzamiento en redes.",
+      "coversTitle": "Portadas de libros",
+      "coversDesc": "Cubiertas físicas comerciales para autopublicación o editorial tradicional.",
+      "layoutTitle": "Maquetación interior",
+      "layoutDesc": "Maquetación profesional para físico y digital, ajustada a la complejidad de tu obra.",
+      "illustrationTitle": "Ilustración",
+      "illustrationDesc": "Ilustraciones a medida para acompañar tu historia.",
+      "mapsTitle": "Mapas",
+      "mapsDesc": "Mapas ilustrados para mundos de fantasía y novelas con geografía propia."
+    }
+  },
+  "pack360": {
+    "title": "Pack 360",
+    "titleEmph": "para autores",
+    "contains": "¿Qué contiene el Pack?",
+    "includes": [
+      "Cubierta completa para autopublicación",
+      "Maquetación interior para físico a juego",
+      "Contenido A+ para Amazon (banners)",
+      "Diseño de marcapáginas",
+      "3 posts para redes sociales de lanzamiento de la novela"
+    ]
+  },
+  "covers": {
+    "title": "Cubiertas",
+    "titleEmph": "físicas",
+    "subtitle": "Cubiertas comerciales para autopublicación o publicación con editorial tradicional. Incluye portada, lomo y contraportada. Con o sin solapas.",
+    "simple": "Cubierta simple",
+    "manipulated": "Cubierta manipulada",
+    "illustratedSimple": "Cubierta ilustrada simple",
+    "illustratedComplex": "Cubierta ilustrada compleja",
+    "priceSimple": "desde 200€",
+    "priceManipulated": "desde 350€",
+    "priceIllustratedSimple": "desde 350€",
+    "priceIllustratedComplex": "desde 450€",
+    "promoTag": "Si eres autor autopublicado",
+    "promoTitleStart": "Descubre el ",
+    "promoTitleEmph": "pack 360 para autores",
+    "promoTitleEnd": ", la opción más económica para publicar tu libro a mayor calidad",
+    "promoCta": "Quiero descubrirla"
+  },
+  "interiorLayout": {
+    "title": "Maquetación",
+    "titleEmph": "para físico",
+    "tiers": [
+      { "range": "Hasta 60.000 palabras", "price": "220€" },
+      { "range": "60.000 – 100.000 palabras", "price": "300€" },
+      { "range": "100.000 – 200.000 palabras", "price": "430€" }
+    ],
+    "epubNoteStart": "Si quieres además de la maquetación en físico la digital formato e-pub, se añadirán ",
+    "epubNoteAmount": "45€",
+    "epubNoteEnd": " al presupuesto final.",
+    "disclaimer": "(*) Los precios se ajustarán dependiendo de la complejidad de la maquetación. Estos son ejemplos para novelas."
+  },
+  "illustration": {
+    "charactersTitle": "Ilustraciones",
+    "charactersTitleEmph": "de personajes",
+    "characters": [
+      { "label": "Diseño 1 personaje", "price": "110€" },
+      { "label": "Diseño 2 personajes", "price": "200€" },
+      { "label": "Fondo sencillo", "price": "+45€" },
+      { "label": "Fondo complejo", "price": "+110€" }
+    ],
+    "charactersNote": "El fondo sencillo es como el mostrado en el ejemplo azul, monocromático. Si se desea un fondo plano como el amarillo no tendrá un costo adicional.",
+    "packTitle": "Pack",
+    "packTitleEmph": "diseño de personajes",
+    "packIncludes": [
+      "Diseño de 4 personajes",
+      "Cuerpo completo",
+      "A color y blanco y negro",
+      "Cualquier género, etnia y proporciones"
+    ],
+    "silhouettesTitle": "Ilustraciones",
+    "silhouettesTitleEmph": "de siluetas",
+    "silhouettesText": "Se caracterizan por tener personajes poco detallados y dibujados con un color plano sobre un fondo llamativo y lleno de vida.",
+    "sketchesTitleEmph": "Bocetos",
+    "sketches": [
+      { "label": "Retrato", "price": "25€" },
+      { "label": "Medio busto", "price": "35€" },
+      { "label": "Cuerpo completo", "price": "45€" }
+    ],
+    "sketchesNote": "El boceto se caracteriza por no tener una línea limpia y desenfadada. Es perfecto para bestiarios y maquetaciones interiores con un presupuesto asequible."
+  },
+  "maps": {
+    "title": "Diseño",
+    "titleEmph": "de mapa",
+    "tiers": [
+      { "label": "En blanco y negro", "price": "desde 199€" },
+      { "label": "A color (incluye blanco y negro)", "price": "desde 299€" }
+    ]
+  },
+  "portfolio": {
+    "title": "Mi",
+    "titleEmph": "Portfolio",
+    "subtitle": "Donde la narrativa se encuentra con la estética visual. Explora el arte de contar historias a través de portadas únicas y cautivadoras.",
+    "tabIllustrated": "Portadas <span class=\"italic\">Ilustradas</span>",
+    "tabPhoto": "Portadas <span class=\"italic\">Fotomanipuladas</span>"
+  },
+  "coverCreator": {
+    "title": "Diseñador"
+  }
+}

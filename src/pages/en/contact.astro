@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ContactPage from '../../components/pages/ContactPage.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('en');
+---
+<Layout title={t('contact.metaTitle')}>
+  <ContactPage />
+</Layout>

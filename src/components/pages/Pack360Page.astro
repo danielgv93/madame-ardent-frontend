@@ -1,0 +1,41 @@
+---
+import Section from "../../layouts/Section.astro";
+import Title from "../Title.astro";
+import Row from "../Row.astro";
+import Col from "../Col.astro";
+import Button from "../Button.astro";
+import BulletList from "../BulletList.astro";
+import ZoomableImage from "../ZoomableImage.astro";
+import { getLangFromUrl, useTranslations, localizedRoute } from "../../i18n/utils";
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const includes = t('pack360.includes') as unknown as string[];
+---
+
+<Section>
+    <Row class="items-center md:gap-12 gap-8 flex-col md:flex-row">
+        <Col class="md:w-1/2 w-full">
+            <ZoomableImage class="rounded-xl w-full" src="/servicios/pack-360.webp" alt={`${t('pack360.title')} ${t('pack360.titleEmph')}`} />
+        </Col>
+        <Col class="md:w-1/2 w-full md:px-6 px-0 items-start">
+            <Title class="md:text-5xl text-4xl md:leading-16">
+                {t('pack360.title')} <span class="italic">{t('pack360.titleEmph')}</span>
+            </Title>
+
+            <span class="text-primary font-simplify text-2xl md:text-3xl block mt-6">{t('pack360.contains')}</span>
+
+            <BulletList items={includes} class="mt-2" />
+
+            <div class="mt-8 flex flex-col gap-1">
+                <span class="text-secondary-500 text-sm">{t('common.from')}</span>
+                <span class="text-primary font-simplify text-5xl md:text-6xl leading-none">690€</span>
+                <span class="text-secondary-500 text-sm italic">{t('common.installmentNote')}</span>
+            </div>
+
+            <a href={localizedRoute('contact', lang)} class="mt-8">
+                <Button variant="primary" size="lg">{t('common.requestQuote')}</Button>
+            </a>
+        </Col>
+    </Row>
+</Section>

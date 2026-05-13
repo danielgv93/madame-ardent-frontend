@@ -4,16 +4,29 @@ import "../styles/global.css";
 import TopMenu from "./TopMenu.astro";
 import Footer from "./Footer.astro";
 import Lightbox from "../components/Lightbox.astro";
+import { getLangFromUrl, getAlternateUrl } from "../i18n/utils";
+
+interface Props {
+	title?: string;
+}
+
+const { title = "Madame Ardent" } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const altLang = lang === 'es' ? 'en' : 'es';
+const alternateHref = getAlternateUrl(Astro.url, altLang);
+const canonical = Astro.url.pathname;
 ---
 <!doctype html>
-<html lang="es">
+<html lang={lang}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/madame-ardent.svg" />
 		<meta name="generator" content={Astro.generator} />
+		<link rel="alternate" hreflang={lang} href={canonical} />
+		<link rel="alternate" hreflang={altLang} href={alternateHref} />
 		<ClientRouter />
-		<title>Madame Ardent</title>
+		<title>{title}</title>
 	</head>
 	<body>
 	<TopMenu />
