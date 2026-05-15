@@ -137,8 +137,31 @@ import { FORM_ICONS } from '../../lib/constants/icons.ts';
                 <label class="block text-sm font-medium text-gray-700">Fecha:</label>
                 <p id="modal-date" class="mt-1 text-sm text-gray-900"></p>
             </div>
+            <div class="border-t border-gray-200 pt-4">
+                <label for="modal-note" class="block text-sm font-medium text-gray-700">
+                    Nota interna
+                </label>
+                <p class="text-xs text-gray-500 mb-1">Solo visible en el panel de administración.</p>
+                <textarea
+                    id="modal-note"
+                    rows="3"
+                    class="mt-1 block w-full border-gray-300 rounded-md shadow-sm text-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Añade una nota sobre este formulario..."
+                ></textarea>
+                <div class="mt-2 flex items-center justify-end gap-3">
+                    <span id="note-status" class="text-sm hidden"></span>
+                    <Button
+                        id="save-note-btn"
+                        type="button"
+                        variant="action"
+                        size="sm"
+                    >
+                        Guardar nota
+                    </Button>
+                </div>
+            </div>
         </div>
-        
+
         <Fragment slot="footer">
             <Button
                 id="close-modal"
@@ -292,6 +315,11 @@ import { FORM_ICONS } from '../../lib/constants/icons.ts';
             
             if (closeModal) {
                 closeModal.addEventListener('click', () => formsManager.hideModal());
+            }
+
+            const saveNoteBtn = document.getElementById('save-note-btn');
+            if (saveNoteBtn) {
+                saveNoteBtn.addEventListener('click', () => formsManager.saveNote());
             }
             
             if (exportBtn) {

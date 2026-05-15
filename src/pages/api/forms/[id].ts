@@ -12,11 +12,28 @@ export const PATCH: APIRoute = withAuth(async ({ request, params }) => {
         }
 
         const body = await request.json();
-        const { status } = body;
+        const { status, note } = body;
 
-        if (!status || !VALID_FORM_STATUS.includes(status)) {
+        const hasStatus = status !== undefined;
+        const hasNote = note !== undefined;
+
+        if (!hasStatus && !hasNote) {
+            return createJsonResponse(
+                { error: "No se proporcionaron datos para actualizar" },
+                400
+            );
+        }
+
+        if (hasStatus && !VALID_FORM_STATUS.includes(status)) {
             return createJsonResponse(
                 { error: `Estado inválido. Debe ser: ${VALID_FORM_STATUS.join(', ')}` },
+                400
+            );
+        }
+
+        if (hasNote && note !== null && typeof note !== "string") {
+            return createJsonResponse(
+                { error: "La nota debe ser texto" },
                 400
             );
         }
@@ -29,12 +46,21 @@ export const PATCH: APIRoute = withAuth(async ({ request, params }) => {
             return createJsonResponse({ error: "Formulario no encontrado" }, 404);
         }
 
-        const updateData: Record<string, unknown> = { status };
+        const updateData: Record<string, unknown> = {};
 
-        if (status === FORM_STATUS.REPLIED && existingForm.status !== FORM_STATUS.REPLIED) {
-            updateData.respondedAt = new Date();
-        } else if (status !== FORM_STATUS.REPLIED && existingForm.status === FORM_STATUS.REPLIED) {
-            updateData.respondedAt = null;
+        if (hasStatus) {
+            updateData.status = status;
+
+            if (status === FORM_STATUS.REPLIED && existingForm.status !== FORM_STATUS.REPLIED) {
+                updateData.respondedAt = new Date();
+            } else if (status !== FORM_STATUS.REPLIED && existingForm.status === FORM_STATUS.REPLIED) {
+                updateData.respondedAt = null;
+            }
+        }
+
+        if (hasNote) {
+            const trimmed = typeof note === "string" ? note.trim() : "";
+            updateData.note = trimmed.length > 0 ? trimmed : null;
         }
 
         const updatedForm = await prisma.form.update({

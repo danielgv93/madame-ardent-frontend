@@ -13,6 +13,7 @@ export class FormsManager {
     private sortOrder: 'asc' | 'desc' = 'asc';
     private quill: Quill | null = null;
     private replyingFormId: string | null = null;
+    private viewingFormId: string | null = null;
 
     async loadForms(page: number = 1, resetSorting: boolean = false) {
         try {
@@ -500,6 +501,15 @@ export class FormsManager {
         if (modalMessage) modalMessage.textContent = form.message;
         if (modalDate) modalDate.textContent = this.formatDate(form.createdAt);
 
+        this.viewingFormId = form.id;
+        const modalNote = document.getElementById('modal-note') as HTMLTextAreaElement | null;
+        if (modalNote) modalNote.value = form.note || '';
+        const noteStatus = document.getElementById('note-status');
+        if (noteStatus) {
+            noteStatus.classList.add('hidden');
+            noteStatus.textContent = '';
+        }
+
         if (modal) {
             modal.classList.remove('hidden');
         }
@@ -531,6 +541,58 @@ export class FormsManager {
         if (modal) {
             modal.classList.add('hidden');
         }
+        this.viewingFormId = null;
+    }
+
+    async saveNote() {
+        if (!this.viewingFormId) return;
+
+        const noteInput = document.getElementById('modal-note') as HTMLTextAreaElement | null;
+        const saveBtn = document.getElementById('save-note-btn') as HTMLButtonElement | null;
+        const note = noteInput?.value ?? '';
+
+        try {
+            if (saveBtn) saveBtn.disabled = true;
+            this.setNoteStatus('Guardando...', 'info');
+
+            const response = await authenticatedFetch(`/api/forms/${this.viewingFormId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ note }),
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => ({}));
+                this.setNoteStatus(errorData.error || 'Error al guardar la nota', 'error');
+                return;
+            }
+
+            const result = await response.json();
+            const formIndex = this.allForms.findIndex(f => f.id === this.viewingFormId);
+            if (formIndex !== -1) {
+                this.allForms[formIndex].note = result.form.note ?? null;
+            }
+
+            this.setNoteStatus('Nota guardada correctamente', 'success');
+        } catch (error) {
+            console.error('Error saving note:', error);
+            this.setNoteStatus('Error de conexión al guardar la nota', 'error');
+        } finally {
+            if (saveBtn) saveBtn.disabled = false;
+        }
+    }
+
+    private setNoteStatus(message: string, type: 'error' | 'success' | 'info') {
+        const statusEl = document.getElementById('note-status');
+        if (!statusEl) return;
+        const colors = {
+            error: 'text-red-600',
+            success: 'text-green-600',
+            info: 'text-gray-600',
+        };
+        statusEl.className = `text-sm ${colors[type]}`;
+        statusEl.textContent = message;
+        statusEl.classList.remove('hidden');
     }
 
     openReplyModal(formId: string) {

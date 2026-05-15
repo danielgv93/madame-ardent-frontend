@@ -22,6 +22,7 @@ export interface ContactFormInput {
 export interface ContactFormRecord extends ContactFormInput {
     id: string;
     status: FormStatus;
+    note: string | null;
     respondedAt: string | null;
     createdAt: string;
 }

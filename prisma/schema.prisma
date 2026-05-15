@@ -27,6 +27,7 @@ model Form {
   message     String
   lang        String    @default("es")
   status      String    @default("pending")
+  note        String?
   respondedAt DateTime?
   createdAt   DateTime  @default(now())
 }
