@@ -20,7 +20,7 @@ const { title } = Astro.props;
 		<title>{title} - Madame Ardent</title>
 	</head>
 	<body>
-        <div class="min-h-screen bg-gray-50 flex">
+        <div class="min-h-screen bg-secondary-50 flex">
             <DashboardSidebar />
 
             <!-- Main content -->
@@ -63,8 +63,8 @@ const { title } = Astro.props;
             const href = link.getAttribute('href');
             if (!href) return;
             if (href === currentPath || (currentPath.startsWith(href) && href !== '/dashboard')) {
-                link.classList.remove('text-gray-600', 'hover:text-gray-900');
-                link.classList.add('text-indigo-600', 'bg-indigo-50');
+                link.classList.remove('text-secondary-600', 'hover:text-primary', 'hover:bg-primary-50');
+                link.classList.add('text-primary', 'bg-primary-50', 'font-semibold');
             }
         });
     });

@@ -10,34 +10,36 @@ export interface Props {
     disabled?: boolean;
 }
 
-const { 
-    title, 
-    value, 
-    icon, 
-    iconColor = "bg-blue-500", 
-    href, 
+const {
+    title,
+    value,
+    icon,
+    iconColor = "bg-primary-500",
+    href,
     linkText,
     isLoading = false,
     disabled = false
 } = Astro.props;
 
-const cardClasses = disabled ? "bg-white overflow-hidden shadow rounded-lg opacity-60" : "bg-white overflow-hidden shadow rounded-lg hover:shadow-md transition-shadow";
+const cardClasses = disabled
+    ? "bg-white overflow-hidden shadow-sm rounded-2xl border border-secondary-100 opacity-60"
+    : "bg-white overflow-hidden shadow-sm rounded-2xl border border-secondary-100 hover:shadow-md hover:border-primary-200 transition-all duration-200";
 ---
 
 <div class={cardClasses}>
     <div class="p-5">
         <div class="flex items-center">
             <div class="flex-shrink-0">
-                <div class={`w-8 h-8 ${iconColor} rounded-md flex items-center justify-center`}>
+                <div class={`w-10 h-10 ${iconColor} rounded-xl flex items-center justify-center shadow-sm`}>
                     <Fragment set:html={icon} />
                 </div>
             </div>
-            <div class="ml-5 w-0 flex-1">
+            <div class="ml-4 w-0 flex-1">
                 <dl>
-                    <dt class="text-sm font-medium text-gray-500 truncate">
+                    <dt class="text-xs font-semibold uppercase tracking-wider text-secondary-400 truncate font-broskon">
                         {title}
                     </dt>
-                    <dd class="text-lg font-medium text-gray-900">
+                    <dd class="text-lg font-medium text-secondary-900">
                         {isLoading ? "Cargando..." : value}
                     </dd>
                 </dl>
@@ -45,11 +47,11 @@ const cardClasses = disabled ? "bg-white overflow-hidden shadow rounded-lg opaci
         </div>
         <div class="mt-5">
             {href && linkText && !disabled ? (
-                <a href={href} class="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                <a href={href} class="text-sm font-medium text-primary hover:text-primary-700 transition-colors">
                     {linkText} →
                 </a>
             ) : linkText && disabled ? (
-                <span class="text-sm font-medium text-gray-400">
+                <span class="text-sm font-medium text-secondary-400">
                     {linkText}
                 </span>
             ) : null}

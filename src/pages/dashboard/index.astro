@@ -9,40 +9,53 @@ import { NAV_ICONS } from '../../lib/constants/icons.ts';
 <DashboardLayout title="Dashboard">
     <div class="space-y-6">
         <!-- Welcome Section -->
-        <Card title="Bienvenido al Dashboard" description="Gestiona tu perfil y visualiza los formularios de contacto desde este panel de administración.">
-            <Fragment slot="actions">
-                <span id="welcome-user" class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
+        <section class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-primary-600 to-primary-700 shadow-lg shadow-primary-500/20">
+            <div class="absolute -top-16 -right-10 w-64 h-64 rounded-full bg-white/10 blur-2xl"></div>
+            <div class="absolute -bottom-24 -left-12 w-72 h-72 rounded-full bg-primary-900/30 blur-3xl"></div>
+            <div class="relative px-6 py-8 sm:px-8 sm:flex sm:items-center sm:justify-between gap-6">
+                <div>
+                    <p class="text-xs uppercase tracking-[0.2em] text-white/70 font-semibold mb-2 font-broskon">
+                        Madame Ardent
+                    </p>
+                    <h1 class="text-3xl text-white leading-tight font-simplify">
+                        Bienvenido al Dashboard
+                    </h1>
+                    <p class="mt-2 text-sm text-white/80 max-w-xl">
+                        Gestiona tu perfil y visualiza los formularios de contacto desde este panel de administración.
+                    </p>
+                </div>
+                <span id="welcome-user" class="inline-flex items-center self-start mt-4 sm:mt-0 px-3 py-1 rounded-full text-xs font-medium bg-white/15 text-white border border-white/25 backdrop-blur-sm whitespace-nowrap">
                     Admin
                 </span>
-            </Fragment>
-        </Card>
+            </div>
+        </section>
 
         <!-- Quick Actions -->
         <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <StatsCard 
+            <StatsCard
                 title="Perfil de Usuario"
                 value="Editar Información"
                 icon={NAV_ICONS.PROFILE}
-                iconColor="bg-indigo-500"
+                iconColor="bg-gradient-to-br from-primary-500 to-primary-700"
                 href="/dashboard/profile"
                 linkText="Ir a Perfil"
             />
 
-            <StatsCard 
+            <StatsCard
                 title="Formularios"
                 value="Ver formularios"
                 icon={NAV_ICONS.FORMS}
-                iconColor="bg-green-500"
+                iconColor="bg-secondary-700"
                 href="/dashboard/forms"
                 linkText="Ver Formularios"
                 isLoading={false}
             />
 
-            <StatsCard 
+            <StatsCard
                 title="Próximamente"
                 value="Nuevas Funciones"
                 icon={NAV_ICONS.FUTURE}
-                iconColor="bg-gray-400"
+                iconColor="bg-secondary-300"
                 linkText="En desarrollo..."
                 disabled={true}
             />
