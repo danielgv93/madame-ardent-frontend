@@ -23,17 +23,16 @@ ENV NODE_ENV=production \
     HOST=0.0.0.0 \
     PORT=4321
 
-COPY package*.json ./
-COPY prisma ./prisma/
+RUN addgroup -g 1001 -S nodejs && \
+    adduser -S nodejs -u 1001
+
+COPY --chown=nodejs:nodejs package*.json ./
+COPY --chown=nodejs:nodejs prisma ./prisma/
 
 RUN npm ci --omit=dev --no-audit --no-fund && npm cache clean --force
 
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
-
-RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001 && \
-    chown nodejs:nodejs /app
+COPY --from=build --chown=nodejs:nodejs /app/dist ./dist
+COPY --from=build --chown=nodejs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
 
 USER nodejs
 
