@@ -32,7 +32,8 @@ COPY --from=build /app/dist ./dist
 COPY --from=build /app/node_modules/.prisma ./node_modules/.prisma
 
 RUN addgroup -g 1001 -S nodejs && \
-    adduser -S nodejs -u 1001 -G nodejs
+    adduser -S nodejs -u 1001 && \
+    chown nodejs:nodejs /app
 
 USER nodejs
 
