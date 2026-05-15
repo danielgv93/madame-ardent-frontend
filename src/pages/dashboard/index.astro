@@ -1,9 +1,6 @@
 ---
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-import Card from '../../components/dashboard/Card.astro';
-import StatsCard from '../../components/dashboard/StatsCard.astro';
-import EmptyState from '../../components/dashboard/EmptyState.astro';
-import { NAV_ICONS } from '../../lib/constants/icons.ts';
+import DashboardStats from '../../components/dashboard/DashboardStats.astro';
 ---
 
 <DashboardLayout title="Dashboard">
@@ -21,7 +18,7 @@ import { NAV_ICONS } from '../../lib/constants/icons.ts';
                         Bienvenido al Dashboard
                     </h1>
                     <p class="mt-2 text-sm text-white/80 max-w-xl">
-                        Gestiona tu perfil y visualiza los formularios de contacto desde este panel de administración.
+                        Gestiona tu perfil, los formularios de contacto y los pedidos de la tienda desde este panel de administración.
                     </p>
                 </div>
                 <span id="welcome-user" class="inline-flex items-center self-start mt-4 sm:mt-0 px-3 py-1 rounded-full text-xs font-medium bg-white/15 text-white border border-white/25 backdrop-blur-sm whitespace-nowrap">
@@ -30,74 +27,19 @@ import { NAV_ICONS } from '../../lib/constants/icons.ts';
             </div>
         </section>
 
-        <!-- Quick Actions -->
-        <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            <StatsCard
-                title="Perfil de Usuario"
-                value="Editar Información"
-                icon={NAV_ICONS.PROFILE}
-                iconColor="bg-gradient-to-br from-primary-500 to-primary-700"
-                href="/dashboard/profile"
-                linkText="Ir a Perfil"
-            />
-
-            <StatsCard
-                title="Formularios"
-                value="Ver formularios"
-                icon={NAV_ICONS.FORMS}
-                iconColor="bg-secondary-700"
-                href="/dashboard/forms"
-                linkText="Ver Formularios"
-                isLoading={false}
-            />
-
-            <StatsCard
-                title="Próximamente"
-                value="Nuevas Funciones"
-                icon={NAV_ICONS.FUTURE}
-                iconColor="bg-secondary-300"
-                linkText="En desarrollo..."
-                disabled={true}
-            />
-        </div>
-
-        <!-- Recent Activity (Placeholder) -->
-        <Card title="Actividad Reciente" class="mb-4">
-            <EmptyState 
-                title="Panel de actividad"
-                description="Aquí aparecerá un resumen de la actividad reciente cuando esté implementado."
-            />
-        </Card>
+        <!-- Statistics -->
+        <DashboardStats />
     </div>
 
     <script>
-        import { authenticatedFetch } from '../../lib/client-api.ts';
         import { getCurrentUser } from '../../lib/auth-client.ts';
-        
-        document.addEventListener('DOMContentLoaded', async function() {
+
+        document.addEventListener('DOMContentLoaded', function () {
             // Mostrar nombre de usuario en el welcome
             const user = getCurrentUser();
             const welcomeUserElement = document.getElementById('welcome-user');
             if (user && welcomeUserElement) {
                 welcomeUserElement.textContent = `Admin: ${user.name || user.email}`;
-            }
-            
-            // Cargar contador de formularios
-            try {
-                const response = await authenticatedFetch('/api/forms');
-                if (response.ok) {
-                    const forms = await response.json();
-                    const formsCountElement = document.getElementById('forms-count');
-                    if (formsCountElement) {
-                        formsCountElement.textContent = forms.length.toString();
-                    }
-                }
-            } catch (error) {
-                console.error('Error loading forms count:', error);
-                const formsCountElement = document.getElementById('forms-count');
-                if (formsCountElement) {
-                    formsCountElement.textContent = 'Error';
-                }
             }
         });
     </script>

@@ -294,9 +294,7 @@ import { FORM_ICONS } from '../../lib/constants/icons.ts';
 
         const formsManager = new FormsManager();
         
-        document.addEventListener('DOMContentLoaded', function() {
-            formsManager.loadForms();
-            
+        document.addEventListener('DOMContentLoaded', async function() {
             // Event listeners
             const refreshBtn = document.getElementById('refresh-btn');
             const statusFilter = document.getElementById('status-filter') as HTMLSelectElement;
@@ -403,6 +401,18 @@ import { FORM_ICONS } from '../../lib/constants/icons.ts';
                     });
                 }
             });
+
+            await formsManager.loadForms();
+
+            // Acceso directo desde el dashboard: abrir el formulario indicado en la URL
+            const params = new URLSearchParams(window.location.search);
+            const viewFormId = params.get('view');
+            const replyFormId = params.get('reply');
+            if (viewFormId) {
+                formsManager.viewForm(viewFormId);
+            } else if (replyFormId) {
+                formsManager.openReplyModal(replyFormId);
+            }
         });
     </script>
 </DashboardLayout>
