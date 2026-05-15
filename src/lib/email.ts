@@ -4,6 +4,7 @@ import type { ContactFormInput } from '../types/index.js';
 import ContactNotification from '../emails/ContactNotification';
 import ContactConfirmation from '../emails/ContactConfirmation';
 import ReplyEmail from '../emails/ReplyEmail';
+import OrderDelivery, { type OrderDeliveryProps } from '../emails/OrderDelivery';
 
 interface SmtpConfig {
   host: string;
@@ -72,6 +73,16 @@ export async function sendContactFormConfirmation(data: ContactFormInput): Promi
   await sendEmail({
     to: data.email,
     subject: 'Hemos recibido tu solicitud — Madame Ardent',
+    html,
+    fromName: 'Madame Ardent',
+  });
+}
+
+export async function sendOrderDeliveryEmail(props: OrderDeliveryProps): Promise<void> {
+  const html = await render(OrderDelivery(props));
+  await sendEmail({
+    to: props.customerEmail,
+    subject: 'Tu pedido está listo — Madame Ardent',
     html,
     fromName: 'Madame Ardent',
   });

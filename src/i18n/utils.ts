@@ -52,6 +52,8 @@ const routeMap: Record<string, { es: string; en: string }> = {
   illustration: { es: '/servicios/ilustracion', en: '/en/services/illustration' },
   maps: { es: '/servicios/mapas', en: '/en/services/maps' },
   coverCreator: { es: '/creador-de-portadas', en: '/en/cover-creator' },
+  shop: { es: '/tienda', en: '/en/shop' },
+  cart: { es: '/tienda/carrito', en: '/en/shop/cart' },
 };
 
 export type RouteKey = keyof typeof routeMap;

@@ -1,0 +1,26 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '../../../layouts/Layout.astro';
+import ShopProductPage from '../../../components/pages/ShopProductPage.astro';
+import { buildProductJsonLd } from '../../../lib/shop/seo';
+
+const { slug } = Astro.params;
+const products = await getCollection('products', ({ data }) => data.active);
+const product = products.find((p) => p.id === slug);
+
+if (!product) {
+  return Astro.redirect('/en/shop');
+}
+
+const title = product.data.seo?.metaTitle ?? `${product.data.title} - Madame Ardent`;
+const description = product.data.seo?.metaDescription ?? product.data.shortDescription;
+const ogImage = product.data.images[0];
+const jsonLd = buildProductJsonLd({
+  product,
+  url: new URL(Astro.url.pathname, Astro.site ?? Astro.url).toString(),
+  lang: 'en',
+});
+---
+<Layout title={title} description={description} ogImage={ogImage} ogType="product" jsonLd={jsonLd}>
+  <ShopProductPage product={product} />
+</Layout>

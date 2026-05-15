@@ -3,6 +3,7 @@ import madameArdent from '../assets/madame-ardent.svg';
 import { TOP_MENU_HEIGHT } from '../lib/constants/constants';
 import { getLangFromUrl, useTranslations, localizedRoute } from '../i18n/utils';
 import LanguageSwitcher from '../components/LanguageSwitcher.astro';
+import CartBadge from '../components/shop/CartBadge';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -30,6 +31,7 @@ const servicios = [
             <a href={localizedRoute('home', lang)} class="text-gray-800 hover:text-gray-600">{t('nav.home')}</a>
             <a href={localizedRoute('portfolio', lang)} class="text-gray-800 hover:text-gray-600">{t('nav.portfolio')}</a>
             <a href={localizedRoute('about', lang)} class="text-gray-800 hover:text-gray-600">{t('nav.about')}</a>
+            <a href={localizedRoute('shop', lang)} class="text-gray-800 hover:text-gray-600">{t('shop.navLabel')}</a>
 
             <!-- Servicios dropdown -->
             <div id="servicios-dropdown" class="relative h-full flex items-center">
@@ -65,6 +67,8 @@ const servicios = [
 
             <LanguageSwitcher variant="desktop" />
 
+            <CartBadge client:load href={localizedRoute('cart', lang)} ariaLabel={t('cart.openLabel')} />
+
             <a
                 href={localizedRoute('contact', lang)}
                 class="inline-flex items-center px-4 py-2 rounded-full bg-[#d62013] text-white font-medium border border-[#d62013] hover:bg-transparent hover:text-[#d62013] transition-colors duration-200 shadow-sm"
@@ -76,6 +80,7 @@ const servicios = [
         <!-- Mobile hamburger -->
         <div class="md:hidden flex items-center gap-3">
             <LanguageSwitcher variant="mobile" />
+            <CartBadge client:load href={localizedRoute('cart', lang)} ariaLabel={t('cart.openLabel')} />
             <button id="menu-btn" aria-label={t('nav.openMenu')} class="focus:outline-none">
                 <!-- Hamburger icon -->
                 <svg class="h-6 w-6 text-gray-800" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -97,6 +102,7 @@ const servicios = [
     <a href={localizedRoute('home', lang)} class="text-2xl text-gray-800 hover:text-gray-600">{t('nav.home')}</a>
     <a href={localizedRoute('portfolio', lang)} class="text-2xl text-gray-800 hover:text-gray-600">{t('nav.portfolio')}</a>
     <a href={localizedRoute('about', lang)} class="text-2xl text-gray-800 hover:text-gray-600">{t('nav.about')}</a>
+    <a href={localizedRoute('shop', lang)} class="text-2xl text-gray-800 hover:text-gray-600">{t('shop.navLabel')}</a>
 
     <!-- Servicios accordion (mobile) -->
     <div class="flex flex-col items-center w-full">

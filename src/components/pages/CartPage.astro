@@ -1,0 +1,38 @@
+---
+import Section from '../../layouts/Section.astro';
+import Title from '../Title.astro';
+import CartView from '../shop/CartView';
+import { getLangFromUrl, useTranslations, localizedRoute } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const labels = {
+  empty: t('cart.empty'),
+  continueShopping: t('cart.continueShopping'),
+  remove: t('cart.remove'),
+  subtotal: t('cart.subtotal'),
+  total: t('cart.total'),
+  checkout: t('cart.checkout'),
+  clear: t('cart.clear'),
+  loading: t('cart.loading'),
+  currencyLabel: t('shop.currencyLabel'),
+  shopHref: localizedRoute('shop', lang),
+  emailLabel: t('cart.emailLabel'),
+  emailPlaceholder: t('cart.emailPlaceholder'),
+  emailHint: t('cart.emailHint'),
+  processing: t('cart.processing'),
+  checkoutError: t('cart.checkoutError'),
+  secureCheckout: t('cart.secureCheckout'),
+};
+---
+
+<Section>
+  <Title>
+    {t('cart.title')} <span class="italic">{t('cart.titleEmph')}</span>
+  </Title>
+</Section>
+
+<Section class="md:py-12 py-8">
+  <CartView client:load lang={lang} labels={labels} />
+</Section>

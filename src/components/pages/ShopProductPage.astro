@@ -1,0 +1,93 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { render } from 'astro:content';
+import Section from '../../layouts/Section.astro';
+import Title from '../Title.astro';
+import Text from '../Text.astro';
+import Row from '../Row.astro';
+import Col from '../Col.astro';
+import AddToCartButton from '../shop/AddToCartButton';
+import { getLangFromUrl, useTranslations, localizedRoute } from '../../i18n/utils';
+import {
+  DEFAULT_CURRENCY_BY_LANG,
+  SUPPORTED_CURRENCIES,
+  formatPrice,
+  isCurrency,
+} from '../../lib/shop/currency';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+}
+
+const { product } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const requestedCurrency = Astro.url.searchParams.get('currency');
+const currency = isCurrency(requestedCurrency) ? requestedCurrency : DEFAULT_CURRENCY_BY_LANG[lang];
+
+const { Content } = await render(product);
+const price = product.data.price[currency];
+const basePath = Astro.url.pathname;
+const shopRoute = localizedRoute('shop', lang);
+---
+
+<Section>
+  <a href={shopRoute} class="text-sm text-secondary-500 hover:text-primary italic">
+    ← {t('shop.backToShop')}
+  </a>
+</Section>
+
+<Section class="md:py-8 py-4">
+  <Row class="flex-wrap md:gap-12 gap-6 items-start">
+    <Col class="md:w-1/2 w-full">
+      <div class="flex flex-col gap-4">
+        {product.data.images.map((src, idx) => (
+          <div class="overflow-hidden rounded-xl aspect-[4/3] bg-secondary-100">
+            <img src={src} alt={`${product.data.title} ${idx + 1}`} class="w-full h-full object-cover" />
+          </div>
+        ))}
+      </div>
+    </Col>
+
+    <Col class="md:w-[calc(50%-3rem)] w-full">
+      <Title class="text-4xl md:text-5xl">{product.data.title}</Title>
+      <Text class="mt-4 text-secondary-500 text-lg">{product.data.shortDescription}</Text>
+
+      <div class="mt-6 flex items-center gap-4">
+        <span class="text-3xl font-medium text-primary">
+          {formatPrice(price, currency, lang)}
+        </span>
+        <div class="flex items-center gap-2">
+          {SUPPORTED_CURRENCIES.map((c) => {
+            const params = new URLSearchParams(Astro.url.searchParams);
+            params.set('currency', c);
+            const href = `${basePath}?${params.toString()}`;
+            const active = c === currency;
+            return (
+              <a
+                href={href}
+                class={`text-xs px-2 py-1 rounded-full border ${active ? 'bg-primary text-white border-primary' : 'border-secondary-300 text-secondary-700 hover:border-primary'}`}
+              >
+                {c}
+              </a>
+            );
+          })}
+        </div>
+      </div>
+
+      <div class="mt-8 flex flex-col sm:flex-row gap-3">
+        <AddToCartButton client:load slug={product.id} label={t('shop.addToCart')} />
+      </div>
+
+      <div class="mt-10 p-6 rounded-xl bg-secondary-50 border border-secondary-200">
+        <h3 class="font-broskon text-lg mb-2">{t('shop.deliveryTitle')}</h3>
+        <Text class="text-secondary-600 text-sm">{t('shop.deliveryText')}</Text>
+      </div>
+
+      <article class="prose prose-lg mt-10 max-w-none">
+        <Content />
+      </article>
+    </Col>
+  </Row>
+</Section>

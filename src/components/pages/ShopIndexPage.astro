@@ -1,0 +1,87 @@
+---
+import { getCollection } from 'astro:content';
+import Section from '../../layouts/Section.astro';
+import Title from '../Title.astro';
+import Text from '../Text.astro';
+import Row from '../Row.astro';
+import Col from '../Col.astro';
+import ProductCard from '../shop/ProductCard.astro';
+import { getLangFromUrl, useTranslations } from '../../i18n/utils';
+import { DEFAULT_CURRENCY_BY_LANG, isCurrency, SUPPORTED_CURRENCIES } from '../../lib/shop/currency';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const requestedCurrency = Astro.url.searchParams.get('currency');
+const currency = isCurrency(requestedCurrency) ? requestedCurrency : DEFAULT_CURRENCY_BY_LANG[lang];
+
+const all = await getCollection('products', ({ data }) => data.active);
+const sorted = all.sort((a, b) => a.data.order - b.data.order);
+const featured = sorted.filter((p) => p.data.featured);
+const rest = sorted.filter((p) => !p.data.featured);
+
+const basePath = Astro.url.pathname;
+---
+
+<Section>
+  <div class="md:w-2/3">
+    <Title>
+      {t('shop.title')} <span class="italic">{t('shop.titleEmph')}</span>
+    </Title>
+    <Text class="mt-6 text-secondary-500 max-w-md text-lg leading-relaxed">
+      {t('shop.subtitle')}
+    </Text>
+  </div>
+
+  <div class="mt-8 flex items-center gap-3">
+    <span class="text-sm text-secondary-500">{t('shop.currencyLabel')}:</span>
+    {SUPPORTED_CURRENCIES.map((c) => {
+      const params = new URLSearchParams(Astro.url.searchParams);
+      params.set('currency', c);
+      const href = `${basePath}?${params.toString()}`;
+      const active = c === currency;
+      return (
+        <a
+          href={href}
+          class={`text-sm px-3 py-1 rounded-full border ${active ? 'bg-primary text-white border-primary' : 'border-secondary-300 text-secondary-700 hover:border-primary'}`}
+        >
+          {c}
+        </a>
+      );
+    })}
+  </div>
+</Section>
+
+{sorted.length === 0 && (
+  <Section class="md:py-12 py-8">
+    <Text class="text-secondary-500 italic">{t('shop.empty')}</Text>
+  </Section>
+)}
+
+{featured.length > 0 && (
+  <Section class="md:py-12 py-8">
+    <Title class="text-3xl md:text-4xl mb-8">{t('shop.featuredHeading')}</Title>
+    <Row class="flex-wrap items-stretch md:gap-8 gap-6">
+      {featured.map((product) => (
+        <Col class="md:w-[calc(33.333%-1.5rem)] w-full">
+          <ProductCard product={product} currency={currency} />
+        </Col>
+      ))}
+    </Row>
+  </Section>
+)}
+
+{rest.length > 0 && (
+  <Section class="md:py-12 py-8">
+    {featured.length > 0 && (
+      <Title class="text-3xl md:text-4xl mb-8">{t('shop.allProducts')}</Title>
+    )}
+    <Row class="flex-wrap items-stretch md:gap-8 gap-6">
+      {rest.map((product) => (
+        <Col class="md:w-[calc(33.333%-1.5rem)] w-full">
+          <ProductCard product={product} currency={currency} />
+        </Col>
+      ))}
+    </Row>
+  </Section>
+)}

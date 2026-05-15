@@ -1,0 +1,40 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import Title from '../Title.astro';
+import Text from '../Text.astro';
+import { getLangFromUrl, useTranslations, localizedRoute } from '../../i18n/utils';
+import { formatPrice, type Currency } from '../../lib/shop/currency';
+
+interface Props {
+  product: CollectionEntry<'products'>;
+  currency: Currency;
+}
+
+const { product, currency } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const shopRoute = localizedRoute('shop', lang);
+const detailHref = `${shopRoute}/${product.id}`;
+const price = product.data.price[currency];
+const cover = product.data.images[0];
+---
+
+<a href={detailHref} class="group flex flex-col gap-4 w-full">
+  <div class="overflow-hidden rounded-xl aspect-[4/3] bg-secondary-100">
+    <img
+      src={cover}
+      alt={product.data.title}
+      class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+      loading="lazy"
+    />
+  </div>
+  <div class="flex flex-col gap-2">
+    <Title class="text-2xl md:text-3xl">{product.data.title}</Title>
+    <Text class="text-secondary-500">{product.data.shortDescription}</Text>
+    <div class="flex items-center justify-between mt-2">
+      <span class="text-xl font-medium text-primary">{formatPrice(price, currency, lang)}</span>
+      <span class="text-sm text-secondary-500 italic group-hover:underline">{t('shop.viewDetails')}</span>
+    </div>
+  </div>
+</a>

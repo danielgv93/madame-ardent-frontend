@@ -1,0 +1,10 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import CartPage from '../../components/pages/CartPage.astro';
+import { useTranslations } from '../../i18n/utils';
+
+const t = useTranslations('es');
+---
+<Layout title={`${t('cart.title')} ${t('cart.titleEmph')} - Madame Ardent`}>
+  <CartPage />
+</Layout>

@@ -29,3 +29,53 @@ model Form {
   respondedAt DateTime?
   createdAt   DateTime  @default(now())
 }
+
+model Order {
+  id               String      @id @default(cuid())
+  email            String
+  status           String      @default("pending")
+  currency         String
+  subtotal         Int
+  total            Int
+  stripeSessionId  String?     @unique
+  paidAt           DateTime?
+  refundedAt       DateTime?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  items            OrderItem[]
+
+  @@index([email])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model OrderItem {
+  id           String     @id @default(cuid())
+  orderId      String
+  productSlug  String
+  productTitle String
+  unitPrice    Int
+  quantity     Int
+  currency     String
+  fileKey      String?
+  createdAt    DateTime   @default(now())
+  order        Order      @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  downloads    Download[]
+
+  @@index([orderId])
+  @@index([productSlug])
+}
+
+model Download {
+  id            String    @id @default(cuid())
+  orderItemId   String
+  token         String    @unique
+  expiresAt     DateTime
+  downloadCount Int       @default(0)
+  maxDownloads  Int       @default(5)
+  lastUsedAt    DateTime?
+  createdAt     DateTime  @default(now())
+  orderItem     OrderItem @relation(fields: [orderItemId], references: [id], onDelete: Cascade)
+
+  @@index([orderItemId])
+}

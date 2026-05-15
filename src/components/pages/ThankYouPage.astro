@@ -1,0 +1,57 @@
+---
+import Section from '../../layouts/Section.astro';
+import Title from '../Title.astro';
+import Text from '../Text.astro';
+import prisma from '../../lib/prisma';
+import { getLangFromUrl, useTranslations, localizedRoute } from '../../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const sessionId = Astro.url.searchParams.get('session_id');
+const order = sessionId
+  ? await prisma.order.findUnique({
+      where: { stripeSessionId: sessionId },
+      select: { id: true, email: true, status: true },
+    })
+  : null;
+---
+
+<Section>
+  <div class="max-w-2xl mx-auto text-center">
+    <Title class="text-4xl md:text-5xl">
+      {t('cart.thankYouTitle')} <span class="italic">{t('cart.thankYouTitleEmph')}</span>
+    </Title>
+    <Text class="mt-8 text-lg text-secondary-500">
+      {t('cart.thankYouMessage')}
+    </Text>
+    <Text class="mt-3 text-sm text-secondary-400 italic">
+      {t('cart.thankYouNote')}
+    </Text>
+
+    {order && (
+      <div class="mt-10 p-6 rounded-xl bg-secondary-50 border border-secondary-200 inline-block">
+        <p class="text-xs uppercase tracking-wider text-secondary-500 mb-1">{t('cart.orderRef')}</p>
+        <p class="font-mono text-sm text-secondary-800">{order.id}</p>
+      </div>
+    )}
+
+    <div class="mt-10">
+      <a
+        href={localizedRoute('home', lang)}
+        class="inline-flex items-center px-6 py-3 rounded text-white bg-[#d62013] border border-[#d62013] hover:bg-transparent hover:text-[#d62013] font-broskon transition-colors"
+      >
+        {t('cart.backToHome')}
+      </a>
+    </div>
+  </div>
+</Section>
+
+<script>
+  try {
+    localStorage.removeItem('ma:cart');
+    window.dispatchEvent(new StorageEvent('storage', { key: 'ma:cart' }));
+  } catch {
+    // ignore
+  }
+</script>
