@@ -11,15 +11,18 @@ import {
 } from 'react-email';
 import type { ReactNode } from 'react';
 import { theme } from './theme';
+import { emailMessages, type EmailLang } from './i18n';
 
 interface BrandLayoutProps {
+  lang: EmailLang;
   preview: string;
   children: ReactNode;
 }
 
-export default function BrandLayout({ preview, children }: BrandLayoutProps) {
+export default function BrandLayout({ lang, preview, children }: BrandLayoutProps) {
+  const m = emailMessages(lang).layout;
   return (
-    <Html lang="es">
+    <Html lang={m.htmlLang}>
       <Head />
       <Preview>{preview}</Preview>
       <Body style={styles.body}>
@@ -33,7 +36,7 @@ export default function BrandLayout({ preview, children }: BrandLayoutProps) {
               style={styles.logo}
             />
             <Text style={styles.wordmark}>Madame Ardent</Text>
-            <Text style={styles.tagline}>Diseño editorial</Text>
+            <Text style={styles.tagline}>{m.tagline}</Text>
           </Section>
 
           <Hr style={styles.rule} />
@@ -53,9 +56,7 @@ export default function BrandLayout({ preview, children }: BrandLayoutProps) {
                 contacto@madame-ardent.com
               </div>
             */}
-            <Text style={styles.footerText}>
-              Madame Ardent — Diseño editorial para novelas.
-            </Text>
+            <Text style={styles.footerText}>{m.footer}</Text>
             <Text style={styles.footerLink}>{theme.siteUrl.replace(/^https?:\/\//, '')}</Text>
           </Section>
         </Container>

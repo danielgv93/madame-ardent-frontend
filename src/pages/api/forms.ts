@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import prisma from "../../lib/prisma.ts";
 import { createJsonResponse } from "../../lib/api-response.ts";
 import { sendContactFormNotification, sendContactFormConfirmation } from "../../lib/email.ts";
+import { normalizeEmailLang } from "../../emails/i18n.tsx";
 import type { ContactFormInput, PaginationData } from "../../types/index.ts";
 
 type SortOrder = 'asc' | 'desc'
@@ -121,6 +122,7 @@ export const POST: APIRoute = async ({ request }) => {
     try {
         const body = await request.json();
         const sanitizedData = sanitizeFormData(body);
+        const lang = normalizeEmailLang((body as Record<string, unknown>)?.lang);
         const validation = validateFormData(sanitizedData);
 
         if (!validation.isValid) {
@@ -134,14 +136,14 @@ export const POST: APIRoute = async ({ request }) => {
         }
 
         const form = await prisma.form.create({
-            data: sanitizedData
+            data: { ...sanitizedData, lang }
         });
 
         sendContactFormNotification(sanitizedData).catch((emailError) => {
             console.error("Error sending notification email:", emailError);
         });
 
-        sendContactFormConfirmation(sanitizedData).catch((emailError) => {
+        sendContactFormConfirmation(sanitizedData, lang).catch((emailError) => {
             console.error("Error sending confirmation email to client:", emailError);
         });
 

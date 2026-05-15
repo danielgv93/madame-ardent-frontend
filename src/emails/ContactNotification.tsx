@@ -21,7 +21,7 @@ export default function ContactNotification({ data }: Props) {
   });
 
   return (
-    <BrandLayout preview={`Nueva solicitud de ${data.name} — ${data.services}`}>
+    <BrandLayout lang="es" preview={`Nueva solicitud de ${data.name} — ${data.services}`}>
       <Eyebrow>Nueva solicitud</Eyebrow>
       <EditorialHeading>{data.name}</EditorialHeading>
       <MetaLine>Recibido el {receivedAt}</MetaLine>

@@ -7,36 +7,34 @@ import {
   Paragraph,
   QuoteBlock,
 } from './primitives';
+import { emailMessages, type EmailLang } from './i18n';
 
 interface Props {
   data: ContactFormInput;
+  lang: EmailLang;
 }
 
-export default function ContactConfirmation({ data }: Props) {
+export default function ContactConfirmation({ data, lang }: Props) {
+  const m = emailMessages(lang).contactConfirmation;
   return (
-    <BrandLayout preview={`Recibimos tu mensaje, ${data.name}. Te respondemos en breve.`}>
-      <Eyebrow>Confirmación</Eyebrow>
-      <EditorialHeading>Gracias, {data.name}.</EditorialHeading>
+    <BrandLayout lang={lang} preview={m.preview(data.name)}>
+      <Eyebrow>{m.eyebrow}</Eyebrow>
+      <EditorialHeading>{m.heading(data.name)}</EditorialHeading>
 
-      <Paragraph>
-        Recibí tu solicitud y la revisaré con detenimiento. En breve te
-        responderé al correo <strong>{data.email}</strong> con los próximos pasos.
-      </Paragraph>
+      <Paragraph>{m.intro(data.email)}</Paragraph>
 
       <div style={{ marginTop: '32px' }}>
-        <Eyebrow>Tu solicitud</Eyebrow>
-        <FieldRow label="Servicio" value={data.services} />
-        <FieldRow label="Presupuesto" value={data.budget} />
+        <Eyebrow>{m.requestEyebrow}</Eyebrow>
+        <FieldRow label={m.fieldService} value={data.services} />
+        <FieldRow label={m.fieldBudget} value={data.budget} />
       </div>
 
       <div style={{ marginTop: '28px' }}>
-        <Eyebrow>Tu mensaje</Eyebrow>
+        <Eyebrow>{m.messageEyebrow}</Eyebrow>
         <QuoteBlock>{data.message}</QuoteBlock>
       </div>
 
-      <Paragraph style={{ marginTop: '24px' }}>
-        Si necesitas añadir algo más, responde directamente a este correo.
-      </Paragraph>
+      <Paragraph style={{ marginTop: '24px' }}>{m.outro}</Paragraph>
     </BrandLayout>
   );
 }

@@ -1,15 +1,18 @@
 import BrandLayout from './BrandLayout';
 import { Eyebrow, Paragraph } from './primitives';
 import { theme } from './theme';
+import { emailMessages, type EmailLang } from './i18n';
 
 interface Props {
   bodyHtml: string;
   originalMessage: string;
+  lang: EmailLang;
 }
 
-export default function ReplyEmail({ bodyHtml, originalMessage }: Props) {
+export default function ReplyEmail({ bodyHtml, originalMessage, lang }: Props) {
+  const m = emailMessages(lang).reply;
   return (
-    <BrandLayout preview="Respuesta de Madame Ardent">
+    <BrandLayout lang={lang} preview={m.preview}>
       <div
         style={{
           fontFamily: theme.fonts.serif,
@@ -27,7 +30,7 @@ export default function ReplyEmail({ bodyHtml, originalMessage }: Props) {
           borderTop: `1px solid ${theme.colors.line}`,
         }}
       >
-        <Eyebrow>Mensaje original</Eyebrow>
+        <Eyebrow>{m.originalMessageEyebrow}</Eyebrow>
         <Paragraph
           style={{
             fontSize: '14px',

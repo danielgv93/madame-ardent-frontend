@@ -5,6 +5,7 @@ import { createJsonResponse, withAuth } from '../../../lib/api-response';
 import { OrderValidationError, validateEmail, validateOrder } from '../../../lib/shop/order-server';
 import { VALID_ORDER_STATUS } from '../../../lib/constants/order-status';
 import { SUPPORTED_CURRENCIES } from '../../../lib/shop/currency';
+import { normalizeEmailLang } from '../../../emails/i18n';
 
 export const prerender = false;
 
@@ -75,6 +76,7 @@ interface CreateOrderBody {
   email?: unknown;
   currency?: unknown;
   items?: unknown;
+  lang?: unknown;
 }
 
 export const POST: APIRoute = async ({ request }) => {
@@ -88,11 +90,13 @@ export const POST: APIRoute = async ({ request }) => {
   try {
     const email = validateEmail(body.email);
     const validated = await validateOrder(body.items, body.currency);
+    const lang = normalizeEmailLang(body.lang);
 
     const order = await prisma.order.create({
       data: {
         email,
         status: 'pending',
+        lang,
         currency: validated.currency,
         subtotal: validated.subtotalCents,
         total: validated.totalCents,

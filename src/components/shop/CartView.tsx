@@ -62,6 +62,7 @@ export default function CartView({ lang, labels }: Props) {
           email: email.trim(),
           currency: cart.currency,
           items: entries.map(({ product, qty }) => ({ slug: product.slug, quantity: qty })),
+          lang,
         }),
       });
       if (!orderRes.ok) throw new Error('order_failed');

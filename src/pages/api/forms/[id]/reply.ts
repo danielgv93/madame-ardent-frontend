@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import prisma from "../../../../lib/prisma.ts";
 import { withAuth, createJsonResponse } from "../../../../lib/api-response.ts";
 import { sendEmail, buildReplyEmailHtml } from "../../../../lib/email.ts";
+import { normalizeEmailLang } from "../../../../emails/i18n.tsx";
 import { FORM_STATUS } from "../../../../lib/constants/form-status.ts";
 
 export const POST: APIRoute = withAuth(async ({ request, params }) => {
@@ -33,7 +34,7 @@ export const POST: APIRoute = withAuth(async ({ request, params }) => {
         await sendEmail({
             to: form.email,
             subject,
-            html: await buildReplyEmailHtml(html, form.message),
+            html: await buildReplyEmailHtml(html, form.message, normalizeEmailLang(form.lang)),
             fromName: 'Madame Ardent',
         });
 

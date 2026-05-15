@@ -53,13 +53,15 @@ export class ContactFormHandler {
       return;
     }
 
+    const lang = document.documentElement.lang === 'en' ? 'en' : 'es';
+
     try {
       const response = await fetch('/api/forms', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, lang }),
       });
 
       if (response.ok) {

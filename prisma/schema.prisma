@@ -25,6 +25,7 @@ model Form {
   services    String
   budget      String
   message     String
+  lang        String    @default("es")
   status      String    @default("pending")
   respondedAt DateTime?
   createdAt   DateTime  @default(now())
@@ -34,6 +35,7 @@ model Order {
   id               String      @id @default(cuid())
   email            String
   status           String      @default("pending")
+  lang             String      @default("es")
   currency         String
   subtotal         Int
   total            Int

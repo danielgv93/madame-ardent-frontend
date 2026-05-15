@@ -5,6 +5,7 @@ import ContactNotification from '../emails/ContactNotification';
 import ContactConfirmation from '../emails/ContactConfirmation';
 import ReplyEmail from '../emails/ReplyEmail';
 import OrderDelivery, { type OrderDeliveryProps } from '../emails/OrderDelivery';
+import { emailMessages, type EmailLang } from '../emails/i18n';
 
 interface SmtpConfig {
   host: string;
@@ -69,15 +70,19 @@ export async function sendEmail({ to, subject, html, replyTo, fromName = 'Madame
   console.info(`[email] sent messageId=${info.messageId} response="${info.response}" accepted=${JSON.stringify(info.accepted)} rejected=${JSON.stringify(info.rejected)}`);
 }
 
-export async function buildReplyEmailHtml(bodyHtml: string, originalMessage: string): Promise<string> {
-  return render(ReplyEmail({ bodyHtml, originalMessage }));
+export async function buildReplyEmailHtml(
+  bodyHtml: string,
+  originalMessage: string,
+  lang: EmailLang,
+): Promise<string> {
+  return render(ReplyEmail({ bodyHtml, originalMessage, lang }));
 }
 
-export async function sendContactFormConfirmation(data: ContactFormInput): Promise<void> {
-  const html = await render(ContactConfirmation({ data }));
+export async function sendContactFormConfirmation(data: ContactFormInput, lang: EmailLang): Promise<void> {
+  const html = await render(ContactConfirmation({ data, lang }));
   await sendEmail({
     to: data.email,
-    subject: 'Hemos recibido tu solicitud — Madame Ardent',
+    subject: emailMessages(lang).contactConfirmation.subject,
     html,
     fromName: 'Madame Ardent',
   });
@@ -87,7 +92,7 @@ export async function sendOrderDeliveryEmail(props: OrderDeliveryProps): Promise
   const html = await render(OrderDelivery(props));
   await sendEmail({
     to: props.customerEmail,
-    subject: 'Tu pedido está listo — Madame Ardent',
+    subject: emailMessages(props.lang).orderDelivery.subject,
     html,
     fromName: 'Madame Ardent',
   });

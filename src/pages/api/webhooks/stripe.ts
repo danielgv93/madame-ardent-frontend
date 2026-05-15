@@ -11,6 +11,7 @@ import {
 import { sendOrderDeliveryEmail } from '../../../lib/email';
 import { formatPrice, type Currency } from '../../../lib/shop/currency';
 import { fromCents } from '../../../lib/shop/order-server';
+import { normalizeEmailLang } from '../../../emails/i18n';
 
 export const prerender = false;
 
@@ -75,14 +76,16 @@ async function fulfillOrder(orderId: string, session: Stripe.Checkout.Session): 
 
   const baseUrl = getPublicSiteUrl();
   const currency = order.currency as Currency;
-  const totalFormatted = formatPrice(fromCents(order.total), currency, 'es');
+  const lang = normalizeEmailLang(order.lang);
+  const totalFormatted = formatPrice(fromCents(order.total), currency, lang);
+  const shopUrl = `${baseUrl}${lang === 'en' ? '/en/shop' : '/tienda'}`;
 
   const emailItems = order.items.map((item) => {
     const dl = downloads.find((d) => d.orderItemId === item.id);
     return {
       title: item.productTitle,
       quantity: item.quantity,
-      downloadUrl: dl ? `${baseUrl}/api/download/${dl.token}` : `${baseUrl}/tienda`,
+      downloadUrl: dl ? `${baseUrl}/api/download/${dl.token}` : shopUrl,
     };
   });
 
@@ -95,7 +98,8 @@ async function fulfillOrder(orderId: string, session: Stripe.Checkout.Session): 
       items: emailItems,
       expirationDays,
       maxDownloads,
-      shopUrl: `${baseUrl}/tienda`,
+      shopUrl,
+      lang,
     });
     console.info(`[stripe webhook] delivery email sent for order ${order.id}`);
     await prisma.order.update({
