@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+    web:
+        build: .
+        container_name: madame-ardent-front
+        networks:
+            - madame-ardent-network
+        restart: unless-stopped
+        ports:
+            - "4321:4321"
+        env_file:
+            - .env
+        environment:
+            # Runtime
+            TZ: Europe/Madrid
+            NODE_ENV: production
+            HOST: 0.0.0.0
+            PORT: 4321
+
+            # Database (override .env to point at the postgres service hostname)
+            DATABASE_URL: postgresql://${POSTGRES_USER:?POSTGRES_USER must be set in .env}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}@postgres:5432/${POSTGRES_DB:?POSTGRES_DB must be set in .env}?schema=public
+            DATABASE_PRISMA_DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}?schema=public
+
+            # Auth — REQUIRED, define JWT_SECRET in .env (do NOT commit it)
+            JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+
+            # Site URLs (used by Stripe checkout return urls and email templates)
+            PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:4321}
+            SITE_URL: ${SITE_URL:-http://localhost:4321}
+
+            # Stripe — REQUIRED for /shop checkout + webhooks
+            STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:?STRIPE_SECRET_KEY must be set in .env}
+            STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:?STRIPE_WEBHOOK_SECRET must be set in .env}
+
+            # SMTP — REQUIRED to send the contact form + order emails
+            SMTP_HOST: ${SMTP_HOST:-smtp.gmail.com}
+            SMTP_PORT: ${SMTP_PORT:-587}
+            SMTP_USER: ${SMTP_USER:?SMTP_USER must be set in .env}
+            SMTP_PASSWORD: ${SMTP_PASSWORD:?SMTP_PASSWORD must be set in .env}
+            RECIPIENT_EMAIL: ${RECIPIENT_EMAIL:?RECIPIENT_EMAIL must be set in .env}
+
+            # Shop — private file storage and download token policy
+            PRIVATE_FILES_DIR: /app/private-files/products
+            DOWNLOAD_EXPIRATION_DAYS: ${DOWNLOAD_EXPIRATION_DAYS:-7}
+            DOWNLOAD_MAX_DOWNLOADS: ${DOWNLOAD_MAX_DOWNLOADS:-5}
+        volumes:
+            # Persist the digital products served by the shop
+            - ./private-files:/app/private-files
+        depends_on:
+            postgres:
+                condition: service_healthy
+
+    postgres:
+        image: docker.io/postgres:16-alpine
+        container_name: madame-ardent-postgres
+        environment:
+            POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER must be set in .env}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+            POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB must be set in .env}
+        volumes:
+            - postgres_data:/var/lib/postgresql/data
+            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+        healthcheck:
+            test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+            interval: 10s
+            timeout: 5s
+            retries: 5
+        ports:
+            - "5432:5432"
+        networks:
+            - madame-ardent-network
+
+    # Optional: forwards Stripe webhooks to the local web service during development.
+    # Enable with:  docker compose --profile dev up
+    # Requires STRIPE_CLI_API_KEY (a restricted key from the Stripe dashboard) in .env.
+    stripe-cli:
+        image: stripe/stripe-cli:latest
+        container_name: madame-ardent-stripe-cli
+        profiles: ["dev"]
+        networks:
+            - madame-ardent-network
+        environment:
+            # Use `:-` (default empty) instead of `:?` (required): Compose interpolates ALL services
+            # before applying profile filters, so a required var would error even when the profile is off.
+            # The service still won't start without the `dev` profile, so an empty fallback is safe.
+            STRIPE_API_KEY: ${STRIPE_CLI_API_KEY:-}
+        command: >
+            listen
+            --forward-to web:4321/api/webhooks/stripe
+            --skip-verify
+        depends_on:
+            - web
+
+networks:
+    madame-ardent-network:
+        driver: bridge
+
+volumes:
+    postgres_data:
