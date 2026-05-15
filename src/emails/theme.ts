@@ -16,5 +16,5 @@ export const theme = {
     serif: "'Georgia', 'Times New Roman', serif",
     sans: "'Helvetica Neue', 'Helvetica', 'Arial', sans-serif",
   },
-  siteUrl: (import.meta.env.SITE_URL as string) || 'https://madame-ardent.com',
+  siteUrl: process.env.SITE_URL || 'https://madame-ardent.com',
 } as const;

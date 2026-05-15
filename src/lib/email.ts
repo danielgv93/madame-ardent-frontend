@@ -15,15 +15,15 @@ interface SmtpConfig {
 
 function getSmtpConfig(): SmtpConfig {
   return {
-    host: import.meta.env.SMTP_HOST || 'smtp.gmail.com',
-    port: parseInt(import.meta.env.SMTP_PORT || '587'),
-    user: import.meta.env.SMTP_USER || '',
-    password: import.meta.env.SMTP_PASSWORD || '',
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    user: process.env.SMTP_USER || '',
+    password: process.env.SMTP_PASSWORD || '',
   };
 }
 
 function getRecipientEmail(): string {
-  return import.meta.env.RECIPIENT_EMAIL || '';
+  return process.env.RECIPIENT_EMAIL || '';
 }
 
 function createTransporter() {

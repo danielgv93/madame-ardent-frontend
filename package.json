@@ -24,9 +24,6 @@
     "prisma": "^6.9.0",
     "react-email": "^6.1.4",
     "@tailwindcss/vite": "^4.1.8",
-    "@types/jsonwebtoken": "^9.0.10",
-    "@types/react": "^19.2.14",
-    "@types/react-dom": "^19.2.3",
     "astro": "^5.12.3",
     "bcrypt": "^6.0.0",
     "jsonwebtoken": "^9.0.2",
@@ -36,13 +33,15 @@
     "react-dom": "^19.2.4",
     "stripe": "^22.1.1",
     "tailwind-merge": "^3.4.0",
-    "tailwindcss": "^4.1.8",
-    "vercel": "^44.6.3"
+    "tailwindcss": "^4.1.8"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.0.0",
     "@types/nodemailer": "^8.0.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4"
   }
