@@ -28,3 +28,6 @@ pnpm-debug.log*
 
 # digital products — store locally or on remote storage in production
 /private-files
+
+# database backup dumps (see docs/BACKUPS.md)
+/backups

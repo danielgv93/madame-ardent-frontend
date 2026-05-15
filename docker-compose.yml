@@ -71,6 +71,34 @@ services:
         networks:
             - madame-ardent-network
 
+    # Daily PostgreSQL backups with rotation (7 daily + 4 weekly + 6 monthly).
+    # Dumps land in ./backups/{daily,weekly,monthly} on the host (gzip'd plain SQL).
+    # See docs/BACKUPS.md for the full protocol (schedule, restore, verification).
+    postgres-backup:
+        image: docker.io/prodrigestivill/postgres-backup-local:16
+        container_name: madame-ardent-postgres-backup
+        restart: unless-stopped
+        environment:
+            POSTGRES_HOST: postgres
+            POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB must be set in .env}
+            POSTGRES_USER: ${POSTGRES_USER:?POSTGRES_USER must be set in .env}
+            POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD must be set in .env}
+            POSTGRES_EXTRA_OPTS: "--clean --if-exists --quote-all-identifiers"
+            SCHEDULE: "@daily"
+            BACKUP_KEEP_DAYS: 7
+            BACKUP_KEEP_WEEKS: 4
+            BACKUP_KEEP_MONTHS: 6
+            BACKUP_DIR: /backups
+            HEALTHCHECK_PORT: 8080
+            TZ: Europe/Madrid
+        volumes:
+            - ./backups:/backups
+        networks:
+            - madame-ardent-network
+        depends_on:
+            postgres:
+                condition: service_healthy
+
     # Optional: forwards Stripe webhooks to the local web service during development.
     # Enable with:  docker compose --profile dev up
     # Requires STRIPE_CLI_API_KEY (a restricted key from the Stripe dashboard) in .env.
