@@ -1,4 +1,4 @@
-import { Section, Text } from '@react-email/components';
+import { Section, Text } from 'react-email';
 import BrandLayout from './BrandLayout';
 import { CtaButton, EditorialHeading, Eyebrow, FieldRow, MetaLine, Paragraph } from './primitives';
 import { theme } from './theme';

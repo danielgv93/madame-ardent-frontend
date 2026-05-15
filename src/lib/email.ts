@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import { render } from '@react-email/render';
+import { render } from 'react-email';
 import type { ContactFormInput } from '../types/index.js';
 import ContactNotification from '../emails/ContactNotification';
 import ContactConfirmation from '../emails/ContactConfirmation';
