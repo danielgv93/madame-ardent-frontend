@@ -9,6 +9,7 @@ services:
         restart: unless-stopped
         ports:
             - "4321:4321"
+        command: sh -c "npx prisma db push --skip-generate && node prisma/seed-prod.mjs && node ./dist/server/entry.mjs"
         env_file:
             - .env
         environment:
@@ -24,6 +25,11 @@ services:
 
             # Auth — REQUIRED, define JWT_SECRET in .env (do NOT commit it)
             JWT_SECRET: ${JWT_SECRET:?JWT_SECRET must be set in .env}
+
+            # Admin user — created/updated on every container start by prisma/seed-prod.mjs
+            ADMIN_EMAIL: ${ADMIN_EMAIL:?ADMIN_EMAIL must be set in .env}
+            ADMIN_PASSWORD: ${ADMIN_PASSWORD:?ADMIN_PASSWORD must be set in .env}
+            ADMIN_NAME: ${ADMIN_NAME:-admin}
 
             # Site URLs (used by Stripe checkout return urls and email templates)
             PUBLIC_SITE_URL: ${PUBLIC_SITE_URL:-http://localhost:4321}
@@ -60,7 +66,6 @@ services:
             POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB must be set in .env}
         volumes:
             - postgres_data:/var/lib/postgresql/data
-            - ./init.sql:/docker-entrypoint-initdb.d/init.sql
         healthcheck:
             test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
             interval: 10s

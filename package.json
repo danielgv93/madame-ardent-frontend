@@ -21,6 +21,7 @@
     "@astrojs/react": "^5.0.1",
     "@astrojs/vercel": "^8.2.3",
     "@prisma/client": "^6.9.0",
+    "prisma": "^6.9.0",
     "react-email": "^6.1.4",
     "@tailwindcss/vite": "^4.1.8",
     "@types/jsonwebtoken": "^9.0.10",
@@ -42,7 +43,6 @@
     "@types/bcrypt": "^5.0.2",
     "@types/node": "^22.0.0",
     "@types/nodemailer": "^8.0.0",
-    "prisma": "^6.9.0",
     "ts-node": "^10.9.2",
     "tsx": "^4.19.4"
   }
