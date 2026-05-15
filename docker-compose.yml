@@ -116,8 +116,8 @@ services:
         environment:
             # Use `:-` (default empty) instead of `:?` (required): Compose interpolates ALL services
             # before applying profile filters, so a required var would error even when the profile is off.
-            # The service still won't start without the `dev` profile, so an empty fallback is safe.
-            STRIPE_API_KEY: ${STRIPE_CLI_API_KEY:-}
+            # Falls back to STRIPE_SECRET_KEY so dev works without configuring a separate restricted key.
+            STRIPE_API_KEY: ${STRIPE_CLI_API_KEY:-${STRIPE_SECRET_KEY:-}}
         command: >
             listen
             --forward-to web:4321/api/webhooks/stripe
