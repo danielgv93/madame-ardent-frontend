@@ -15,6 +15,8 @@ import { fromCents } from '../../../lib/shop/order-server';
 export const prerender = false;
 
 async function fulfillOrder(orderId: string, session: Stripe.Checkout.Session): Promise<void> {
+  console.info(`[stripe webhook] fulfillOrder start orderId=${orderId} sessionId=${session.id}`);
+
   const order = await prisma.order.findUnique({
     where: { id: orderId },
     include: { items: true },
@@ -24,12 +26,23 @@ async function fulfillOrder(orderId: string, session: Stripe.Checkout.Session): 
     return;
   }
   if (order.status === 'paid' || order.status === 'delivered') {
+    console.info(`[stripe webhook] order ${orderId} already in status="${order.status}" — skipping fulfillment (email NOT resent)`);
     return;
   }
 
   const paidEmail = session.customer_details?.email?.toLowerCase() ?? order.email;
   const { expirationDays, maxDownloads } = getDefaultDownloadConfig();
   const expiresAt = buildExpirationDate(expirationDays);
+
+  const itemsWithFile = order.items.filter((i) => !!i.fileKey).length;
+  console.info(
+    `[stripe webhook] order ${orderId}: items=${order.items.length} withFileKey=${itemsWithFile} email=${paidEmail}`,
+  );
+  if (itemsWithFile === 0) {
+    console.warn(
+      `[stripe webhook] order ${orderId}: no items have a fileKey — email will be sent with fallback links to /tienda (no downloads available)`,
+    );
+  }
 
   await prisma.$transaction(async (tx) => {
     await tx.order.update({
@@ -74,6 +87,7 @@ async function fulfillOrder(orderId: string, session: Stripe.Checkout.Session): 
   });
 
   try {
+    console.info(`[stripe webhook] sending delivery email for order ${order.id} to ${paidEmail}`);
     await sendOrderDeliveryEmail({
       orderId: order.id,
       customerEmail: paidEmail,
@@ -83,6 +97,7 @@ async function fulfillOrder(orderId: string, session: Stripe.Checkout.Session): 
       maxDownloads,
       shopUrl: `${baseUrl}/tienda`,
     });
+    console.info(`[stripe webhook] delivery email sent for order ${order.id}`);
     await prisma.order.update({
       where: { id: order.id },
       data: { status: 'delivered' },
@@ -117,6 +132,8 @@ export const POST: APIRoute = async ({ request }) => {
     return createJsonResponse({ error: 'Invalid signature' }, 400);
   }
 
+  console.info(`[stripe webhook] received event type=${event.type} id=${event.id}`);
+
   try {
     switch (event.type) {
       case 'checkout.session.completed': {
@@ -130,6 +147,7 @@ export const POST: APIRoute = async ({ request }) => {
         await handleAsyncFailed(event.data.object as Stripe.Checkout.Session);
         break;
       default:
+        console.info(`[stripe webhook] ignoring event type=${event.type}`);
         break;
     }
   } catch (err) {

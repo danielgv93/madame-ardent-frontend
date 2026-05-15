@@ -50,18 +50,23 @@ interface SendEmailParams {
 export async function sendEmail({ to, subject, html, replyTo, fromName = 'Madame Ardent' }: SendEmailParams): Promise<void> {
   const smtpConfig = getSmtpConfig();
   if (!smtpConfig.user || !smtpConfig.password) {
+    console.error(
+      `[email] SMTP configuration missing — host=${smtpConfig.host} port=${smtpConfig.port} user=${smtpConfig.user ? 'set' : 'EMPTY'} password=${smtpConfig.password ? 'set' : 'EMPTY'}`,
+    );
     throw new Error('SMTP configuration missing (SMTP_USER / SMTP_PASSWORD)');
   }
 
   const transporter = createTransporter();
 
-  await transporter.sendMail({
+  console.info(`[email] sending mail to=${to} subject="${subject}" via ${smtpConfig.host}:${smtpConfig.port}`);
+  const info = await transporter.sendMail({
     from: `"${fromName}" <${smtpConfig.user}>`,
     to,
     subject,
     html,
     ...(replyTo ? { replyTo } : {}),
   });
+  console.info(`[email] sent messageId=${info.messageId} response="${info.response}" accepted=${JSON.stringify(info.accepted)} rejected=${JSON.stringify(info.rejected)}`);
 }
 
 export async function buildReplyEmailHtml(bodyHtml: string, originalMessage: string): Promise<string> {
