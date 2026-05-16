@@ -104,7 +104,7 @@ const clockIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 2
 
     <Modal id="order-modal" title="Detalle del pedido" maxWidth="xl">
         <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-xs font-medium text-gray-500">ID</label>
                     <p id="detail-id" class="text-sm font-mono text-gray-900"></p>
@@ -137,7 +137,7 @@ const clockIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 2
                     <label class="block text-xs font-medium text-gray-500">Pagado</label>
                     <p id="detail-paid" class="text-sm text-gray-900"></p>
                 </div>
-                <div class="col-span-2">
+                <div class="sm:col-span-2">
                     <label class="block text-xs font-medium text-gray-500">Stripe Session</label>
                     <p id="detail-stripe" class="text-xs font-mono text-gray-700 break-all"></p>
                 </div>
@@ -163,7 +163,7 @@ const clockIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 2
 
     <Modal id="export-orders-modal" title="Exportar pedidos a CSV">
         <div class="space-y-4">
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="export-date-from" class="block text-sm font-medium text-gray-700 mb-1">Fecha desde:</label>
                     <input type="date" id="export-date-from" class="w-full border-gray-300 rounded-md shadow-sm text-sm" />
@@ -173,7 +173,7 @@ const clockIcon = `<svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 2
                     <input type="date" id="export-date-to" class="w-full border-gray-300 rounded-md shadow-sm text-sm" />
                 </div>
             </div>
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                     <label for="export-status" class="block text-sm font-medium text-gray-700 mb-1">Estado:</label>
                     <select id="export-status" class="w-full border-gray-300 rounded-md shadow-sm text-sm">

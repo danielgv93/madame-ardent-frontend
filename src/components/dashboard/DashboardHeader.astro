@@ -3,12 +3,24 @@ import LogoutButton from './LogoutButton.astro';
 
 ---
 
-<header class="bg-white shadow-sm border-b border-secondary-200">
-    <div class="flex items-center justify-between px-6 py-4">
-        <div>
-            <h2 class="text-xl text-secondary-900 font-simplify">Dashboard</h2>
+<header class="sticky top-0 z-20 bg-white shadow-sm border-b border-secondary-200">
+    <div class="flex items-center justify-between gap-3 px-4 sm:px-6 py-4">
+        <div class="flex items-center gap-2 min-w-0">
+            <button
+                type="button"
+                id="sidebar-toggle"
+                class="lg:hidden -ml-1 p-2 rounded-md text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900 transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-300"
+                aria-label="Abrir menú"
+                aria-controls="dashboard-sidebar"
+                aria-expanded="false"
+            >
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+            <h2 class="text-xl text-secondary-900 font-simplify truncate">Dashboard</h2>
         </div>
-        
+
         <LogoutButton />
     </div>
 </header>

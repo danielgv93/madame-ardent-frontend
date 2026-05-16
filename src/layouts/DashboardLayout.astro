@@ -23,12 +23,18 @@ const { title } = Astro.props;
         <div class="min-h-screen bg-secondary-50 flex">
             <DashboardSidebar />
 
+            <!-- Fondo oscuro para el menú móvil -->
+            <div
+                id="sidebar-overlay"
+                class="fixed inset-0 z-30 bg-secondary-900/50 opacity-0 pointer-events-none transition-opacity duration-300 lg:hidden"
+            ></div>
+
             <!-- Main content -->
-            <div class="flex-1 ml-64">
+            <div class="flex-1 min-w-0 lg:ml-64">
                 <DashboardHeader />
 
                 <!-- Page content -->
-                <main class="p-6">
+                <main class="p-4 sm:p-6">
                     <slot />
                 </main>
             </div>
@@ -66,6 +72,40 @@ const { title } = Astro.props;
                 link.classList.remove('text-secondary-600', 'hover:text-primary', 'hover:bg-primary-50');
                 link.classList.add('text-primary', 'bg-primary-50', 'font-semibold');
             }
+        });
+
+        // Menú lateral en móvil (off-canvas)
+        const sidebar = document.getElementById('dashboard-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const toggleBtn = document.getElementById('sidebar-toggle');
+        const closeBtn = document.getElementById('sidebar-close');
+
+        const openSidebar = () => {
+            sidebar?.classList.remove('-translate-x-full');
+            overlay?.classList.remove('opacity-0', 'pointer-events-none');
+            toggleBtn?.setAttribute('aria-expanded', 'true');
+            document.body.classList.add('overflow-hidden');
+        };
+
+        const closeSidebar = () => {
+            sidebar?.classList.add('-translate-x-full');
+            overlay?.classList.add('opacity-0', 'pointer-events-none');
+            toggleBtn?.setAttribute('aria-expanded', 'false');
+            document.body.classList.remove('overflow-hidden');
+        };
+
+        toggleBtn?.addEventListener('click', openSidebar);
+        closeBtn?.addEventListener('click', closeSidebar);
+        overlay?.addEventListener('click', closeSidebar);
+        navLinks.forEach(link => link.addEventListener('click', closeSidebar));
+
+        document.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') closeSidebar();
+        });
+
+        // Al pasar a escritorio, restablecer el estado del menú
+        window.matchMedia('(min-width: 1024px)').addEventListener('change', (event) => {
+            if (event.matches) closeSidebar();
         });
     });
 </script>
